@@ -1,0 +1,31 @@
+[
+  { "_id": { "$oid": "665c10a0d3f1b3f1a2000001" }, "firstName": "Alice", "lastName": "Smith", "startYear": 2020, "departmentId": { "$oid": "665c10a0d3f1b3f1a1000001" }},
+  { "_id": { "$oid": "665c10a0d3f1b3f1a2000002" }, "firstName": "Bob", "lastName": "Johnson", "startYear": 2021, "departmentId": { "$oid": "665c10a0d3f1b3f1a1000001" }},
+  { "_id": { "$oid": "665c10a0d3f1b3f1a2000003" }, "firstName": "Charlie", "lastName": "Lee", "startYear": 2022, "departmentId": { "$oid": "665c10a0d3f1b3f1a1000001" }},
+  { "_id": { "$oid": "665c10a0d3f1b3f1a2000004" }, "firstName": "Dana", "lastName": "Williams", "startYear": 2019, "departmentId": { "$oid": "665c10a0d3f1b3f1a1000001" }},
+  { "_id": { "$oid": "665c10a0d3f1b3f1a2000005" }, "firstName": "Eli", "lastName": "Brown", "startYear": 2023, "departmentId": { "$oid": "665c10a0d3f1b3f1a1000001" }},
+  
+  { "_id": { "$oid": "665c10a0d3f1b3f1a2000006" }, "firstName": "Fiona", "lastName": "Davis", "startYear": 2020, "departmentId": { "$oid": "665c10a0d3f1b3f1a1000002" }},
+  { "_id": { "$oid": "665c10a0d3f1b3f1a2000007" }, "firstName": "George", "lastName": "Miller", "startYear": 2021, "departmentId": { "$oid": "665c10a0d3f1b3f1a1000002" }},
+  { "_id": { "$oid": "665c10a0d3f1b3f1a2000008" }, "firstName": "Hannah", "lastName": "Wilson", "startYear": 2022, "departmentId": { "$oid": "665c10a0d3f1b3f1a1000002" }},
+  { "_id": { "$oid": "665c10a0d3f1b3f1a2000009" }, "firstName": "Ian", "lastName": "Moore", "startYear": 2019, "departmentId": { "$oid": "665c10a0d3f1b3f1a1000002" }},
+  { "_id": { "$oid": "665c10a0d3f1b3f1a2000010" }, "firstName": "Jane", "lastName": "Taylor", "startYear": 2023, "departmentId": { "$oid": "665c10a0d3f1b3f1a1000002" }},
+  
+  { "_id": { "$oid": "665c10a0d3f1b3f1a2000011" }, "firstName": "Kyle", "lastName": "Anderson", "startYear": 2020, "departmentId": { "$oid": "665c10a0d3f1b3f1a1000003" }},
+  { "_id": { "$oid": "665c10a0d3f1b3f1a2000012" }, "firstName": "Lara", "lastName": "Thomas", "startYear": 2021, "departmentId": { "$oid": "665c10a0d3f1b3f1a1000003" }},
+  { "_id": { "$oid": "665c10a0d3f1b3f1a2000013" }, "firstName": "Mark", "lastName": "Jackson", "startYear": 2022, "departmentId": { "$oid": "665c10a0d3f1b3f1a1000003" }},
+  { "_id": { "$oid": "665c10a0d3f1b3f1a2000014" }, "firstName": "Nina", "lastName": "White", "startYear": 2019, "departmentId": { "$oid": "665c10a0d3f1b3f1a1000003" }},
+  { "_id": { "$oid": "665c10a0d3f1b3f1a2000015" }, "firstName": "Oscar", "lastName": "Martin", "startYear": 2023, "departmentId": { "$oid": "665c10a0d3f1b3f1a1000003" }},
+  
+  { "_id": { "$oid": "665c10a0d3f1b3f1a2000016" }, "firstName": "Paula", "lastName": "Reed", "startYear": 2018, "departmentId": { "$oid": "665c10a0d3f1b3f1a1000004" }},
+  { "_id": { "$oid": "665c10a0d3f1b3f1a2000017" }, "firstName": "Quentin", "lastName": "Young", "startYear": 2020, "departmentId": { "$oid": "665c10a0d3f1b3f1a1000004" }},
+  { "_id": { "$oid": "665c10a0d3f1b3f1a2000018" }, "firstName": "Rachel", "lastName": "Parker", "startYear": 2021, "departmentId": { "$oid": "665c10a0d3f1b3f1a1000004" }},
+  { "_id": { "$oid": "665c10a0d3f1b3f1a2000019" }, "firstName": "Steve", "lastName": "Carter", "startYear": 2022, "departmentId": { "$oid": "665c10a0d3f1b3f1a1000004" }},
+  { "_id": { "$oid": "665c10a0d3f1b3f1a2000020" }, "firstName": "Tina", "lastName": "Wells", "startYear": 2023, "departmentId": { "$oid": "665c10a0d3f1b3f1a1000004" }},
+  
+  { "_id": { "$oid": "665c10a0d3f1b3f1a2000021" }, "firstName": "Uma", "lastName": "Bennett", "startYear": 2017, "departmentId": { "$oid": "665c10a0d3f1b3f1a1000005" }},
+  { "_id": { "$oid": "665c10a0d3f1b3f1a2000022" }, "firstName": "Victor", "lastName": "Gray", "startYear": 2018, "departmentId": { "$oid": "665c10a0d3f1b3f1a1000005" }},
+  { "_id": { "$oid": "665c10a0d3f1b3f1a2000023" }, "firstName": "Wendy", "lastName": "Scott", "startYear": 2019, "departmentId": { "$oid": "665c10a0d3f1b3f1a1000005" }},
+  { "_id": { "$oid": "665c10a0d3f1b3f1a2000024" }, "firstName": "Xavier", "lastName": "Hall", "startYear": 2020, "departmentId": { "$oid": "665c10a0d3f1b3f1a1000005" }},
+  { "_id": { "$oid": "665c10a0d3f1b3f1a2000025" }, "firstName": "Yasmine", "lastName": "King", "startYear": 2021, "departmentId": { "$oid": "665c10a0d3f1b3f1a1000005" }}
+]

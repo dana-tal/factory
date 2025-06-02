@@ -1,0 +1,27 @@
+[
+  {
+    "_id": { "$oid": "665c10a0d3f1b3f1a1000001" },
+    "name": "Engineering",
+    "managerId": { "$oid": "665c10a0d3f1b3f1a2000001" }
+  },
+  {
+    "_id": { "$oid": "665c10a0d3f1b3f1a1000002" },
+    "name": "Marketing",
+    "managerId": { "$oid": "665c10a0d3f1b3f1a2000006" }
+  },
+  {
+    "_id": { "$oid": "665c10a0d3f1b3f1a1000003" },
+    "name": "Sales",
+    "managerId": { "$oid": "665c10a0d3f1b3f1a2000011" }
+  },
+  {
+    "_id": { "$oid": "665c10a0d3f1b3f1a1000004" },
+    "name": "Development",
+    "managerId": { "$oid": "665c10a0d3f1b3f1a2000016" }
+  },
+  {
+    "_id": { "$oid": "665c10a0d3f1b3f1a1000005" },
+    "name": "Human Resources",
+    "managerId": { "$oid": "665c10a0d3f1b3f1a2000021" }
+  }
+]
