@@ -1,24 +1,56 @@
 const Department = require('../models/departmentModel');
-const Employee = require('../models/employeeModel'); 
+
+const getAllDepartmentsNames= ()=>{
+    return Department.find().select('_id name ');
+}
 
 const getAllDepartments = (filters)=>{
-    return Department.find(filters).populate({
-        path: 'employees',
-        select: '_id firstName lastName -departmentId' 
-    })
+    return Department.find(filters)
     .populate({ 
         path:'manager',
         select:'_id firstName lastName'
+    })
+    .populate({
+        path: 'employees',
+        select: '_id firstName lastName -departmentId' 
     });
 }
 
 const getDepartmentById = (id) =>{
-    return Department.findById(id);
+    return Department.findById(id)
+     .populate({ 
+        path:'manager',
+        select:'_id firstName lastName'
+    })
+    .populate({
+        path: 'employees',
+        select: '_id firstName lastName -departmentId' 
+    });
 }
 
+const getDepartmentByName = (inputName)=>{
+     return Department.findOne({name:inputName});
+}
 
+const addDepartment = (deptObj)=>{
+       const department = new Department(deptObj);
+       return department.save();
+}
+
+const updateDepartment = (id,deptObj)=>{
+    return Department.findByIdAndUpdate(id,deptObj,{new:true}); // setting flag new to true so it will return the updated object 
+}
+
+const deleteDepartment = (id) =>{
+    return Department.findByIdAndDelete(id);
+}
 
 module.exports = {
     getAllDepartments,
-    getDepartmentById 
+    getDepartmentById,
+    addDepartment,
+    getDepartmentByName,
+    getAllDepartmentsNames,
+    updateDepartment,
+    deleteDepartment
 }

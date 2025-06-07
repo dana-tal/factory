@@ -26,5 +26,5 @@ in the folder :  factory/server/data there are json files containing the databas
       Assigned Kyle Anderson as manager of Development
 
 4) For verification you can :
-     - Make sure departments collection exit, and managerId field is not null 
+     - Make sure departments collection exist, and managerId field is not null 
      - Make sure  employees collection exist , and there are 5 employees for each department 
