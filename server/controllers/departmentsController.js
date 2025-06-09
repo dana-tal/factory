@@ -45,6 +45,15 @@ const getDepartmentById = async (req,res) => {
     try
     {
         const id = req.params.id;
+        
+        // check if id is a valid mongo id 
+        let result = validator.validateEntityId(id,'Department');
+        if (result)
+        {
+            return res.status(result.status).json(result.message);
+        }
+
+        // chekc if the department exists 
         const department = await departmentsService.getDepartmentById(id);
         if (!department) 
         {
@@ -95,7 +104,21 @@ const updateDepartment = async (req,res) =>
           const id = req.params.id;
           const deptObj = req.body;
 
-          let result = await validator.validateDepartmentInfo(deptObj.name, deptObj.managerId);
+       //   console.log(deptObj);
+
+          let result = validator.validateEntityId(id,'Department');
+          if (result)
+          {
+            return res.status(result.status).json(result.message);
+          }
+
+          const exists = await departmentsService.departmentExists(id);
+          if (!exists)
+          {
+               return res.status(404).json(`Department with id ${id} does not exist`);
+          }
+
+          result = await validator.validateDepartmentInfo(deptObj.name, deptObj.managerId);
           if ( result)
           {
               return res.status(result.status).json(result.message);
@@ -116,13 +139,17 @@ const deleteDepartment = async (req,res) =>
     try
     {
         const id = req.params.id;
-        const result = validator.validateDepartmentId(id);
-         console.log("logging result:"+result);
-    
+        const result = validator.validateEntityId(id,'Department');
         if (result)
         {
             return res.status(result.status).json(result.message);
         }
+        const exists = await departmentsService.departmentExists(id);
+        if (!exists)
+        {
+            return res.status(404).json(`Department with id ${id} does not exist`);
+        }
+        // todo: delete department employees 
         const deletedDepartment = await departmentsService.deleteDepartment(id);
         return res.status(200).json(deletedDepartment);
     }

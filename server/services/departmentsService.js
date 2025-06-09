@@ -33,6 +33,11 @@ const deleteDepartment = (id) =>{
     return departmentsRepo.deleteDepartment(id);
 }
 
+const departmentExists = (id)=>{
+    return departmentsRepo.departmentExists(id);
+}
+
+
 module.exports = {
     getAllDepartments,
     getDepartmentById,
@@ -41,4 +46,5 @@ module.exports = {
     addDepartment,
     updateDepartment,
     deleteDepartment,
+    departmentExists
 }

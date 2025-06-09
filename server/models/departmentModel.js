@@ -33,6 +33,8 @@ departmentSchema.set('toJSON', {
   virtuals: true,
   transform: function (doc, ret) {
     delete ret.managerId;
+    delete ret.createdAt;
+    delete ret.updatedAt;
     return ret;
   }
 });
@@ -41,6 +43,8 @@ departmentSchema.set('toObject', {
   virtuals: true,
   transform: function (doc, ret) {
     delete ret.managerId;
+    delete ret.createdAt;
+    delete ret.updatedAt;
     return ret;
   }
 });

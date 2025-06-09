@@ -45,6 +45,10 @@ const deleteDepartment = (id) =>{
     return Department.findByIdAndDelete(id);
 }
 
+const departmentExists = (id) =>{
+    return Department.exists({ _id: id}); 
+}
+
 module.exports = {
     getAllDepartments,
     getDepartmentById,
@@ -52,5 +56,6 @@ module.exports = {
     getDepartmentByName,
     getAllDepartmentsNames,
     updateDepartment,
-    deleteDepartment
+    deleteDepartment,
+    departmentExists
 }
