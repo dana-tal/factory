@@ -26,7 +26,7 @@ const addDepartment = (deptObj) =>
 }
 
 const updateDepartment = ( id, deptObj)=>{
-    return departmentsRepo.updateDepartment(id,deptObj);
+   return departmentsRepo.updateDepartment(id,deptObj);
 }
 
 const deleteDepartment = (id) =>{

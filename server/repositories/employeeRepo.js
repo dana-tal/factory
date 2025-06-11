@@ -20,6 +20,13 @@ const updateEmployeesDepartment = (employeeIds, newDeptId) =>{
     )
 }
 
+const updateEmployee = (id,employeeObj)=>{
+    return Employee.findByIdAndUpdate(id,employeeObj,{new:true});
+}
+
+const deleteEmployee = (id) =>{
+    return Employee.findByIdAndDelete(id);
+}
 
 const employeeExists = (id) =>{
     return Employee.exists({ _id: id}); 
@@ -32,6 +39,7 @@ module.exports = {
     getEmployeeById,
     addNewEmployee,
     updateEmployeesDepartment,
+    updateEmployee,
+    deleteEmployee,
     employeeExists
-  
 }

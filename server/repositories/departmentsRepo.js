@@ -37,8 +37,9 @@ const addDepartment = (deptObj)=>{
        return department.save();
 }
 
-const updateDepartment = (id,deptObj)=>{
-    return Department.findByIdAndUpdate(id,deptObj,{new:true}); // setting flag new to true so it will return the updated object 
+const updateDepartment = async (id,deptObj)=>{
+    const dept = await Department.findByIdAndUpdate(id,deptObj,{new:true}); // setting flag new to true so it will return the updated object 
+    return dept.populate('manager');
 }
 
 const deleteDepartment = (id) =>{

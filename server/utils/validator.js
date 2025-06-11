@@ -78,7 +78,7 @@ const validateEmployeeInfo = async (firstName,lastName,startYear,departmentId)=>
      const departmentExists = await departmentService.departmentExists(departmentId);
      if (!departmentExists)
      {
-             result = { status:422 ,message:'The department id supplied does not exist' };
+             result = { status:404 ,message:'The department id supplied does not exist' };
      }
      return result;
 }
@@ -101,10 +101,10 @@ const validateDepartmentInfo = async (name,managerId) =>{
    }
    else 
    {
-      const manager = await employeesService.getEmployeeById(managerId);
+      const manager = await employeesService.employeeExists(managerId);
       if (!manager)
       {
-           result = { status:422 ,message:'The manager id supplied does not exist' };
+           result = { status:404 ,message:'The manager id supplied does not exist' };
       }
    }
    return result;

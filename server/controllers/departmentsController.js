@@ -104,26 +104,33 @@ const updateDepartment = async (req,res) =>
           const id = req.params.id;
           const deptObj = req.body;
 
-       //   console.log(deptObj);
-
           let result = validator.validateEntityId(id,'Department');
           if (result)
           {
             return res.status(result.status).json(result.message);
           }
 
-          const exists = await departmentsService.departmentExists(id);
-          if (!exists)
+          const department = await departmentsService.getDepartmentById(id);
+          if (!department)
           {
-               return res.status(404).json(`Department with id ${id} does not exist`);
+             return res.status(404).json(`Department with id ${id} does not exist`);
           }
 
-          result = await validator.validateDepartmentInfo(deptObj.name, deptObj.managerId);
+          // flags detecting which fields were provided 
+          const nameProvided =   Object.prototype.hasOwnProperty.call(deptObj, 'name');
+          const managerIdProvided =  Object.prototype.hasOwnProperty.call(deptObj, 'managerId');
+
+          // to enable partial sending of department data, complete missing fields from current department:
+          const name = nameProvided ? deptObj.name:department.name;
+          const managerId = managerIdProvided ? deptObj.managerId: department.managerId.toString();
+
+          
+          result = await validator.validateDepartmentInfo(name,managerId);
           if ( result)
           {
               return res.status(result.status).json(result.message);
           }
-          const updatedDept = await departmentsService.updateDepartment(id,deptObj);
+          const updatedDept = await departmentsService.updateDepartment(id,{name,managerId});
           return res.status(200).json(updatedDept);
     }
     catch(err)
