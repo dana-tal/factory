@@ -104,7 +104,7 @@ const updateDepartment = async (req,res) =>
           const id = req.params.id;
           const deptObj = req.body;
 
-          let result = validator.validateEntityId(id,'Department');
+          const result = validator.validateEntityId(id,'Department');
           if (result)
           {
             return res.status(result.status).json(result.message);

@@ -1,5 +1,5 @@
 
-const employeeRepo = require('../repositories/employeeRepo');
+const employeeRepo = require('../repositories/employeesRepo');
 
 const getAllEmployees = async (filters)=>{
     const temployees = await employeeRepo.getAllEmployees(filters);

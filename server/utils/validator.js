@@ -42,6 +42,28 @@ const validatePersonName = (name,nameType,entity='Employee')=>{
 }
 
 
+const validateShiftInfo = async (startDate,endDate)=>
+{
+
+     let result = null;
+
+     const now = Date();
+
+     console.log("now:");
+     console.log(now);
+
+     if (now > startDate ) // startDate is in the past 
+     {
+          result = { status:422, message:'startDate is in the past'};
+     }
+     else if (startDate > endDate || startDate.getTime() === endDate.getTime() )
+     {
+          result = { status:422, message:`startDate and endDate are equal or startDate is latter than endDate `};
+     }
+
+     return result ;
+}
+
 const validateEmployeeInfo = async (firstName,lastName,startYear,departmentId)=>
 {
      let result = null;
@@ -115,5 +137,6 @@ module.exports = {
     validateDepartmentInfo,
     validateEntityId,
     validatePersonName,
-    validateEmployeeInfo
+    validateEmployeeInfo,
+   validateShiftInfo
 };
