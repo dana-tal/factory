@@ -1,7 +1,6 @@
 const errlogger = require('../utils/logger');
 const validator = require('../utils/validator');
 const shiftsService = require('../services/shiftsService');
-const { parseISO, isValid } = require('date-fns');
 
 const getAllShifts = async (req,res)=>{
 
@@ -51,28 +50,35 @@ const getShiftById = async (req,res)=> {
 const addNewShift = async (req,res)=> {
     try
     {
-       const startDate = parseISO(req.body.startDate);
-       const endDate = parseISO(req.body.endDate);
-   
-        if (!isValid(startDate) || !isValid(endDate)) 
-        {
-            return res.status(400).json({ error: 'Invalid date format. Use ISO 8601 format (YYYY-MM-DDTHH:mm:ssZ)' });
-        }
-        const result = await validator.validateShiftInfo( startDate,endDate);
+       let i,key,dateResult, info ={} ; 
+       const keys = ['startDate','endDate'];
+
+       if (! req.body)
+       {
+            return res.status(400).json({error:'Request body is missing'});
+       } 
       
+       for (i=0; i< keys.length; i++)
+       {
+            key = keys[i];
+            dateResult = validator.isValidDateInput(req.body,key,true);
+            if (dateResult.status !== 'O.K')
+            {
+                return res.status( dateResult.status).json(dateResult.message);
+            }
+            else 
+            {
+                info[key] = dateResult.dateObj;
+            }
+       }
+       
+        const result = await validator.validateShiftInfo( info['startDate'],info['endDate']); // logical checks of dates 
         if (result)
         {
             return res.status(result.status).json(result.message);
         }
 
-        /*
-        const existingShift = await shiftsService.shiftExists(startDate, endDate);
-        if (existingShift)
-        {
-            return res.status(409).json({ error:`A shift with ${ startDate.toISOString() } and ${endDate.toISOString() } already exists`});
-        }
-    */
-        const newShift = await shiftsService.addNewShift({startDate, endDate});
+        const newShift = await shiftsService.addNewShift({startDate: info['startDate'], endDate: info['endDate']});
         return res.status(201).json(newShift);
     }
     catch(err)
@@ -85,8 +91,15 @@ const addNewShift = async (req,res)=> {
 const updateShift = async (req,res)=>{
     try
     {
-       const shiftObj = req.body;
+         let i,key,dateResult, info ={} ; 
+         const keys = ['startDate','endDate'];
 
+        if (! req.body)
+        {
+            return res.status(400).json({error:'Request body is missing'});
+        }
+         
+       const shiftObj = req.body;
        const id = req.params.id;
 
        let result = validator.validateEntityId(id,'Shift');
@@ -94,40 +107,33 @@ const updateShift = async (req,res)=>{
        {
             return res.status(result.status).json(result.message);
        }
-        const shift = await shiftsService.getShiftById(id);
-        if (!shift)
+        const existingShift = await shiftsService.getShiftById(id);
+        if (!existingShift)
         {
             return res.status(404).json(`Shift with id ${id} does not exist`);
         }
        
-       const startDateProvided =  Object.prototype.hasOwnProperty.call(shiftObj, 'startDate');
-       const endDateProvided =  Object.prototype.hasOwnProperty.call(shiftObj, 'endDate');
 
-       //const shiftStart = parseISO(shiftObj.startDate)
-
-       let shiftStartInput, shiftEndInput;
-
-       if (startDateProvided  ) 
-       {
-            shiftStartInput =  parseISO(shiftObj.startDate);
-            if ( !isValid(  shiftStartInput ) )
+        for (i=0; i< keys.length; i++)
+        {
+            key = keys[i];
+            dateResult = validator.isValidDateInput(req.body,key,false);
+            if (dateResult.status !== 'O.K')
             {
-                return res.status(400).json({ error: 'Invalid startDate format. Use ISO 8601 format (YYYY-MM-DDTHH:mm:ssZ)' });
+                return res.status( dateResult.status).json(dateResult.message);
             }
-       }
-       if( endDateProvided )
-       {
-             shiftEndInput =  parseISO(shiftObj.endDate);
-             if ( !isValid(  shiftEndInput ) )
-             {
-                return res.status(400).json({ error: 'Invalid endDate format. Use ISO 8601 format (YYYY-MM-DDTHH:mm:ssZ)' });
-             }
-       }
+            else 
+            {
+                info[key] = dateResult.dateObj; // can be null , in case it was not provided
+            }
+        }
 
-       const startDate = startDateProvided ? shiftStartInput: shift.startDate;
-       const endDate =   endDateProvided ? shiftEndInput: shift.endDate;
+      
+       const startDate =  info['startDate'] !==null ? info['startDate'] : existingShift.startDate;
+       const endDate =    info['endDate'] !== null  ? info['endDate'] : existingShift.endDate;  
+       
 
-       result = await validator.validateShiftInfo(startDate,endDate);
+       result = await validator.validateShiftInfo(startDate,endDate); // validate dates logically 
        if (result)
        {
             return res.status(result.status).json(result.message);

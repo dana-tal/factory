@@ -1,5 +1,7 @@
 
 const mongoose = require('mongoose');
+const {isMatch, parse } = require('date-fns');
+
 const employeesService = require('../services/employeesService');
 const departmentService = require('../services/departmentsService');
 
@@ -11,6 +13,7 @@ const isValidMongoId = (id) => {
   );
 };
 
+
 const validateEntityId =  (id, entityName) =>{
      let result = null;
 
@@ -18,6 +21,47 @@ const validateEntityId =  (id, entityName) =>{
      {
           result = { status:400 , message: entityName+' id missing or has invalid type' }; 
      }
+     return result;
+}
+
+const isValidDateInput = (inputObj,fieldName,isMandatory) =>{
+
+     let result;
+     const ISO_PATTERN = "yyyy-MM-dd'T'HH:mm:ssX"; 
+     const dateProvided =  Object.prototype.hasOwnProperty.call(inputObj, fieldName); // the field was present in the request body 
+
+     if (!dateProvided )
+     {
+          if (isMandatory)
+          {
+               result = { status:400, message: `${fieldName} is mandatory and is missing from the request`};
+          }
+          else
+          {
+               result = {status:'O.K', message:'O.K', dateObj:null};
+          }
+     }
+     if (dateProvided) // the date is present in the request 
+     {
+          const fieldValue = inputObj[fieldName];
+          if ( typeof fieldValue !== 'string')
+          {
+               result = { status:400, message: `${fieldName} must be a string`};
+          }
+          else 
+          {
+               if (!isMatch(fieldValue, ISO_PATTERN)) 
+               {
+                    result = { status:400, message: `${fieldName} has invalid date format. Use ISO 8601 format (YYYY-MM-DDTHH:mm:ssZ)`};
+               }
+               else 
+               {
+                    const fieldDateObj = parse(fieldValue, ISO_PATTERN, new Date(), { strict: true });
+                     result = { status:'O.K', message:'O.K', dateObj:fieldDateObj };
+               }
+          }
+     }
+
      return result;
 }
 
@@ -134,6 +178,7 @@ const validateDepartmentInfo = async (name,managerId) =>{
 
 module.exports = {
     isValidMongoId,
+    isValidDateInput,
     validateDepartmentInfo,
     validateEntityId,
     validatePersonName,
