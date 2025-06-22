@@ -12,12 +12,13 @@ in the folder :  factory/server/data there are json files containing the databas
  1) mongoimport --uri="mongodb://localhost:27017/factoryDB" --collection=departments --file=departments.json --jsonArray
  2) mongoimport --uri="mongodb://localhost:27017/factoryDB" --collection=employees --file=employees.json --jsonArray
  3) mongoimport --uri="mongodb://localhost:27017/factoryDB" --collection=shifts --file=shifts.json --jsonArray
+ 4) mongoimport --db factoryDB --collection employeeShifts --file employeeShifts.json --jsonArray
 
- 4)
-    4.1)  In factory/server/data , you have a script named : updateManagers.js , open it and copy the script 
-    4.2)  From studio 3t , right click : factoryDB and select : open intellishell 
-    4.3)  Paste the code coppied at the previous 3.1 phase into the new intellishell tab 
-    4.4)  Press the left most run button from the tool bar ( Run entire script) 
+ 5)
+    5.1)  In factory/server/data , you have a script named : updateManagers.js , open it and copy the script 
+    5.2)  From studio 3t , right click : factoryDB and select : open intellishell 
+    5.3)  Paste the code coppied at the previous 3.1 phase into the new intellishell tab 
+    5.4)  Press the left most run button from the tool bar ( Run entire script) 
      
      You should get output similar to :
 
@@ -27,7 +28,8 @@ in the folder :  factory/server/data there are json files containing the databas
       Assigned Steve Carter as manager of Marketing
       Assigned Kyle Anderson as manager of Development
 
-5) For verification you can :
+6) For verification you can :
      - Make sure departments collection exist, and managerId field is not null 
      - Make sure  employees collection exist , and there are 5 employees for each department 
      - Make sure shifts collection exits, and there are 10 shifts     
+     - Make sure employeeShifts collection exists, each employee has about 4 shifts 

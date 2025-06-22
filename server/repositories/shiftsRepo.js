@@ -1,5 +1,6 @@
 
 const Shift = require('../models/shiftModel');
+const mongoose = require('mongoose');
 
 const getAllShifts = (filters)=>{
     return Shift.find(filters);
@@ -7,6 +8,11 @@ const getAllShifts = (filters)=>{
 
 const getShiftById = (id)=>{
     return Shift.findById(id);
+}
+
+const getShiftsByIds = (ids) =>{
+    const objectIds = ids.map(id => new mongoose.Types.ObjectId(id));
+    return Shift.find({_id:{ $in: objectIds}});
 }
 
 const addNewShift = (shiftObj)=>{
@@ -31,6 +37,7 @@ const udpateShift = (id, shiftObj) =>
 module.exports = {
     getAllShifts,
     getShiftById,
+    getShiftsByIds,
     addNewShift,
     shiftExists,
    udpateShift

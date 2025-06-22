@@ -7,6 +7,6 @@ const employeeShiftSchema =  new mongoose.Schema ({
 });
 
 // prevent duplicates  (same employee & shift)
-employeeShiftSchema.index({ employee: 1, shift: 1 }, { unique: true });
+employeeShiftSchema.index({ employeeId: 1, shiftId: 1 }, { unique: true });
 
-module.exports = mongoose.model('employeeShift', employeeShiftSchema);
+module.exports = mongoose.model('employeeShift', employeeShiftSchema,'employeeShifts');

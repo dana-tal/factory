@@ -10,4 +10,6 @@ employeesRouter.post('/', employeesController.addNewEmployee);
 employeesRouter.put('/:id', employeesController.updateEmployee);
 employeesRouter.delete('/:id', employeesController.deleteEmployee);
 
+employeesRouter.post('/:id/register', employeesController.registerEmployeeToShifts );
+
 module.exports= employeesRouter;
