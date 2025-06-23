@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Employee = require('../models/employeeModel');
+const Shift = require('../models/shiftModel');
 const EmployeeShifts = require('../models/employeeShiftModel');
-const factoryConfig = require('../configs/factoryConfig');
 
 
 const getAllEmployees = (filters = {}) => {
@@ -96,6 +96,41 @@ const getEmployeeShifts =  (employeeId) =>{
   
 }
 
+const getEmployeeUnregisteredShifts  =  async (employeeId) =>{
+
+  const empObjectId = new mongoose.Types.ObjectId(employeeId);
+
+    return Shift.aggregate([
+        {
+          // add a field empReg to each Shift document . if the employee is not registered, an empty arry will be joined 
+          $lookup: {
+            from: 'employeeShifts',
+            let: { shiftId: '$_id' },
+            pipeline: [
+              {
+                $match: {
+                  $expr: {
+                    $and: [
+                      { $eq: ['$shiftId', '$$shiftId'] },
+                      { $eq: ['$employeeId', empObjectId] }
+                    ]
+                  }
+                }
+              }
+            ],
+            as: 'empReg'
+          }
+        },
+        { $match: { empReg: { $size: 0 } } },           // filter the resultset, pick only docs where empReg is empty
+        { $project: { _id: 1, startDate: 1, endDate: 1 } },
+        { $sort: { startDate: 1 } }
+      ]);
+  };
+
+   
+
+
+
 const addNewEmployee = (employeeObj)=>{
     const employee = new Employee(employeeObj);
     return employee.save();
@@ -103,11 +138,7 @@ const addNewEmployee = (employeeObj)=>{
 
 
 const registerEmployeeToShifts = (employeeId, shifts) =>
-{
-   console.log("allow overlapping shifts:");
-   console.log( factoryConfig.allowOverlappingShifts);
-
-
+{  
   const registrationDocs = shifts.map ( shiftId => { return { employeeId, shiftId } });
   return EmployeeShifts.insertMany(registrationDocs, {ordered: false } );  // order false means skip duplicates
 } 
@@ -115,7 +146,10 @@ const registerEmployeeToShifts = (employeeId, shifts) =>
 
 const unregisterEmployeeFromShifts = (employeeId, shifts) =>
 {
-    return EmployeeShifts.deleteMany( { employeeId: employeeId, shiftId: { $in: shifts}});
+    const empObjectId = new mongoose.Types.ObjectId(employeeId);
+    const normalizedShiftIds = shifts.map(id =>new mongoose.Types.ObjectId(id));
+
+    return EmployeeShifts.deleteMany( { employeeId: empObjectId, shiftId: { $in: normalizedShiftIds}});
 }
 
 
@@ -150,5 +184,6 @@ module.exports = {
     employeeExists,
     registerEmployeeToShifts,
     unregisterEmployeeFromShifts,
-    getEmployeeShifts  
+    getEmployeeShifts,
+    getEmployeeUnregisteredShifts 
 }

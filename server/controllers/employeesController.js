@@ -149,13 +149,28 @@ const registerEmployeeToShifts = async (req,res)=>{
          const newShifts = req.body.newShifts;
 
          const registerResult = await employeesService.registerEmployeeToShifts(empId,newShifts);
-         console.log("registerResult:");
-         console.log(registerResult);
          return res.status(200).json(registerResult);
     }
     catch(err)
     {
-       errlogger.error(`deleteEmployee failed: ${err.message}`, { stack: err.stack });
+       errlogger.error(`registerEmployeeToShifts failed: ${err.message}`, { stack: err.stack });
+        return res.status(500).json(err); 
+    }
+}
+
+const unregisterEmployeeFromShifts = async (req,res) =>{
+
+    try
+    {
+        const empId = req.params.id;
+        const removeShifts = req.body.removeShifts;
+        
+        const unregisterResult = await employeesService.unregisterEmployeeFromShifts(empId,removeShifts);
+         return res.status(200).json(unregisterResult);
+    }
+    catch(err)
+    {
+       errlogger.error(`unregisterEmployeeFromShifts failed: ${err.message}`, { stack: err.stack });
         return res.status(500).json(err); 
     }
 }
@@ -166,5 +181,6 @@ module.exports = {
     addNewEmployee,
     updateEmployee,
     deleteEmployee,
-    registerEmployeeToShifts
+    registerEmployeeToShifts,
+    unregisterEmployeeFromShifts
 }
