@@ -130,8 +130,10 @@ const deleteEmployee = async (req,res)=>{
         {
             return res.status(404).json(`Employee with id ${id} does not exist`);
         }
-        const deletedEmployee = await employeesService.deleteEmployee(id);
-        return res.status(200).json(deletedEmployee);
+
+        const deleteResult = await employeesService.deleteEmployee(id);
+       
+        return res.status(200).json(deleteResult);
     }
     catch(err)
     {
@@ -145,9 +147,26 @@ const registerEmployeeToShifts = async (req,res)=>{
 
     try
     {
-         const empId = req.params.id;
-         const newShifts = req.body.newShifts;
+        const empId = req.params.id;
+        
+        let  result = validator.validateEntityId(empId,'Employee'); // verify the empId is syntactically valid 
+        if (result)
+        {
+            return res.status(result.status).json(result.message);
+        }
+        const exists = await employeesService.employeeExists(empId); // verifiy the employee exists 
+        if (!exists)
+        {
+            return res.status(404).json(`Employee with id ${id} does not exist`);
+        }
 
+        result =  await validator.validateShifts('newShifts',req.body);       
+        if (result.status !=='O.K')
+        {
+            return  res.status(result.status).json(result.message);
+        }
+       
+        const newShifts = req.body.newShifts;
          const registerResult = await employeesService.registerEmployeeToShifts(empId,newShifts);
          return res.status(200).json(registerResult);
     }
@@ -163,6 +182,25 @@ const unregisterEmployeeFromShifts = async (req,res) =>{
     try
     {
         const empId = req.params.id;
+
+         let  result = validator.validateEntityId(empId,'Employee'); // verify the empId is syntactically valid 
+        if (result)
+        {
+            return res.status(result.status).json(result.message);
+        }
+        const exists = await employeesService.employeeExists(empId); // verifiy the employee exists 
+        if (!exists)
+        {
+            return res.status(404).json(`Employee with id ${id} does not exist`);
+        }
+
+        result =  await validator.validateShifts('removeShifts',req.body);
+      
+        if (result.status !=='O.K')
+        {
+            return  res.status(result.status).json(result.message);
+        }
+
         const removeShifts = req.body.removeShifts;
         
         const unregisterResult = await employeesService.unregisterEmployeeFromShifts(empId,removeShifts);

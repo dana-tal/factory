@@ -1,6 +1,7 @@
 const factoryConfig = require('../configs/factoryConfig');
 const employeeRepo = require('../repositories/employeesRepo');
 const shiftRepo = require('../repositories/shiftsRepo');
+const mongoose = require('mongoose');
 
 const getAllEmployees = async (filters)=>{
     
@@ -155,9 +156,66 @@ const registerEmployeeToShifts = async (empId,newShiftIds) =>{
     return result ;
 }
 
+// unregister employee from all of his shifts 
+
+const unregisterEmployee = async (empId) => {
+
+    const empExistingShifts = await employeeRepo.getEmployeeShifts(empId);
+    const empExistingShiftIds  = empExistingShifts.map( shift =>{  return shift._id.toString() });
+
+     let info = {};
+     let result = {
+        'unregisteredSuccessfully':[],
+        'message':'The selected employee does not have any registered shifts'
+    };
+
+    if ( empExistingShiftIds.length > 0)
+    {
+        info = await employeeRepo.unregisterEmployeeFromShifts(empId, empExistingShiftIds);
+        result['unregisteredSuccessfully'] = empExistingShiftIds;  
+        result['message'] = 'The employee '+empId+' was removed from all of his shifts';
+    }
+    return { ...result, ...info };
+}
+
 const unregisterEmployeeFromShifts = async ( empId, removeShiftIds) =>
 {
-    return employeeRepo.unregisterEmployeeFromShifts (empId, removeShiftIds);
+    const empExistingShifts = await employeeRepo.getEmployeeShifts(empId);
+    const empExistingShiftIds  = empExistingShifts.map( shift =>{  return shift._id.toString() });
+
+    const allreadyUnregistered = [];
+    const shiftsSet = [];
+
+    let i, testedShiftId;
+    let info ={ acknowledged: false, deletedCount:0};
+
+    // keep only shift ids that the employee is registered to , put them in shiftsSet 
+    for (i=0; i< removeShiftIds.length; i++)
+    {
+        testedShiftId = removeShiftIds[i];
+        if (!empExistingShiftIds.includes(testedShiftId))
+        {
+            allreadyUnregistered.push(testedShiftId);
+        }
+        else
+        {
+            shiftsSet.push(testedShiftId);
+        }
+    }
+    
+    // define the output structure 
+    let result = {
+        'allreadyUnregistered': allreadyUnregistered,
+        'unregisteredSuccessfully':[]
+    };
+    
+    if ( shiftsSet.length >0) // if there are shifts left that are not allready unassociated with the employee ...
+    {
+         info = await employeeRepo.unregisterEmployeeFromShifts (empId, shiftsSet);
+        result['unregisteredSuccessfully'] = shiftsSet;  
+    }
+
+    return { ...result,...info};
 }
 
 const addNewEmployee = (employeeObj)=>{
@@ -169,8 +227,28 @@ const updateEmployee = (id, employeeObj)=>{
     return employeeRepo.updateEmployee(id,employeeObj);
 }
 
-const deleteEmployee = (id)=>{
-    return employeeRepo.deleteEmployee(id);
+const deleteEmployee = async (id)=>{
+
+    let result;
+    const session = await mongoose.startSession(); 
+    session.startTransaction();  // start a transaction because we are about delete employeeShifts documents as well
+    try
+    {
+        result = await employeeRepo.deleteEmployee(id,session);
+        await session.commitTransaction();
+        return result;
+    }
+    catch(err)
+    {
+        await session.abortTransaction(); // an error occurred, perform a "rollback"
+        throw err;
+    }
+    finally
+    {
+        session.endSession();
+    }
+
+  
 }
 
 const employeeExists = (id) =>{
@@ -185,5 +263,6 @@ module.exports ={
     deleteEmployee,
     employeeExists,
     registerEmployeeToShifts,
-    unregisterEmployeeFromShifts 
+    unregisterEmployeeFromShifts,
+    unregisterEmployee
 }

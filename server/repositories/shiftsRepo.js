@@ -21,13 +21,12 @@ const addNewShift = (shiftObj)=>{
     return shift.save();
 }
 
-const shiftExists = (startDate,endDate) =>
+const shiftExists = (id) =>
 {
-    return Shift.findOne({
-            startDate: startDate,
-            endDate: endDate
-        });
+    return Shift.exists({_id: id});
 }
+
+
 
 const udpateShift = (id, shiftObj) =>
 {

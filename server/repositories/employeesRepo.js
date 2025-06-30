@@ -72,6 +72,10 @@ const getEmployeeById = (id)=>{
     return Employee.findById(id).populate({ path:'departmentId', select:'name'});
 }
 
+const getEmployeeDocument = (id)=>{
+     return Employee.findById(id);
+}
+
 const getEmployeeShifts =  (employeeId) =>{
 
     const empObjectId = new mongoose.Types.ObjectId(employeeId);
@@ -164,8 +168,12 @@ const updateEmployee = (id,employeeObj)=>{
     return Employee.findByIdAndUpdate(id,employeeObj,{new:true});
 }
 
-const deleteEmployee = (id) =>{
-    return Employee.findByIdAndDelete(id);
+
+const deleteEmployee = async (id, session) =>
+  {
+    const employee = await Employee.findById(id).session(session);
+    const  result = await employee.deleteOne(); // this will also trigger the pre middleware which deletes employeeShifts documents 
+    return result;
 }
 
 const employeeExists = (id) =>{
@@ -177,6 +185,7 @@ const employeeExists = (id) =>{
 module.exports = {
     getAllEmployees,
     getEmployeeById,
+    getEmployeeDocument,
     addNewEmployee,
     updateEmployeesDepartment,
     updateEmployee,

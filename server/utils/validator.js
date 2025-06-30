@@ -4,6 +4,7 @@ const {isMatch, parse } = require('date-fns');
 
 const employeesService = require('../services/employeesService');
 const departmentService = require('../services/departmentsService');
+const shiftsService  = require('../services/shiftsService');
 
 const isValidMongoId = (id) => {
   return (
@@ -65,6 +66,50 @@ const isValidDateInput = (inputObj,fieldName,isMandatory) =>{
      return result;
 }
 
+const validateShifts = async (fieldName,reqBody)=>{
+
+     let i,result;
+
+       const shiftsProvided =  Object.prototype.hasOwnProperty.call(reqBody, fieldName);
+       if (!shiftsProvided)
+        {
+           return { status:400,  message:`${fieldName} field is mandatory. Please provided some shifts ids `};
+        }
+        else
+        {
+            if ( !Array.isArray(reqBody[fieldName]) )
+            {
+                 return { status:400 ,message:fieldName+' field should be an array'};
+            }
+            else if ( reqBody[fieldName].length ===0)
+            {
+               return { status:400 , message: fieldName+' is an empty array.Please provide some shift ids' };
+            }
+        }
+
+     const allShifts = reqBody[fieldName]; 
+     let shift, shiftExist;
+
+     for(i=0; i< allShifts.length; i++)
+     {
+          shift = allShifts[i];
+          result = validateEntityId(shift,'Shift');
+          if (result)
+          {
+               return result ;
+          }
+          shiftExist = await shiftsService.shiftExists(shift);
+          if (!shiftExist)
+          {
+                result = { status:404 ,message:`The shift id:${shift} supplied does not exist` }; 
+                return result;
+          }
+     }    
+     return {status:'O.K', message:'O.K'};
+}
+
+
+
 const validatePersonName = (name,nameType,entity='Employee')=>{
 
      let result = null;
@@ -92,9 +137,6 @@ const validateShiftInfo = async (startDate,endDate)=>
      let result = null;
 
      const now = Date();
-
-     console.log("now:");
-     console.log(now);
 
      if (now > startDate ) // startDate is in the past 
      {
@@ -183,5 +225,6 @@ module.exports = {
     validateEntityId,
     validatePersonName,
     validateEmployeeInfo,
-   validateShiftInfo
+   validateShiftInfo,
+   validateShifts
 };

@@ -14,8 +14,8 @@ const addNewShift = (shiftObj) =>{
     return shiftsRepo.addNewShift(shiftObj);
 }
 
-const shiftExists = (startShift, endShift) =>{
-    return shiftsRepo.shiftExists(startShift,endShift);
+const shiftExists = (id) =>{
+    return shiftsRepo.shiftExists(id);
 }
 
 const updateShift = (id,shiftObj) =>{

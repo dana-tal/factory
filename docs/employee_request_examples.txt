@@ -1,0 +1,151 @@
+
+Get All Employees 
+==================
+GET, http://localhost:3000/employees/
+
+Output:
+[
+    {
+        "_id": "001000000000000000000001",
+        "firstName": "Alice",
+        "lastName": "Smith",
+        "department": {
+            "_id": "665bf0000000000000000001",
+            "name": "HR"
+        },
+        "shifts": [
+            {
+                "_id": "665bf0000000000000000001",
+                "startDate": "2025-06-10T08:00:00.000Z",
+                "endDate": "2025-06-10T16:00:00.000Z"
+            },
+            {
+                "_id": "665bf0000000000000000002",
+                "startDate": "2025-06-11T08:00:00.000Z",
+                "endDate": "2025-06-11T16:00:00.000Z"
+            }
+        ]
+    },
+    ...
+]
+
+
+Get One employee 
+================
+
+GET, http://localhost:3000/employees/001000000000000000000006
+
+Output:
+{
+    "_id": "001000000000000000000006",
+    "firstName": "Fiona",
+    "lastName": "Davis",
+    "startYear": 2017,
+    "department": {
+        "id": "665bf0000000000000000002",
+        "name": "Finance"
+    },
+    "shifts": [
+        {
+            "_id": "665bf0000000000000000001",
+            "startDate": "2025-06-10T08:00:00.000Z",
+            "endDate": "2025-06-10T16:00:00.000Z"
+        },
+        {
+            "_id": "665bf0000000000000000003",
+            "startDate": "2025-06-12T08:00:00.000Z",
+            "endDate": "2025-06-12T16:00:00.000Z"
+        }
+    ],
+    "unregisteredShifts": [
+        {
+            "_id": "665bf0000000000000000002",
+            "startDate": "2025-06-11T08:00:00.000Z",
+            "endDate": "2025-06-11T16:00:00.000Z"
+        },
+        ...
+    ]
+}
+
+
+Add New Employee
+=================
+POST, http://localhost:3000/employees/
+
+Body Input:
+{
+    "firstName":"Test",
+    "lastName":"Test",
+    "startYear":2005,
+    "departmentId":"665bf0000000000000000002"
+}
+
+Output:
+{
+    "firstName": "Test",
+    "lastName": "Test",
+    "startYear": 2005,
+    "departmentId": "665bf0000000000000000002",
+    "_id": "6860f9a5ea94b423cb1470a4",
+    "createdAt": "2025-06-29T08:30:29.874Z",
+    "updatedAt": "2025-06-29T08:30:29.874Z"
+}
+
+
+
+Register employee to shifts
+============================
+
+POST, http://localhost:3000/employees/register/685944295de2800af71ee8aa
+
+Body input:
+{
+   "newShifts":["665bf0000000000000000001","6857f2b36ae03a1ba03fd7fc","665bf0000000000000000007"]
+}
+
+output:
+{
+    "allreadyRegistered": [],
+    "registeredSuccessfully": [
+        "665bf0000000000000000001",
+        "665bf0000000000000000007"
+    ],
+    "overlapped": [
+        "6857f2b36ae03a1ba03fd7fc"
+    ]
+}
+
+Unregister employee from shifts
+==================================
+
+POST, http://localhost:3000/employees/unregister/685944295de2800af71ee8aa
+
+Body input:
+{
+    "removeShifts":["665bf000000000000000000a","665bf0000000000000000009","6857f2b36ae03a1ba03fd7fc"]
+} 
+
+output:
+{
+    "allreadyUnregistered": [
+        "6857f2b36ae03a1ba03fd7fc"
+    ],
+    "unregisteredSuccessfully": [
+        "665bf000000000000000000a",
+        "665bf0000000000000000009"
+    ],
+    "acknowledged": true,
+    "deletedCount": 2
+}
+
+
+
+Delete Employeee
+================
+DELETE, http://localhost:3000/employees/68625ccbbd44973bbefedf0b
+
+Output:
+{
+    "acknowledged": true,
+    "deletedCount": 1
+}

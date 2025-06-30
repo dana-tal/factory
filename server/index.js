@@ -1,11 +1,13 @@
 const express = require('express');
 const cors = require('cors');
+
+require('dotenv').config();  // load everything in .env file into process.env 
 const connectDB = require('./configs/db');
 const departmentsRouter = require('./routers/departmentsRouter');
 const employeesRouter = require('./routers/employeesRouter');
 const shiftsRouter = require('./routers/shiftsRouter');
 
-const PORT = 3000;
+ const PORT = process.env.PORT;
 
 const app = express();
 
