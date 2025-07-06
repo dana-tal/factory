@@ -1,0 +1,31 @@
+
+addDepartment
+===============
+
+POST, http://localhost:3000/departments
+
+Body Input:
+{
+  "name":"TestDepartment",
+  "managerId":"001000000000000000000003"
+}
+
+Output:
+{
+    "name": "TestDepartment",
+    "_id": "686a10f96bd69432f528f4d1"
+}
+
+deleteDepartment
+==================
+DELETE, http://localhost:3000/departments/686a10f96bd69432f528f4d1
+
+Output:
+{
+    "deletedDepartmentId": "686a10f96bd69432f528f4d1",
+    "employeeIds": [
+        "686a12926bd69432f528f4d7",
+        "686a12ab6bd69432f528f4da"
+    ],
+    "employeesDeletedCount": 2
+}

@@ -54,13 +54,15 @@ departmentSchema.set('toObject', {
 
 
 // 👇 Add this to remove the `id` getter
-departmentSchema.set('id', false);   // this is for the entry point grades/withStudents , so that we don't see an id field 
+departmentSchema.set('id', false);   
 
 /*
 When you query Mongoose documents and exclude _id, you might still see an id field. This is because:
     Mongoose adds an id getter by default, which is a string version of _id
     the line above is the way to remove it 
 */
+
+
 
 
 const departmentModel = mongoose.model('department', departmentSchema);
