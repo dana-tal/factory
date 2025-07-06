@@ -1,3 +1,5 @@
 server/node_modules/
 server/logs/*.log
 server/.env
+docs/sending_token_from_client.txt
+docs/logout_from_client.txt

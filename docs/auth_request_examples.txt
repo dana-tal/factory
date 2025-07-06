@@ -1,0 +1,17 @@
+
+login
+======
+
+POST, http://localhost:3000/auth/login
+
+Body Input:
+{
+    "username":"Bret",
+    "email":"Sincere@april.biz"
+}
+
+Output:
+{
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJCcmV0IiwiZW1haWwiOiJTaW5jZXJlQGFwcmlsLmJpeiIsImlhdCI6MTc1MTc5MjY2MywiZXhwIjoxNzUxNzk2MjYzfQ.tVsDFoj7cFffnRx0MzPAvFkLJjUWOMMxJeVoLPoQPW0"
+}
+
