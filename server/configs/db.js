@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const userActionsModel = require('../models/userActionsModel'); 
 
 const connectDB = () =>{
 
@@ -9,8 +10,9 @@ const connectDB = () =>{
     mongoose.connect(mongoURI,{
         serverSelectionTimeoutMS: 3000  // fail fast after 3 seconds
         })
-    .then( ()=>{
+    .then( async ()=>{
         console.log("Successfully connected to factoryDB");
+         await userActionsModel.init(); // ✅ Ensures indexes are built
     })
     .catch( err=> {
         console.log(err);

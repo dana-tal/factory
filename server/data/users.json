@@ -1,0 +1,52 @@
+[
+  {
+    "_id": { "$oid": "001000000000000000000001" },
+    "fullName": "Leanne Graham",
+    "maxActions": 10
+  },
+  {
+    "_id": { "$oid": "001000000000000000000002" },
+    "fullName": "Ervin Howell",
+    "maxActions": 14
+  },
+  {
+    "_id": { "$oid": "001000000000000000000003" },
+    "fullName": "Clementine Bauch",
+    "maxActions": 5
+  },
+  {
+    "_id": { "$oid": "001000000000000000000004" },
+    "fullName": "Patricia Lebsack",
+    "maxActions": 8
+  },
+  {
+    "_id": { "$oid": "001000000000000000000005" },
+    "fullName": "Chelsey Dietrich",
+    "maxActions": 7
+  },
+  {
+    "_id": { "$oid": "001000000000000000000006" },
+    "fullName": "Mrs. Dennis Schulist",
+    "maxActions": 9
+  },
+  {
+    "_id": { "$oid": "001000000000000000000007" },
+    "fullName": "Kurtis Weissnat",
+    "maxActions": 11
+  },
+  {
+    "_id": { "$oid": "001000000000000000000008" },
+    "fullName": "Nicholas Runolfsdottir V",
+    "maxActions": 4
+  },
+  {
+    "_id": { "$oid": "001000000000000000000009" },
+    "fullName": "Glenna Reichert",
+    "maxActions": 15
+  },
+  {
+    "_id": { "$oid": "001000000000000000000010" },
+    "fullName": "Clementina DuBuque",
+    "maxActions": 6
+  }
+]
