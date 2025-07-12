@@ -26,6 +26,7 @@ const verifyApiUser = async (username,email)=>{
         result.isVerified = true;
         result.id = user.id;   // this is the id coming from the api (1,2,3 ,... etc)
         result.userId = turnApiIdToObjectId(user.id); // the userId is the id used in the users collection 
+        result.name = user.name;
     }
     return result;
 }
@@ -40,7 +41,7 @@ const login = async (req,res) =>{
         const result = await verifyApiUser(username,email);
         if (result.isVerified)
         {
-                const payload = { id: result.id, userId: result.userId ,username: result.username , email: result.email };    
+                const payload = { id: result.id, userId: result.userId ,username: result.username , email: result.email ,name: result.name};    
                 // protect against session fixation ( prevent an attaker from supplying his sessionId to inoceent users )
                 req.session.regenerate(err => 
                                             {
@@ -50,7 +51,7 @@ const login = async (req,res) =>{
                                                     return res.status(500).json({ message: 'Session regenerate failed' });
                                                 }   
                                                 req.session.token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: process.env.TOKEN_EXPIRES_IN }); // saving the token inside the session 
-                                                res.status(200).json({ message:'logged in successfully' });  
+                                                res.status(200).json({ message:'logged in successfully', name: result.name });  
                                             });      
                      
         }
