@@ -68,7 +68,7 @@ const login = async (req,res) =>{
 }
 
 
-const logout = (req, res) => {
+const logout = (req, res, statusCode=200) => {
   req.session.destroy((err) => 
   {
     if (err) 
@@ -78,8 +78,8 @@ const logout = (req, res) => {
     }
 
     res.clearCookie('FactorySessionId');
-    res.status(200).json({ 
-                            message: "Logged out",
+    res.status(statusCode).json({ 
+                            message: req._logoutReason === 'dailyLimit' ? "You have reached your daily limit and have been logged out.":"Logged out",
                             action: "logout",
                             redirectTo: "/login"
                         });   
