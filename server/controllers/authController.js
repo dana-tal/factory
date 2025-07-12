@@ -73,9 +73,6 @@ const logout = (req,res) =>{
 
 const doLogout = (req, res, statusCode=200) => {
 
-    console.log("from logout");
-  console.log(statusCode);
-
   req.session.destroy((err) => 
   {
     if (err) 
