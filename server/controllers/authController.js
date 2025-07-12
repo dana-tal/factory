@@ -1,5 +1,4 @@
 const errlogger = require('../utils/logger');
-//const usersService = require('../services/usersService');
 
 const axios = require('axios');
 const jwt = require('jsonwebtoken');
@@ -68,7 +67,15 @@ const login = async (req,res) =>{
 }
 
 
-const logout = (req, res, statusCode=200) => {
+const logout = (req,res) =>{
+     doLogout(req,res,200);
+}
+
+const doLogout = (req, res, statusCode=200) => {
+
+    console.log("from logout");
+  console.log(statusCode);
+
   req.session.destroy((err) => 
   {
     if (err) 
@@ -86,4 +93,4 @@ const logout = (req, res, statusCode=200) => {
   });
 }
 
-module.exports = { login, logout};
+module.exports = { login, logout, doLogout};

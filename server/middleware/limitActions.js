@@ -12,7 +12,7 @@ const limitDailyActions = async (req,res,next) =>{
     if (!userActions) // the user has reached his maximum value of allowed actions 
     {
             req._logoutReason = 'dailyLimit';
-            return authController.logout(req, res, 403);           
+            return authController.doLogout(req, res, 403);           
     }    
     next();    
 }
