@@ -3,22 +3,20 @@ const jwt = require('jsonwebtoken');
 
 function verifyToken(req, res, next) 
 {
-  const authHeader = req.headers['authorization'];
+  
+  const token = req.session.token;
 
-  if (!authHeader) // the token is missing
-  {
-     return res.status(401).json({ message: 'No token provided' });
+  if (!token) {
+    return res.status(401).json({ message: 'You must login before performing any request' });
   }
-
-  const token = authHeader.split(' ')[1]; // since the autorization header will look like : "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..." , we need the second word
-
+  
   jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => 
     {
         if (err) 
         {
-            return res.status(403).json({ message: 'Invalid token' });
+            delete req.session.token ; // since the token was found invalid, no need to keep it 
+            return res.status(403).json({ message: 'Invalid or expired token' });
         }
-
         req.user = decoded; // decoded is returned when jwt.verify succeeds, 
                             // and it contains the payload we passed when creating the token
                             // so, we can add the user credetials to the request info 
