@@ -1,0 +1,20 @@
+
+Add New shift
+===============
+POST, http://localhost:3000/shifts
+
+Body Input:
+{
+  "startDate":"2025-06-10T09:00:00Z",
+  "endDate":"2025-06-10T12:00:00Z"
+}
+
+Output:
+{
+    "startDate": "2025-06-10T09:00:00.000Z",
+    "endDate": "2025-06-10T12:00:00.000Z",
+    "_id": "6874f0c02841bd2379c3cdc1",
+    "createdAt": "2025-07-14T11:57:52.668Z",
+    "updatedAt": "2025-07-14T11:57:52.668Z"
+}
+

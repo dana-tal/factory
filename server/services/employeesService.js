@@ -1,4 +1,3 @@
-const factoryConfig = require('../configs/factoryConfig');
 const employeeRepo = require('../repositories/employeesRepo');
 const shiftRepo = require('../repositories/shiftsRepo');
 const mongoose = require('mongoose');
@@ -134,8 +133,9 @@ const registerEmployeeToShifts = async (empId,newShiftIds) =>{
         const newShiftsDocs = await shiftRepo.getShiftsByIds(shiftsSet); // get the entire docs according to the new shifts' ids
 
         let accepted = [];
+        const allowOverlapping = process.env.ALLOW_OVERLAPPING_SHIFTS === 'true'; // turn env variable to boolean
         
-        if ( factoryConfig.allowOverlappingShifts) // if we allow overlapping shifts, we need not filter any further
+        if (allowOverlapping) // if we allow overlapping shifts, we need not filter any further
         {
             accepted = shiftsSet;
         }
