@@ -2,6 +2,7 @@ const errlogger = require('../utils/logger');
 
 const axios = require('axios');
 const jwt = require('jsonwebtoken');
+const usersService = require('../services/usersService');
 
 
 const turnApiIdToObjectId = (id) =>{
@@ -41,6 +42,13 @@ const login = async (req,res) =>{
         const result = await verifyApiUser(username,email);
         if (result.isVerified)
         {
+            // check if the user has reached actions count limit .....
+                const reachedLimit = await  usersService.userReachedActionsLimit(result.userId);
+                if (reachedLimit )
+                {
+                   return  res.status(403).json({ message: 'Maximum number of actions reached. Login is not allowed today, please try again tommorow.' });
+                }
+
                 const payload = { id: result.id, userId: result.userId ,username: result.username , email: result.email ,name: result.name};    
                 // protect against session fixation ( prevent an attaker from supplying his sessionId to inoceent users )
                 req.session.regenerate(err => 

@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const userActions = require('../models/userActionsModel');
 
 
@@ -91,4 +92,37 @@ const decreaseActionsCounter = (userId) =>{
     );
 }
 
-module.exports = {  increaseActionsCounter, decreaseActionsCounter };
+
+const  userReachedActionsLimit = async (userId)=>
+ {
+    const actionsDate =  getToday();
+    const result = await userActions.aggregate([
+        {
+            $match: {                                             // select only documents of the given userId from tody ....
+                userId: new mongoose.Types.ObjectId(userId),
+                actionsDate: new Date(actionsDate)
+            }
+        },
+        {
+            $lookup: {                                       // add the matching document from the users collection 
+                from: 'users',
+                localField: 'userId',
+                foreignField: '_id',
+                as: 'user'
+            }
+        },
+        { $unwind: '$user' },                             // transform the user field from array to an object 
+        {
+            $match: {                                    // filter the result based on equality between users.maxActions and userActions.actionsCount 
+                $expr: {
+                    $eq: ['$actionsCount', '$user.maxActions']
+                }
+            }
+        }
+    ]);
+        
+    // The result is always an array. The array maybe empty in case there is no equality (The user has not reached actions count limit yet )
+    return result.length > 0;
+}
+
+module.exports = {  increaseActionsCounter, decreaseActionsCounter, userReachedActionsLimit };

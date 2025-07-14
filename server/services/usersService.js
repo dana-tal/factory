@@ -13,5 +13,11 @@ const decreaseUserActionsCounter = (userId) =>{
      return userActionsRepo.decreaseActionsCounter(userId);
 }
 
+const userReachedActionsLimit =  async (userId) =>{
 
-module.exports = { increaseUserActionsCounter, decreaseUserActionsCounter }
+   const reachedLimit =  await userActionsRepo.userReachedActionsLimit(userId);
+   return reachedLimit;
+
+}
+
+module.exports = { increaseUserActionsCounter, decreaseUserActionsCounter ,userReachedActionsLimit }
