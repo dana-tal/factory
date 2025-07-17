@@ -1,6 +1,6 @@
 const winston = require('winston');
 
-const logger = winston.createLogger({
+const errLogger = winston.createLogger({
   level: 'error',
   format: winston.format.combine(
     winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss' }),
@@ -17,5 +17,4 @@ const logger = winston.createLogger({
   ],
 });
 
-
-module.exports = logger;
+module.exports = errLogger;

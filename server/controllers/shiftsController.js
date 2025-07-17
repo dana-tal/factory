@@ -1,6 +1,7 @@
 const errlogger = require('../utils/logger');
 const validator = require('../utils/validator');
 const shiftsService = require('../services/shiftsService');
+const usersService = require('../services/usersService');
 
 const getAllShifts = async (req,res)=>{
 
@@ -11,6 +12,7 @@ const getAllShifts = async (req,res)=>{
         {
             res.status(204).json('The request was successfull, but there are no shifts yet');
         }
+        await usersService.logUserAction(req.user.userId,"getAllShifts");
         return res.status(200).json(shifts);
     }
     catch(err)
@@ -37,6 +39,7 @@ const getShiftById = async (req,res)=> {
         {
             return res.status(404).json(`A shift with id: ${id} does not exist`);
         }
+        await usersService.logUserAction(req.user.userId,"getShiftById");
         return res.status(200).json(shift);
     }
     catch(err)
@@ -79,6 +82,7 @@ const addNewShift = async (req,res)=> {
         }
 
         const newShift = await shiftsService.addNewShift({startDate: info['startDate'], endDate: info['endDate']});
+        await usersService.logUserAction(req.user.userId,"addNewShift");
         return res.status(201).json(newShift);
     }
     catch(err)
@@ -99,7 +103,6 @@ const updateShift = async (req,res)=>{
             return res.status(400).json({error:'Request body is missing'});
         }
          
-       const shiftObj = req.body;
        const id = req.params.id;
 
        let result = validator.validateEntityId(id,'Shift');
@@ -140,6 +143,7 @@ const updateShift = async (req,res)=>{
        }
        
        const updatedShift = await shiftsService.updateShift(id,{ startDate,endDate });
+        await usersService.logUserAction(req.user.userId,"updateShift");
        res.status(200).json(updatedShift);
     }
     catch(err)

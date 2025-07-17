@@ -1,8 +1,7 @@
-const employeesService = require('../services/employeesService');
 const departmentsService = require('../services/departmentsService');
 const errlogger = require('../utils/logger');
 const validator = require('../utils/validator');
-
+const usersService = require('../services/usersService');
 
 
 const getAllDepartments =  async (req,res)=>{
@@ -14,6 +13,7 @@ const getAllDepartments =  async (req,res)=>{
         {
             return res.status(204).json({ message: 'The request was successful, but there are no departments yet'});
         }
+        await usersService.logUserAction(req.user.userId,"getAllDepartments");
         return res.status(200).json(departments);   
     }  
     catch(err)
@@ -32,6 +32,7 @@ const getDepartmentsNames = async (req,res) =>
         {
             return res.status(204).json({ message: 'The request was successful, but there are no departments yet'});
         }
+        await usersService.logUserAction(req.user.userId,"getDepartmentsNames");
         return res.status(200).json(departments);   
     }
     catch(err)
@@ -59,6 +60,7 @@ const getDepartmentById = async (req,res) => {
         {
             return res.status(404).json({ message: `The department ${id} does not exist` });
         }
+        await usersService.logUserAction(req.user.userId,"getDepartmentById");
         return res.status(200).json(department);        
     }
     catch(err)
@@ -88,6 +90,7 @@ const addDepartment = async (req,res)=>
         }
 
         const newDepartment = await departmentsService.addDepartment({ name, managerId} );
+        await usersService.logUserAction(req.user.userId,"addDepartment");
         return res.status(201).json(newDepartment);
     }
     catch(err)
@@ -125,12 +128,13 @@ const updateDepartment = async (req,res) =>
           const managerId = managerIdProvided ? deptObj.managerId: department.managerId.toString();
 
           
-          result = await validator.validateDepartmentInfo(name,managerId);
-          if ( result)
+          const result2 = await validator.validateDepartmentInfo(name,managerId);
+          if ( result2)
           {
-              return res.status(result.status).json(result.message);
+              return res.status(result2.status).json(result2.message);
           }
           const updatedDept = await departmentsService.updateDepartment(id,{name,managerId});
+          await usersService.logUserAction(req.user.userId,"updateDepartment");
           return res.status(200).json(updatedDept);
     }
     catch(err)
@@ -158,6 +162,7 @@ const deleteDepartment = async (req,res) =>
         }
         // todo: delete department employees 
         const deletedDepartment = await departmentsService.deleteDepartment(id);
+        await usersService.logUserAction(req.user.userId,"deleteDepartment");
         return res.status(200).json(deletedDepartment);
     }
     catch(err)

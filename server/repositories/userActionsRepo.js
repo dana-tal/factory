@@ -125,4 +125,29 @@ const  userReachedActionsLimit = async (userId)=>
     return result.length > 0;
 }
 
-module.exports = {  increaseActionsCounter, decreaseActionsCounter, userReachedActionsLimit };
+// this function will always return an array .
+// it maybe empty if the user does not have any record for today yet 
+const getUserActionsDoc = (userId) =>{
+
+    const today =  getToday();
+
+     return userActions.aggregate([
+        {
+            $match: {                                             // select only documents of the given userId from tody ....
+                userId: new mongoose.Types.ObjectId(userId),
+                actionsDate: new Date(today)
+            }
+        },
+        {
+            $lookup: {                                       // add the matching document from the users collection 
+                from: 'users',
+                localField: 'userId',
+                foreignField: '_id',
+                as: 'user'
+            }
+        },
+        { $unwind: '$user' }
+     ]);
+}
+
+module.exports = {  increaseActionsCounter, decreaseActionsCounter, userReachedActionsLimit ,getUserActionsDoc};

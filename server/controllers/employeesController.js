@@ -1,4 +1,5 @@
 const employeesService = require('../services/employeesService');
+const usersService = require('../services/usersService');
 const errlogger = require('../utils/logger');
 const validator = require('../utils/validator');
 
@@ -10,6 +11,7 @@ const getAllEmployees = async (req,res)=>{
         {
             return res.status(204).json({ message: 'The request was successful, but there are no employees yet'});
         }
+        await usersService.logUserAction(req.user.userId,"getAllEmployees");
         res.status(200).json(employees);
     }
     catch(err)
@@ -35,6 +37,7 @@ const getEmployeeById = async (req,res) =>{
         {
             return res.status(404).json({ message: `The employee ${id} does not exist` });
         }
+        await usersService.logUserAction(req.user.userId,"getEmployeeById");
         res.status(200).json(employee);
     }
     catch(err)
@@ -59,6 +62,7 @@ const addNewEmployee = async (req,res)=>{
             return res.status(result.status).json(result.message);
         }
         const newEmployee = await employeesService.addNewEmployee({ firstName,lastName,startYear,departmentId});
+        await usersService.logUserAction(req.user.userId,"addNewEmployee");
         return res.status(200).json(newEmployee);
     }
     catch(err)
@@ -104,6 +108,7 @@ const updateEmployee = async (req,res)=>{
         }
 
         const updatedEmployee = await employeesService.updateEmployee(id,{ firstName,lastName,startYear,departmentId});
+        await usersService.logUserAction(req.user.userId,"updateEmployee");
         return res.status(200).json(updatedEmployee);
     }
     catch(err)
@@ -132,7 +137,7 @@ const deleteEmployee = async (req,res)=>{
         }
 
         const deleteResult = await employeesService.deleteEmployee(id);
-       
+        await usersService.logUserAction(req.user.userId,"deleteEmployee");
         return res.status(200).json(deleteResult);
     }
     catch(err)
@@ -167,8 +172,9 @@ const registerEmployeeToShifts = async (req,res)=>{
         }
        
         const newShifts = req.body.newShifts;
-         const registerResult = await employeesService.registerEmployeeToShifts(empId,newShifts);
-         return res.status(200).json(registerResult);
+        const registerResult = await employeesService.registerEmployeeToShifts(empId,newShifts);
+        await usersService.logUserAction(req.user.userId,"registerEmployeeToShifts");
+        return res.status(200).json(registerResult);
     }
     catch(err)
     {
@@ -204,6 +210,7 @@ const unregisterEmployeeFromShifts = async (req,res) =>{
         const removeShifts = req.body.removeShifts;
         
         const unregisterResult = await employeesService.unregisterEmployeeFromShifts(empId,removeShifts);
+        await usersService.logUserAction(req.user.userId,"unregisterEmployeeFromShifts");
          return res.status(200).json(unregisterResult);
     }
     catch(err)
