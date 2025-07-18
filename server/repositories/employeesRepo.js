@@ -68,6 +68,12 @@ const getAllEmployees = (filters = {}) => {
 };
 
 
+const getEmployeesOutsideDepartment = (departmentId) =>{
+    return Employee.find( {
+        departmentId: { $ne: new mongoose.Types.ObjectId(departmentId) }
+    }).select('_id firstName lastName');
+}
+
 const getEmployeeById = (id)=>{
     return Employee.findById(id).populate({ path:'departmentId', select:'name'});
 }
@@ -185,6 +191,7 @@ const employeeExists = (id) =>{
 module.exports = {
     getAllEmployees,
     getEmployeeById,
+    getEmployeesOutsideDepartment,
     getEmployeeDocument,
     addNewEmployee,
     updateEmployeesDepartment,
