@@ -2,6 +2,7 @@ const departmentsService = require('../services/departmentsService');
 const errlogger = require('../utils/logger');
 const validator = require('../utils/validator');
 const usersService = require('../services/usersService');
+const employeesService = require('../services/employeesService');
 
 
 const getAllDepartments =  async (req,res)=>{
@@ -40,6 +41,37 @@ const getDepartmentsNames = async (req,res) =>
         errlogger.error(`getDepartmentsNames failed: ${err.message}`, { stack: err.stack });
         return res.status(500).json(err);  
     }
+}
+
+const getDepartmentEditInfo =  async (req,res) =>{
+       try
+       {
+            const id = req.params.id;
+        
+            // check if id is a valid mongo id 
+            let result = validator.validateEntityId(id,'Department');
+            if (result)
+            {
+                return res.status(result.status).json(result.message);
+            }
+
+            // chekc if the department exists 
+            const departmentDoc = await departmentsService.getDepartmentById(id);
+            if (!departmentDoc) 
+            {
+                return res.status(404).json({ message: `The department ${id} does not exist` });
+            }
+            const outsideEmployees = await employeesService.getOutsideDepartmentEmployees(id);
+
+            const department = departmentDoc.toObject(); // turning mongoose document to regular javascript object 
+            department.externalEmployees = outsideEmployees;
+            return res.status(200).json(department);    
+       }
+       catch(err)
+        {
+            errlogger.error(`getDepartmentEditInfo failed: ${err.message}`, { stack: err.stack });
+            return res.status(500).json(err);  
+        }
 }
 
 const getDepartmentById = async (req,res) => {
@@ -176,6 +208,7 @@ module.exports = {
     getAllDepartments,
     getDepartmentsNames,
     getDepartmentById,
+    getDepartmentEditInfo,
     addDepartment,
     updateDepartment,
     deleteDepartment 

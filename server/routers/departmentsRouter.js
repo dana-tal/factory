@@ -9,6 +9,8 @@ router.get('/names', departmentsController.getDepartmentsNames);
 
 router.get('/:id', departmentsController.getDepartmentById);
 
+router.get('/editInfo/:id', departmentsController.getDepartmentEditInfo);
+
 router.post('/', departmentsController.addDepartment);
 
 router.put('/:id', departmentsController.updateDepartment);

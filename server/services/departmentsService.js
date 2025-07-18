@@ -11,6 +11,17 @@ const getDepartmentsNames = ()=>
     return departmentsRepo.getAllDepartmentsNames()
 }
 
+
+const getDepartmentById = (id) =>{
+    return  departmentsRepo.getDepartmentById(id);
+}
+
+/*
+const getDepartmentEditInfo = (id) => {
+
+}*/
+
+/*
 const getDepartmentById = async (id) =>
 {
     const departmentDoc = await  departmentsRepo.getDepartmentById(id);
@@ -20,6 +31,7 @@ const getDepartmentById = async (id) =>
     department.external_employees = outsideEmployees;
     return department ;
 }
+*/
 
 const getDepartmentByName = (name) =>
 {

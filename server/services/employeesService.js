@@ -39,6 +39,10 @@ const getEmployeeById = async (id)=>{
     return employee;
 }
 
+const getOutsideDepartmentEmployees = ( departmentId) =>{
+        return  employeeRepo.getEmployeesOutsideDepartment(departmentId);    
+}
+
 const detectOverlappingShifts = (empExistingShifts, newShiftsDocs) =>
 {
     const accepted = [];
@@ -258,6 +262,7 @@ const employeeExists = (id) =>{
 module.exports ={
     getAllEmployees,
     getEmployeeById,
+    getOutsideDepartmentEmployees,
     addNewEmployee,
     updateEmployee,
     deleteEmployee,
