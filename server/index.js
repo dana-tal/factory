@@ -8,6 +8,7 @@ const departmentsRouter = require('./routers/departmentsRouter');
 const employeesRouter = require('./routers/employeesRouter');
 const shiftsRouter = require('./routers/shiftsRouter');
 const authRouter = require('./routers/authRouter');
+const usersRouter = require('./routers/usersRouter');
 const {verifyToken} = require('./middleware/verifyToken');
 const { limitDailyActions } = require('./middleware/limitActions');
 
@@ -59,6 +60,7 @@ app.use('/auth', authRouter);
 app.use('/employees', employeesRouter);
 app.use('/departments',departmentsRouter);
 app.use('/shifts', shiftsRouter);
+app.use('/users', usersRouter);
 
 // Catch-all 404 middleware 
 app.use((req, res, next) => {

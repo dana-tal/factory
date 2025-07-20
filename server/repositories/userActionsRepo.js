@@ -1,18 +1,6 @@
 const mongoose = require('mongoose');
 const userActions = require('../models/userActionsModel');
-
-
-const getToday = () => {
-
-    let now = new Date();
-    let todayUtcMidnight = new Date(Date.UTC(
-        now.getUTCFullYear(),
-        now.getUTCMonth(),
-        now.getUTCDate(),
-    0, 0, 0, 0
-    ));
-    return todayUtcMidnight;
-}
+const { getToday } = require('../utils/dateFuncs');
 
 
 /* The following function will update the user actions counter */

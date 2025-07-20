@@ -2,6 +2,7 @@
 const usersRepo = require('../repositories/usersRepo');
 const userActionsRepo = require('../repositories/userActionsRepo');
 const actionsLogger = require('../utils/actionsLogger');
+const { convertDate } = require('../utils/dateFuncs');
 
 const increaseUserActionsCounter = async (userId) =>{
 
@@ -21,16 +22,11 @@ const userReachedActionsLimit =  async (userId) =>{
 
 }
 
-
-const convertDate=(isoDate)=>{
-
-         const date = new Date(isoDate);
-         const day = String(date.getUTCDate()).padStart(2, '0');
-         const month = String(date.getUTCMonth() + 1).padStart(2, '0'); // Months are 0-based
-         const year = date.getUTCFullYear();
-         const formatted = `${day}/${month}/${year}`;
-         return formatted;
+const getUsersActions = () =>{
+         return usersRepo.getUsersRemainingActions();
 }
+
+
 
 const logUserAction = async (userId,action) => {
 
@@ -49,7 +45,8 @@ const logUserAction = async (userId,action) => {
        summary.actionName = action;
        summary.maxActions = userActionsObj.user.maxActions;
        summary.date = convertDate(userActionsObj.actionsDate);
-       summary.currentActionsCount = userActionsObj.actionsCount;
+       summary.remainingActionsCount =  userActionsObj.user.maxActions -  userActionsObj.actionsCount; 
+      // summary.currentActionsCount = userActionsObj.actionsCount;
        const log_row = JSON.stringify(summary);
        actionsLogger.info(log_row);
        isLogged = true;
@@ -57,4 +54,10 @@ const logUserAction = async (userId,action) => {
    return(isLogged);
 }
 
-module.exports = { increaseUserActionsCounter, decreaseUserActionsCounter ,userReachedActionsLimit,logUserAction }
+module.exports = {
+                   increaseUserActionsCounter, 
+                   decreaseUserActionsCounter,
+                   userReachedActionsLimit,
+                   logUserAction,
+                   getUsersActions
+                  }
