@@ -1,5 +1,4 @@
 const departmentsRepo = require('../repositories/departmentsRepo');
-const employeesRepo = require('../repositories/employeesRepo');
 
 const getAllDepartments =  (filters)=>
 {
@@ -15,23 +14,6 @@ const getDepartmentsNames = ()=>
 const getDepartmentById = (id) =>{
     return  departmentsRepo.getDepartmentById(id);
 }
-
-/*
-const getDepartmentEditInfo = (id) => {
-
-}*/
-
-/*
-const getDepartmentById = async (id) =>
-{
-    const departmentDoc = await  departmentsRepo.getDepartmentById(id);
-
-    const department = departmentDoc.toObject(); // turning mongoose document to regular javascript object 
-    const outsideEmployees = await employeesRepo.getEmployeesOutsideDepartment(id);
-    department.external_employees = outsideEmployees;
-    return department ;
-}
-*/
 
 const getDepartmentByName = (name) =>
 {

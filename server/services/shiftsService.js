@@ -6,8 +6,19 @@ const getAllShifts = ()=>{
     return shiftsRepo.getAllShifts();
 }
 
-const getShiftById = (id)=>{
-    return shiftsRepo.getShiftById(id);
+const getShiftById = async (id)=>{
+    const shiftObj = await shiftsRepo.getShiftById(id);
+    const shiftEmployees = await shiftsRepo.getShiftEmployees(id);
+    const result = { ...shiftObj._doc, registeredEmployees: shiftEmployees };
+    return result;
+}
+
+const getShiftEditInfo = async (id) =>{
+    const shiftObj = await shiftsRepo.getShiftById(id);
+    const shiftEmployees = await shiftsRepo.getShiftEmployees(id);
+    const unregisteredEmployees = await shiftsRepo.getUnregisteredEmployees(id);
+    const result = { ...shiftObj._doc, registeredEmployees: shiftEmployees, unregisteredEmployees};
+    return result;
 }
 
 const addNewShift = (shiftObj) =>{
@@ -25,6 +36,7 @@ const updateShift = (id,shiftObj) =>{
 module.exports = {
     getAllShifts,
     getShiftById,
+    getShiftEditInfo,
     addNewShift,
     shiftExists,
     updateShift

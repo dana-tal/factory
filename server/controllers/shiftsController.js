@@ -50,6 +50,32 @@ const getShiftById = async (req,res)=> {
 
 }
 
+const getShiftEditInfo =  async (req,res)=> {
+
+    try
+    {
+        const id = req.params.id;
+
+        const result = validator.validateEntityId(id,'Shift');
+        if (result)
+        {
+            return res.status(result.status).json(result.message);
+        }
+        const shift = await shiftsService.getShiftEditInfo(id);
+        if (!shift)
+        {
+            return res.status(404).json(`A shift with id: ${id} does not exist`);
+        }
+        await usersService.logUserAction(req.user.userId,"getShiftEditInfo");
+        return res.status(200).json(shift);
+    }
+    catch(err)
+    {
+         errlogger.error(`getShiftEditInfo failed: ${err.message}`, { stack: err.stack });
+        return res.status(500).json(err); 
+    }
+}
+
 const addNewShift = async (req,res)=> {
     try
     {
@@ -157,6 +183,7 @@ const updateShift = async (req,res)=>{
 module.exports = {
     getAllShifts,
     getShiftById,
+    getShiftEditInfo,
     addNewShift,
     updateShift
 }
