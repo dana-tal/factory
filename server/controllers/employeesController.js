@@ -22,6 +22,34 @@ const getAllEmployees = async (req,res)=>{
 
 }
 
+
+const getEmployeeEditInfo = async (req,res) =>{
+
+    try
+    {
+        const id = req.params.id;
+        let result = validator.validateEntityId(id,'Employee');
+        if (result)
+        {
+            return res.status(result.status).json(result.message);
+        }
+        
+        const employee = await employeesService.getEmployeeEditInfo(id);
+        if (!employee) 
+        {
+            return res.status(404).json({ message: `The employee ${id} does not exist` });
+        }
+        await usersService.logUserAction(req.user.userId,"getEmployeeEditInfo");
+        res.status(200).json(employee);
+    }
+    catch(err)
+    {
+        errlogger.error(`getEmployeeEditInfo failed: ${err.message}`, { stack: err.stack });
+        return res.status(500).json(err);
+    }
+
+}
+
 const getEmployeeById = async (req,res) =>{
     try
     {
@@ -223,6 +251,7 @@ const unregisterEmployeeFromShifts = async (req,res) =>{
 module.exports = { 
     getAllEmployees,
     getEmployeeById,
+    getEmployeeEditInfo,
     addNewEmployee,
     updateEmployee,
     deleteEmployee,

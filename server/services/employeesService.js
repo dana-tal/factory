@@ -8,6 +8,39 @@ const getAllEmployees = async (filters)=>{
     return employees;
 
 }
+
+const getEmployeeEditInfo = async (id) =>{
+
+     const temployee = await employeeRepo.getEmployeeById(id);
+    let employee = null;
+    
+    if (temployee)
+    {    
+         employee = {
+                        ... temployee._doc,
+                        department:
+                        {
+                            id: temployee.departmentId._id.toString(),
+                            name: temployee.departmentId.name
+                        }
+                    }
+         delete employee.departmentId;   // because we have a department field now, departmentId is redundant  
+         
+         
+         const empShifts = await employeeRepo.getEmployeeShifts(id);
+
+         const empUnregisteredShifts = await employeeRepo.getEmployeeUnregisteredShifts(id);
+
+         employee.shifts = empShifts;
+         employee.unregisteredShifts = empUnregisteredShifts;
+      
+    }
+
+    return employee;
+
+}
+
+
 const getEmployeeById = async (id)=>{
     const temployee = await employeeRepo.getEmployeeById(id);
     let employee = null;
@@ -22,18 +55,8 @@ const getEmployeeById = async (id)=>{
                             name: temployee.departmentId.name
                         }
                     }
-         delete employee.departmentId;    
-         
-         
-         const empShifts = await employeeRepo.getEmployeeShifts(id);
-
-         const empUnregisteredShifts = await employeeRepo.getEmployeeUnregisteredShifts(id);
-
-
-
-         employee.shifts = empShifts;
-         employee.unregisteredShifts = empUnregisteredShifts;
-      
+         delete employee.departmentId;   // because we have a department field now, departmentId is redundant      
+         employee.shifts = await employeeRepo.getEmployeeShifts(id);       
     }
 
     return employee;
@@ -262,6 +285,7 @@ const employeeExists = (id) =>{
 module.exports ={
     getAllEmployees,
     getEmployeeById,
+    getEmployeeEditInfo,
     getOutsideDepartmentEmployees,
     addNewEmployee,
     updateEmployee,

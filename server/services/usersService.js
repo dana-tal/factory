@@ -46,7 +46,6 @@ const logUserAction = async (userId,action) => {
        summary.maxActions = userActionsObj.user.maxActions;
        summary.date = convertDate(userActionsObj.actionsDate);
        summary.remainingActionsCount =  userActionsObj.user.maxActions -  userActionsObj.actionsCount; 
-      // summary.currentActionsCount = userActionsObj.actionsCount;
        const log_row = JSON.stringify(summary);
        actionsLogger.info(log_row);
        isLogged = true;
