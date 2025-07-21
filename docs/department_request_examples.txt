@@ -48,13 +48,196 @@ Output:
 getDepartmentById
 ===================
 
+GET ,  https://factory-hiqy.onrender.com/departments/665bf0000000000000000004
 
+Output:
+{
+    "_id": "665bf0000000000000000004",
+    "name": "Marketing",
+    "employees": [
+        {
+            "_id": "001000000000000000000010",
+            "firstName": "Paula",
+            "lastName": "Reed"
+        },
+        {
+            "_id": "001000000000000000000011",
+            "firstName": "Quentin",
+            "lastName": "Young"
+        },
+        {
+            "_id": "001000000000000000000012",
+            "firstName": "Rachel",
+            "lastName": "Parker"
+        },
+        {
+            "_id": "001000000000000000000013",
+            "firstName": "Steve",
+            "lastName": "Carter"
+        },
+        {
+            "_id": "001000000000000000000014",
+            "firstName": "Tina",
+            "lastName": "Wells"
+        }
+    ],
+    "manager": {
+        "_id": "001000000000000000000013",
+        "firstName": "Steve",
+        "lastName": "Carter"
+    }
+}
+
+getDepartmentEditInfo
+=======================
+
+GET,  https://factory-hiqy.onrender.com/departments/editInfo/665bf0000000000000000004
+
+Output:
+{
+    "_id": "665bf0000000000000000004",
+    "name": "Marketing",
+    "employees": [
+        {
+            "_id": "001000000000000000000010",
+            "firstName": "Paula",
+            "lastName": "Reed"
+        },
+        {
+            "_id": "001000000000000000000011",
+            "firstName": "Quentin",
+            "lastName": "Young"
+        },
+        {
+            "_id": "001000000000000000000012",
+            "firstName": "Rachel",
+            "lastName": "Parker"
+        },
+        {
+            "_id": "001000000000000000000013",
+            "firstName": "Steve",
+            "lastName": "Carter"
+        },
+        {
+            "_id": "001000000000000000000014",
+            "firstName": "Tina",
+            "lastName": "Wells"
+        }
+    ],
+    "manager": {
+        "_id": "001000000000000000000013",
+        "firstName": "Steve",
+        "lastName": "Carter"
+    },
+    "externalEmployees": [
+        {
+            "_id": "001000000000000000000001",
+            "firstName": "Alice",
+            "lastName": "Smith"
+        },
+        {
+            "_id": "001000000000000000000002",
+            "firstName": "Bob",
+            "lastName": "Johnson"
+        },
+        {
+            "_id": "001000000000000000000003",
+            "firstName": "Charlie",
+            "lastName": "Lee"
+        },
+        {
+            "_id": "001000000000000000000004",
+            "firstName": "Dana",
+            "lastName": "Williams"
+        },
+        {
+            "_id": "001000000000000000000005",
+            "firstName": "Eli",
+            "lastName": "Brown"
+        },
+        {
+            "_id": "001000000000000000000006",
+            "firstName": "Fiona",
+            "lastName": "Davis"
+        },
+        {
+            "_id": "001000000000000000000007",
+            "firstName": "George",
+            "lastName": "Miller"
+        },
+        {
+            "_id": "001000000000000000000008",
+            "firstName": "Hannah",
+            "lastName": "Wilson"
+        },
+        {
+            "_id": "001000000000000000000009",
+            "firstName": "Ian",
+            "lastName": "Moore"
+        },
+        {
+            "_id": "00100000000000000000000a",
+            "firstName": "Jane",
+            "lastName": "Taylor"
+        },
+        {
+            "_id": "00100000000000000000000b",
+            "firstName": "Kyle",
+            "lastName": "Anderson"
+        },
+        {
+            "_id": "00100000000000000000000c",
+            "firstName": "Lara",
+            "lastName": "Thomas"
+        },
+        {
+            "_id": "00100000000000000000000d",
+            "firstName": "Mark",
+            "lastName": "Jackson"
+        },
+        {
+            "_id": "00100000000000000000000e",
+            "firstName": "Nina",
+            "lastName": "White"
+        },
+        {
+            "_id": "00100000000000000000000f",
+            "firstName": "Oscar",
+            "lastName": "Martin"
+        },
+        {
+            "_id": "001000000000000000000015",
+            "firstName": "Uma",
+            "lastName": "Bennett"
+        },
+        {
+            "_id": "001000000000000000000016",
+            "firstName": "Victor",
+            "lastName": "Gray"
+        },
+        {
+            "_id": "001000000000000000000017",
+            "firstName": "Wendy",
+            "lastName": "Scott"
+        },
+        {
+            "_id": "001000000000000000000018",
+            "firstName": "Xavier",
+            "lastName": "Hall"
+        },
+        {
+            "_id": "001000000000000000000019",
+            "firstName": "Yasmine",
+            "lastName": "King"
+        }
+    ]
+}
 
 
 addDepartment
 ===============
 
-POST, http://localhost:3000/departments
+POST,  https://factory-hiqy.onrender.com/departments
 
 Body Input:
 {
@@ -65,16 +248,40 @@ Body Input:
 Output:
 {
     "name": "TestDepartment",
-    "_id": "686a10f96bd69432f528f4d1"
+    "_id": "687e2cc4703c7f22de10cae2"
 }
 
-deleteDepartment
-==================
-DELETE, http://localhost:3000/departments/686a10f96bd69432f528f4d1
+updateDepartment
+================
+
+PUT,  https://factory-hiqy.onrender.com/departments/687e2cc4703c7f22de10cae2
+
+Body Input:
+{
+     "name":"TestDepartment1"
+}
 
 Output:
 {
-    "deletedDepartmentId": "686a10f96bd69432f528f4d1",
+    "_id": "687e2cc4703c7f22de10cae2",
+    "name": "TestDepartment1",
+    "manager": {
+        "_id": "001000000000000000000003",
+        "firstName": "Charlie",
+        "lastName": "Lee",
+        "startYear": 2018,
+        "departmentId": "665bf0000000000000000001"
+    }
+}
+
+
+deleteDepartment
+==================
+DELETE,  https://factory-hiqy.onrender.com/departments/687e2cc4703c7f22de10cae2
+
+Output:
+{
+    "deletedDepartmentId": "687e2cc4703c7f22de10cae2",
     "employeeIds": [
         "686a12926bd69432f528f4d7",
         "686a12ab6bd69432f528f4da"
