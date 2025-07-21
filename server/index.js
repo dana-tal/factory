@@ -12,7 +12,7 @@ const usersRouter = require('./routers/usersRouter');
 const {verifyToken} = require('./middleware/verifyToken');
 const { limitDailyActions } = require('./middleware/limitActions');
 
- const PORT = process.env.PORT;
+ const PORT = process.env.PORT || 3000;;
 
 const app = express();
 
@@ -32,8 +32,7 @@ const  sessionMiddleware= session({
 app.use(sessionMiddleware);
 
 app.use((req, res, next) => {
-  const publicRoutes = ['/auth/login', '/auth/logout'];
-
+  const publicRoutes = ['/','/auth/login', '/auth/logout'];
   // allow public access to public routes 
   if ( publicRoutes.includes(req.path)) 
   {
@@ -44,8 +43,7 @@ app.use((req, res, next) => {
 });
 
 app.use((req, res, next) => {
-  const publicRoutes = ['/auth/login', '/auth/logout'];
-
+  const publicRoutes = ['/','/auth/login', '/auth/logout'];
   // allow public access to public routes 
   if ( publicRoutes.includes(req.path)) 
   {
@@ -54,8 +52,9 @@ app.use((req, res, next) => {
   return limitDailyActions(req,res,next) ; // check the user has not reached his actions counter limit (also updates his counter)
 });  
 
-
-
+app.get("/", (req, res) => {
+  res.send("API is running");
+});
 app.use('/auth', authRouter);
 app.use('/employees', employeesRouter);
 app.use('/departments',departmentsRouter);
