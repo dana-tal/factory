@@ -1,6 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const session = require('express-session');
+const MongoStore = require('connect-mongo');
+
 
 require('dotenv').config();  // load everything in .env file into process.env 
 const connectDB = require('./configs/db');
@@ -19,13 +21,21 @@ const app = express();
 app.use( cors());
 app.use(express.json());
 
+// The default memory store of express-session is not suitable for production
+// since I want to upload this code to Render, I'm using MongoStore
 
 const  sessionMiddleware= session({
   secret: process.env.SESSION_SECRET,    // the secret prevents tampering with the session ID on the client side  
   resave: false,                      // if resave is true it forces the session to be written to the store (Redis, memory,db), even if it was not modified
   saveUninitialized: false,         // when true a session will be stored even if it has no data ,so false gaurantees we don't send cookies to unlogged users 
   name:'FactorySessionId',        // this is the cookie name
-  cookie: { maxAge: +process.env.COOKIE_MAX_AGE  || 24 * 60 * 60 * 1000  }    // controlls the cookie behavior (the cookie that stores the session ID), 1 day fallback
+  cookie: { maxAge: +process.env.COOKIE_MAX_AGE  || 24 * 60 * 60 * 1000  } ,   // controlls the cookie behavior (the cookie that stores the session ID), 1 day fallback
+   store: MongoStore.create({
+    mongoUrl: process.env.MONGODB_URI,
+    ttl: 14 * 24 * 60 * 60,
+     autoRemove: 'interval',
+    autoRemoveInterval: 10 // in minutes (every 10 minutes expired sessions will be automatically removed)
+  })
 })
 
 // Set up session middleware
