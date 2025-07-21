@@ -1,4 +1,56 @@
 
+getAllDepartments
+================
+
+GET,  https://factory-hiqy.onrender.com/departments/
+
+Output:
+[
+    {
+        "_id": "665bf0000000000000000001",
+        "name": "HR",
+        "employees": [
+            {
+                "_id": "001000000000000000000001",
+                "firstName": "Alice",
+                "lastName": "Smith"
+            },
+            {
+                "_id": "001000000000000000000002",
+                "firstName": "Bob",
+                "lastName": "Johnson"
+            },
+            {
+                "_id": "001000000000000000000003",
+                "firstName": "Charlie",
+                "lastName": "Lee"
+            },
+            {
+                "_id": "001000000000000000000004",
+                "firstName": "Dana",
+                "lastName": "Williams"
+            },
+            {
+                "_id": "001000000000000000000005",
+                "firstName": "Eli",
+                "lastName": "Brown"
+            }
+        ],
+        "manager": {
+            "_id": "001000000000000000000005",
+            "firstName": "Eli",
+            "lastName": "Brown"
+        }
+    },
+    ...
+]
+
+getDepartmentById
+===================
+
+
+
+
 addDepartment
 ===============
 
