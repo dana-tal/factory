@@ -33,11 +33,23 @@ const updateShift = (id,shiftObj) =>{
     return shiftsRepo.udpateShift(id,shiftObj);
 }
 
+const registerEmployeesToShift = (shiftId,employeeIds) =>
+{
+    return shiftsRepo.registerEmployeesToShift(shiftId,employeeIds);
+}
+
+const unregisterEmployeesFromShift = (shiftId, employeeIds) =>
+{
+    return shiftsRepo.unregisterEmployeesFromShift(shiftId, employeeIds);
+}
+
 module.exports = {
     getAllShifts,
     getShiftById,
     getShiftEditInfo,
     addNewShift,
     shiftExists,
-    updateShift
+    updateShift,
+    registerEmployeesToShift,
+    unregisterEmployeesFromShift
 }

@@ -8,6 +8,8 @@ router.get('/:id',shiftsController.getShiftById);
 router.get('/editInfo/:id', shiftsController.getShiftEditInfo);
 router.post('/', shiftsController.addNewShift);
 router.put('/:id', shiftsController.updateShift);
+router.post('/register/:id', shiftsController.registerEmployeesToShift);
+router.post('/unregister/:id',shiftsController.unregisterEmployeesFromShift);
 
 module.exports= router;
 

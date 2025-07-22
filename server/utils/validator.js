@@ -66,6 +66,46 @@ const isValidDateInput = (inputObj,fieldName,isMandatory) =>{
      return result;
 }
 
+const validateEmployees = async (fieldName, reqBody) =>{
+     let i,result;
+     
+     const employeesProvided =  Object.prototype.hasOwnProperty.call(reqBody, fieldName);
+     if (!employeesProvided)
+     {
+          return { status:400,  message:`${fieldName} field is mandatory. Please provided some employee ids `};
+     }
+     else
+     {
+          if ( !Array.isArray(reqBody[fieldName]) )
+            {
+                 return { status:400 ,message:fieldName+' field should be an array'};
+            }
+            else if ( reqBody[fieldName].length ===0)
+            {
+               return { status:400 , message: fieldName+' is an empty array.Please provide some employee ids' };
+            }
+     }
+     const allEmployees = reqBody[fieldName]; 
+     let employee, employeeExists;
+
+      for(i=0; i< allEmployees.length; i++)
+     {
+          employee = allEmployees[i];
+          result = validateEntityId(employee,'Employee');
+          if (result)
+          {
+               return result ;
+          }
+          employeeExists = await employeesService.employeeExists(employee);
+          if (!employeeExists)
+          {
+                result = { status:404 ,message:`The employee id:${employee} supplied does not exist` }; 
+                return result;
+          }
+     }    
+     return {status:'O.K', message:'O.K'};
+}
+
 const validateShifts = async (fieldName,reqBody)=>{
 
      let i,result;
@@ -226,5 +266,6 @@ module.exports = {
     validatePersonName,
     validateEmployeeInfo,
    validateShiftInfo,
-   validateShifts
+   validateShifts,
+   validateEmployees
 };

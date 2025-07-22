@@ -47,8 +47,51 @@ const getShiftsByIds = (ids) =>{
     return Shift.find({_id:{ $in: objectIds}});
 }
 
+/* This function is for bulk insertion. Given a certain shiftId and an array of employeeIds as strings */
+const registerEmployeesToShift = async (shiftId, employeeIds) => {
+  const shiftObjectId = new mongoose.Types.ObjectId(shiftId);
+  const employeeObjectIds = employeeIds.map(id => new mongoose.Types.ObjectId(id));
 
+  // Find already assigned employees for this shift
+  const existingAssignments = await EmployeeShift.find({
+    shiftId: shiftObjectId,
+    employeeId: { $in: employeeObjectIds }
+  }).select('employeeId');
 
+  const existingIdsSet = new Set(existingAssignments.map(doc => doc.employeeId.toString()));
+
+  // Filter out employees that are already assigned
+  const newAssignments = employeeObjectIds
+    .filter(id => !existingIdsSet.has(id.toString()))
+    .map(employeeId => ({
+      shiftId: shiftObjectId,
+      employeeId,
+    }));
+
+  if (newAssignments.length === 0) {
+    return { insertedCount: 0, skippedCount: employeeIds.length };
+  }
+
+  // Insert only new assignments
+  const insertedDocs = await EmployeeShift.insertMany(newAssignments);
+
+  return {
+    insertedCount: insertedDocs.length,
+    skippedCount: employeeIds.length - insertedDocs.length,
+  };
+};
+
+const unregisterEmployeesFromShift = (shiftId, employeeIds) =>{
+
+    const shiftIdObj = new mongoose.Types.ObjectId(shiftId);
+    const employeeObjectIds = employeeIds.map(id => new mongoose.Types.ObjectId(id));
+
+    return EmployeeShift.deleteMany({
+        shiftId: shiftIdObj,
+        employeeId: { $in: employeeObjectIds }
+    });
+   
+}
 
 const addNewShift = (shiftObj)=>{
 
@@ -74,6 +117,8 @@ module.exports = {
     getShiftEmployees,
     getUnregisteredEmployees,
     getShiftsByIds,
+    registerEmployeesToShift,
+    unregisterEmployeesFromShift,
     addNewShift,
     shiftExists,
    udpateShift

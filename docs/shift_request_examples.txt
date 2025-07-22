@@ -36,3 +36,33 @@ Output:
     "createdAt": "2025-07-17T13:40:10.758Z",
     "updatedAt": "2025-07-17T13:42:08.870Z"
 }
+
+Register employees to shift
+=============================
+POST,   http://localhost:3000/shifts/register/665bf0000000000000000002
+
+Body Input:
+{
+  "employees":["001000000000000000000001","001000000000000000000002","001000000000000000000003"]
+}
+
+Output
+{
+    "insertedCount": 2,
+    "skippedCount": 1
+}
+
+Unregister employees from shift
+=================================
+POST,   http://localhost:3000/shifts/unregister/665bf0000000000000000002
+
+Body input :
+{
+  "employees":["001000000000000000000002","001000000000000000000003"]
+}
+
+Output:
+{
+    "acknowledged": true,
+    "deletedCount": 2
+}

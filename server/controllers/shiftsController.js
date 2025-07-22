@@ -76,6 +76,71 @@ const getShiftEditInfo =  async (req,res)=> {
     }
 }
 
+const registerEmployeesToShift = async (req,res) =>{
+    try
+    {
+        const id = req.params.id;
+        const result = validator.validateEntityId(id,'Shift');
+        if (result)
+        {
+            return res.status(result.status).json(result.message);
+        }
+        const shift = await shiftsService.shiftExists(id);
+        if (!shift)
+        {
+            return res.status(404).json(`A shift with id: ${id} does not exist`);
+        }
+
+        const result2  = await validator.validateEmployees('employees',req.body);  
+        if (result2.status !=='O.K')
+        {
+            return  res.status(result2.status).json(result2.message);
+        }
+       
+        const employees = req.body.employees ;
+        const registerResult = await shiftsService.registerEmployeesToShift(id,employees);
+        await usersService.logUserAction(req.user.userId,"registerEmployeesToShift");
+        return res.status(200).json(registerResult);       
+    }
+    catch(err)
+    {
+         errlogger.error(`registerEmployeesToShift failed: ${err.message}`, { stack: err.stack });
+        return res.status(500).json(err); 
+    }
+}
+
+const unregisterEmployeesFromShift = async (req,res)=>{
+    try
+    {
+        const id = req.params.id;
+        const result = validator.validateEntityId(id,'Shift');
+        if (result)
+        {
+            return res.status(result.status).json(result.message);
+        }
+        const shift = await shiftsService.shiftExists(id);
+        if (!shift)
+        {
+            return res.status(404).json(`A shift with id: ${id} does not exist`);
+        }
+
+        const result2  = await validator.validateEmployees('employees',req.body);  
+        if (result2.status !=='O.K')
+        {
+            return  res.status(result2.status).json(result2.message);
+        }
+        const employees = req.body.employees ;
+        const unregisterResult = await shiftsService.unregisterEmployeesFromShift(id,employees);
+        await usersService.logUserAction(req.user.userId,"unregisterEmployeesFromShift");
+         return res.status(200).json(unregisterResult);   
+    }
+    catch(err)
+    {
+         errlogger.error(`unregisterEmployeesFromShift failed: ${err.message}`, { stack: err.stack });
+        return res.status(500).json(err); 
+    }
+}
+
 const addNewShift = async (req,res)=> {
     try
     {
@@ -185,5 +250,7 @@ module.exports = {
     getShiftById,
     getShiftEditInfo,
     addNewShift,
-    updateShift
+    updateShift,
+    registerEmployeesToShift,
+    unregisterEmployeesFromShift
 }
