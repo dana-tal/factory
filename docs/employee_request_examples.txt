@@ -1,7 +1,7 @@
 
 Get All Employees 
 ==================
-GET, http://localhost:3000/employees/
+GET, https://factory-hiqy.onrender.com/employees
 
 Output:
 [
@@ -30,47 +30,119 @@ Output:
 ]
 
 
-Get One employee 
-================
+Get Employee By Id 
+===================
 
-GET, http://localhost:3000/employees/001000000000000000000006
+GET, https://factory-hiqy.onrender.com/employees/001000000000000000000002
 
 Output:
 {
-    "_id": "001000000000000000000006",
-    "firstName": "Fiona",
-    "lastName": "Davis",
-    "startYear": 2017,
+    "_id": "001000000000000000000002",
+    "firstName": "Bob",
+    "lastName": "Johnson",
+    "startYear": 2020,
     "department": {
-        "id": "665bf0000000000000000002",
-        "name": "Finance"
+        "id": "665bf0000000000000000001",
+        "name": "HR"
     },
     "shifts": [
+        {
+            "_id": "665bf0000000000000000003",
+            "startDate": "2025-06-12T08:00:00.000Z",
+            "endDate": "2025-06-12T16:00:00.000Z"
+        },
+        {
+            "_id": "665bf0000000000000000004",
+            "startDate": "2025-06-13T08:00:00.000Z",
+            "endDate": "2025-06-13T16:00:00.000Z"
+        }
+    ]
+}
+
+Get Employee Edit Info
+=========================
+
+GET, https://factory-hiqy.onrender.com/employees/editInfo/001000000000000000000002
+
+Output:
+{
+    "_id": "001000000000000000000002",
+    "firstName": "Bob",
+    "lastName": "Johnson",
+    "startYear": 2020,
+    "department": {
+        "id": "665bf0000000000000000001",
+        "name": "HR"
+    },
+    "shifts": [
+        {
+            "_id": "665bf0000000000000000003",
+            "startDate": "2025-06-12T08:00:00.000Z",
+            "endDate": "2025-06-12T16:00:00.000Z"
+        },
+        {
+            "_id": "665bf0000000000000000004",
+            "startDate": "2025-06-13T08:00:00.000Z",
+            "endDate": "2025-06-13T16:00:00.000Z"
+        }
+    ],
+    "unregisteredShifts": [
         {
             "_id": "665bf0000000000000000001",
             "startDate": "2025-06-10T08:00:00.000Z",
             "endDate": "2025-06-10T16:00:00.000Z"
         },
         {
-            "_id": "665bf0000000000000000003",
-            "startDate": "2025-06-12T08:00:00.000Z",
-            "endDate": "2025-06-12T16:00:00.000Z"
-        }
-    ],
-    "unregisteredShifts": [
+            "_id": "6874f0c02841bd2379c3cdc1",
+            "startDate": "2025-06-10T09:00:00.000Z",
+            "endDate": "2025-06-10T12:00:00.000Z"
+        },
+        {
+            "_id": "6878fd3afc066fe58d543bb8",
+            "startDate": "2025-06-10T09:00:00.000Z",
+            "endDate": "2025-06-10T16:00:00.000Z"
+        },
         {
             "_id": "665bf0000000000000000002",
             "startDate": "2025-06-11T08:00:00.000Z",
             "endDate": "2025-06-11T16:00:00.000Z"
         },
-        ...
+        {
+            "_id": "665bf0000000000000000005",
+            "startDate": "2025-06-14T08:00:00.000Z",
+            "endDate": "2025-06-14T16:00:00.000Z"
+        },
+        {
+            "_id": "665bf0000000000000000006",
+            "startDate": "2025-06-15T08:00:00.000Z",
+            "endDate": "2025-06-15T16:00:00.000Z"
+        },
+        {
+            "_id": "665bf0000000000000000007",
+            "startDate": "2025-06-16T08:00:00.000Z",
+            "endDate": "2025-06-16T16:00:00.000Z"
+        },
+        {
+            "_id": "665bf0000000000000000008",
+            "startDate": "2025-06-17T08:00:00.000Z",
+            "endDate": "2025-06-17T16:00:00.000Z"
+        },
+        {
+            "_id": "665bf0000000000000000009",
+            "startDate": "2025-06-18T08:00:00.000Z",
+            "endDate": "2025-06-18T16:00:00.000Z"
+        },
+        {
+            "_id": "665bf000000000000000000a",
+            "startDate": "2025-06-19T08:00:00.000Z",
+            "endDate": "2025-06-19T16:00:00.000Z"
+        }
     ]
 }
 
-
 Add New Employee
 =================
-POST, http://localhost:3000/employees/
+POST, https://factory-hiqy.onrender.com/employees/
 
 Body Input:
 {
@@ -91,58 +163,78 @@ Output:
     "updatedAt": "2025-06-29T08:30:29.874Z"
 }
 
+Update Employee 
+===============
+
+PUT,  https://factory-hiqy.onrender.com/employees/68809543cf9bf667a910827a
+
+Body Input:
+{      
+    "firstName":"Testy",
+    "lastName":"Testy",
+    "startYear":2010    
+}
+
+Output
+{
+    "_id": "68809543cf9bf667a910827a",
+    "firstName": "Testy",
+    "lastName": "Testy",
+    "startYear": 2010,
+    "departmentId": "665bf0000000000000000002",
+    "createdAt": "2025-07-23T07:54:43.700Z",
+    "updatedAt": "2025-07-23T07:59:12.052Z"
+}
 
 
 Register employee to shifts
 ============================
 
-POST, http://localhost:3000/employees/register/685944295de2800af71ee8aa
+POST, https://factory-hiqy.onrender.com/employees/register/001000000000000000000002
 
 Body input:
 {
-   "newShifts":["665bf0000000000000000001","6857f2b36ae03a1ba03fd7fc","665bf0000000000000000007"]
+   "newShifts":["665bf0000000000000000004","665bf0000000000000000001","6874f0c02841bd2379c3cdc1"]
 }
 
 output:
 {
-    "allreadyRegistered": [],
+    "allreadyRegistered": [
+        "665bf0000000000000000004"
+    ],
     "registeredSuccessfully": [
-        "665bf0000000000000000001",
-        "665bf0000000000000000007"
+        "665bf0000000000000000001"
     ],
     "overlapped": [
-        "6857f2b36ae03a1ba03fd7fc"
+        "6874f0c02841bd2379c3cdc1"
     ]
 }
 
 Unregister employee from shifts
 ==================================
 
-POST, http://localhost:3000/employees/unregister/685944295de2800af71ee8aa
+POST, https://factory-hiqy.onrender.com/employees/unregister/001000000000000000000002
 
 Body input:
 {
-    "removeShifts":["665bf000000000000000000a","665bf0000000000000000009","6857f2b36ae03a1ba03fd7fc"]
-} 
+   "removeShifts":["665bf0000000000000000001"]
+}
 
 output:
 {
-    "allreadyUnregistered": [
-        "6857f2b36ae03a1ba03fd7fc"
-    ],
+    "allreadyUnregistered": [],
     "unregisteredSuccessfully": [
-        "665bf000000000000000000a",
-        "665bf0000000000000000009"
+        "665bf0000000000000000001"
     ],
     "acknowledged": true,
-    "deletedCount": 2
+    "deletedCount": 1
 }
 
 
 
 Delete Employeee
 ================
-DELETE, http://localhost:3000/employees/68625ccbbd44973bbefedf0b
+DELETE, https://factory-hiqy.onrender.com/employees/68809543cf9bf667a910827a
 
 Output:
 {

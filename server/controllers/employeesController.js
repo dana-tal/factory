@@ -190,7 +190,7 @@ const registerEmployeeToShifts = async (req,res)=>{
         const exists = await employeesService.employeeExists(empId); // verifiy the employee exists 
         if (!exists)
         {
-            return res.status(404).json(`Employee with id ${id} does not exist`);
+            return res.status(404).json(`Employee with id ${empId} does not exist`);
         }
 
         result =  await validator.validateShifts('newShifts',req.body);       
