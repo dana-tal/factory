@@ -9,22 +9,22 @@ It uses **MongoDB Atlas** as the database and is deployed for live demo on **Ren
  [`factory/docs/factory_web_pages_to_api_map.pdf`](factory/docs/factory_web_pages_to_api_map.pdf).
 
 ---
-
 ## 🔗 Live Demo
 
-**Base URL**:  
-[https://factory-hiqy.onrender.com/](https://factory-hiqy.onrender.com/)
+**Base URL:**  
+https://factory-hiqy.onrender.com/
 
-⚠️ **Important**:  
-Since the app is hosted on Render's free plan, the server goes to sleep after periods of inactivity.  
-Expect a **~1-minute delay** on the **first request** after a long pause.
+⚠️ **Important:**  
+This app is hosted on Render's free tier, which means the server may go to sleep after periods of inactivity.  
+Please allow up to **5 minutes** for the **first request** to go through if the server is waking up.
 
-You can watch the API status at:  
-[https://factory-hiqy.onrender.com/](https://factory-hiqy.onrender.com/)  
-When loaded, the API returns the message:  
-API is running. 
+You can check the API status at:  
+https://factory-hiqy.onrender.com  
+- While loading: it displays `"Loading"`  
+- Once ready: it returns `"API is running."`
 
-Please wait up to 1 minute for the api to load . After the api is loaded , you can send request with no further delay. 
+✅ After the initial load, all further requests should respond instantly.
+
 ---
 
 ## 🧰 Tech Stack
