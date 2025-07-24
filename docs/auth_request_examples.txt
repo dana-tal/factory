@@ -16,3 +16,7 @@ Output:
     "name": "Ervin Howell"
 }
 
+logout
+======
+
+POST, https://factory-hiqy.onrender.com/auth/logout
