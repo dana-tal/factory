@@ -30,6 +30,81 @@ Output:
 ]
 
 
+Get All Employees With Departments
+====================================
+
+GET , https://factory-hiqy.onrender.com/employees/withDepartments
+
+Output:
+
+{
+    "employees": [
+        ...
+        {
+            "_id": "001000000000000000000019",
+            "firstName": "Yasmine",
+            "lastName": "King",
+            "department": {
+                "_id": "665bf0000000000000000005",
+                "name": "Customer Support"
+            },
+            "shifts": [
+                {
+                    "_id": "665bf0000000000000000001",
+                    "startDate": "2025-06-10T08:00:00.000Z",
+                    "endDate": "2025-06-10T16:00:00.000Z"
+                },
+                {
+                    "_id": "665bf000000000000000000a",
+                    "startDate": "2025-06-19T08:00:00.000Z",
+                    "endDate": "2025-06-19T16:00:00.000Z"
+                }
+            ]
+        }
+    ],
+    "departments":[
+             {
+            "_id": "665bf0000000000000000001",
+            "name": "HR",
+            "employees": [
+                {
+                    "_id": "001000000000000000000001",
+                    "firstName": "Alice",
+                    "lastName": "Smith"
+                },
+                {
+                    "_id": "001000000000000000000002",
+                    "firstName": "Bob",
+                    "lastName": "Johnson"
+                },
+                {
+                    "_id": "001000000000000000000003",
+                    "firstName": "Charlie",
+                    "lastName": "Lee"
+                },
+                {
+                    "_id": "001000000000000000000004",
+                    "firstName": "Dana",
+                    "lastName": "Williams"
+                },
+                {
+                    "_id": "001000000000000000000005",
+                    "firstName": "Eli",
+                    "lastName": "Brown"
+                }
+            ],
+            "manager": {
+                "_id": "001000000000000000000005",
+                "firstName": "Eli",
+                "lastName": "Brown"
+            }
+        },
+        ....
+    ]
+}
+
+
+
 Get Employee By Id 
 ===================
 
@@ -136,6 +211,28 @@ Output:
             "_id": "665bf000000000000000000a",
             "startDate": "2025-06-19T08:00:00.000Z",
             "endDate": "2025-06-19T16:00:00.000Z"
+        }
+    ],
+     "department_names": [
+        {
+            "_id": "665bf0000000000000000001",
+            "name": "HR"
+        },
+        {
+            "_id": "665bf0000000000000000003",
+            "name": "Development"
+        },
+        {
+            "_id": "665bf0000000000000000004",
+            "name": "Marketing"
+        },
+        {
+            "_id": "665bf0000000000000000005",
+            "name": "Customer Support"
+        },
+        {
+            "_id": "665bf0000000000000000002",
+            "name": "Finance"
         }
     ]
 }
