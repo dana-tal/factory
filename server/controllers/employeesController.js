@@ -1,5 +1,7 @@
 const employeesService = require('../services/employeesService');
 const usersService = require('../services/usersService');
+const departmentsService = require('../services/departmentsService');
+
 const errlogger = require('../utils/logger');
 const validator = require('../utils/validator');
 
@@ -22,6 +24,29 @@ const getAllEmployees = async (req,res)=>{
 
 }
 
+const getAllEmployeesAndDepartments = async (req,res) =>{
+
+    try
+    {
+        const employees = await employeesService.getAllEmployees();
+        if (!employees)
+        {
+            return res.status(204).json({ message: 'The request was successful, but there are no employees yet'});
+        }
+        const departments = await departmentsService.getAllDepartments();
+       
+        const response = { employees, departments };
+        await usersService.logUserAction(req.user.userId,"getAllEmployeesAndDepartments");
+        res.status(200).json(response);
+    }
+    catch(err)
+    {
+        errlogger.error(`getAllEmployeesAndDepartments failed: ${err.message}`, { stack: err.stack });
+        return res.status(500).json(err);  
+    }
+
+}
+
 
 const getEmployeeEditInfo = async (req,res) =>{
 
@@ -39,6 +64,7 @@ const getEmployeeEditInfo = async (req,res) =>{
         {
             return res.status(404).json({ message: `The employee ${id} does not exist` });
         }
+        employee.department_names = await departmentsService.getDepartmentsNames();
         await usersService.logUserAction(req.user.userId,"getEmployeeEditInfo");
         res.status(200).json(employee);
     }
@@ -250,6 +276,7 @@ const unregisterEmployeeFromShifts = async (req,res) =>{
 
 module.exports = { 
     getAllEmployees,
+    getAllEmployeesAndDepartments,
     getEmployeeById,
     getEmployeeEditInfo,
     addNewEmployee,

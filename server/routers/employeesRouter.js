@@ -5,6 +5,7 @@ const employeesRouter = express.Router();
 
 
 employeesRouter.get('/', employeesController.getAllEmployees);
+employeesRouter.get('/withDepartments', employeesController.getAllEmployeesAndDepartments);
 employeesRouter.get('/:id', employeesController.getEmployeeById);
 employeesRouter.get('/editInfo/:id', employeesController.getEmployeeEditInfo);
 
