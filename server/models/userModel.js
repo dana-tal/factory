@@ -3,7 +3,9 @@ const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
     fullName :{ type:String, required:true},
-    maxActions :{type:Number, required:true}
+    maxActions :{type:Number, required:true},
+    username: { type:String, required:true},
+    email:{ type:String, required:true}
 },
 {
      versionKey: false,

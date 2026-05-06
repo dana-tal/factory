@@ -2,7 +2,8 @@ const express = require('express');
 const cors = require('cors');
 const session = require('express-session');
 const MongoStore = require('connect-mongo');
-
+const swaggerUi = require('swagger-ui-express');
+const swaggerJsDoc = require('swagger-jsdoc');
 
 require('dotenv').config();  // load everything in .env file into process.env 
 const connectDB = require('./configs/db');
@@ -18,7 +19,16 @@ const { limitDailyActions } = require('./middleware/limitActions');
 
 const app = express();
 
-app.use( cors());
+app.use((req, res, next) => {
+  next();
+});
+
+//app.use( cors());
+app.use(cors({
+  origin: true,
+  credentials: true
+}));
+
 app.use(express.json());
 
 // The default memory store of express-session is not suitable for production
@@ -42,9 +52,15 @@ const  sessionMiddleware= session({
 app.use(sessionMiddleware);
 
 app.use((req, res, next) => {
-  const publicRoutes = ['/','/auth/login', '/auth/logout'];
+ // const publicRoutes = ['/','/auth/login', '/auth/logout',  '/api-docs','/api-docs/*'];
   // allow public access to public routes 
-  if ( publicRoutes.includes(req.path)) 
+
+  const isPublic =
+  req.path === '/' ||
+  req.path.startsWith('/auth/') ||
+  req.path.startsWith('/api-docs');
+
+   if (isPublic)
   {
      return next();  
   }
@@ -55,7 +71,7 @@ app.use((req, res, next) => {
 app.use((req, res, next) => {
   const publicRoutes = ['/','/auth/login', '/auth/logout'];
   // allow public access to public routes 
-  if ( publicRoutes.includes(req.path)) 
+  if (publicRoutes.some(route => req.path.startsWith(route)))
   {
      return next();  
   }
@@ -71,10 +87,36 @@ app.use('/departments',departmentsRouter);
 app.use('/shifts', shiftsRouter);
 app.use('/users', usersRouter);
 
+const swaggerOptions = {
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "My Factory API",
+      version: "1.0.0"
+    },
+      tags: [
+      { name: "Auth" },
+      { name: "Departments" },
+      { name: "Employees" },
+      { name: "Shifts" },
+      { name: "Users" }
+    ]
+  },
+  apis: ["./routers/*.js"]
+};
+
+
+const swaggerSpec = swaggerJsDoc(swaggerOptions);
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
+
 // Catch-all 404 middleware 
 app.use((req, res, next) => {
     res.status(404).json({ error: 'Route not found' });
 });
+
+
 
 app.listen(PORT, ()=>{
    console.log(`Listening on port: ${PORT}`) ;

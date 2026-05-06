@@ -3,7 +3,6 @@ const jwt = require('jsonwebtoken');
 
 function verifyToken(req, res, next) 
 {
-  
   const token = req.session.token;
 
   if (!token) {

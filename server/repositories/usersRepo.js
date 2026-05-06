@@ -53,6 +53,8 @@ const getUsersRemainingActions =  () =>{
       $project: {
         fullName: 1,
         maxActions: 1,
+        username:1,
+        email:1,
         remainingActions: 1
       }
     }
