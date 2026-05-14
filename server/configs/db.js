@@ -1,10 +1,11 @@
 const mongoose = require('mongoose');
 const userActionsModel = require('../models/userActionsModel'); 
 
+
 const connectDB = () =>{
 
     const mongoURI = process.env.MONGODB_URI || 'mongodb://localhost:27017/factoryDB';
-
+ 
    // const mongoURI = 'mongodb://localhost:27017/factoryDB';
 
     mongoose.connect(mongoURI,{

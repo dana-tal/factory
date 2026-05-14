@@ -16,6 +16,25 @@ const employeeSchema = new mongoose.Schema({
 });
 
 
+employeeSchema.set('toJSON', {
+  transform: function (doc, ret) {
+    ret.id = ret._id;     
+    delete ret._id;
+    return ret;
+  }
+});
+
+employeeSchema.set('toObject', {
+  transform: function (doc, ret) {
+    ret.id = ret._id;
+     delete ret._id;   
+    return ret;
+  }
+});
+
+
+
+
 // adding a middleware upon delete of one employee 
 
 employeeSchema.pre('deleteOne', { document: true, query: false }, async function(next) {

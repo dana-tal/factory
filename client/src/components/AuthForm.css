@@ -1,0 +1,39 @@
+
+
+.site-container2
+{
+   justify-content:center; 
+  height:100dvh;
+}
+
+
+.outlet-style2
+{
+   min-height:400px;
+    overflow: auto;
+    background-color: transparent;
+    margin:0 auto;
+    min-width:80%;
+    padding-bottom:0;
+    align-content: center;
+}
+
+
+@media (min-width:1200px)
+{
+   .outlet-style2
+   {
+     min-height:800px;
+   }
+  
+}
+
+
+@media (max-width:375px)
+{
+   
+   .outlet-style2
+   {
+     min-height:800px;
+   }
+}

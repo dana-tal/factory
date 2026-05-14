@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { normalizeId } = require('../plugins/normalizeId');
 
 const departmentSchema = new mongoose.Schema({
      name: { type:String, required:true},
@@ -13,6 +14,7 @@ const departmentSchema = new mongoose.Schema({
         timestamps:true
     });
 
+ 
 departmentSchema.virtual('employees',{
      ref:'employee', // the model to use
      localField: '_id', // the id field in the department model ,
@@ -32,6 +34,8 @@ departmentSchema.virtual('manager', {
 departmentSchema.set('toJSON', {
   virtuals: true,
   transform: function (doc, ret) {
+      ret.id = ret._id;     
+    delete ret._id;
     delete ret.managerId;
     delete ret.createdAt;
     delete ret.updatedAt;
@@ -42,6 +46,8 @@ departmentSchema.set('toJSON', {
 departmentSchema.set('toObject', {
   virtuals: true,
   transform: function (doc, ret) {
+    ret.id = ret._id;
+     delete ret._id;   
     delete ret.managerId;
     delete ret.createdAt;
     delete ret.updatedAt;

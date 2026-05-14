@@ -11,11 +11,11 @@ const getAllDepartments = (filters)=>{
     return Department.find(filters)
     .populate({ 
         path:'manager',
-        select:'_id firstName lastName'
+        select:'firstName lastName'
     })
     .populate({
         path: 'employees',
-        select: '_id firstName lastName -departmentId' 
+        select: 'firstName lastName -departmentId' 
     });
 }
 

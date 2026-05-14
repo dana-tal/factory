@@ -1,0 +1,86 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+ 
+.site-container
+{
+  /* min-height: auto;*/
+    min-height: 100vh;     /* fallback */
+   min-height: 100dvh;    /* correct mobile fix */
+    background: linear-gradient(45deg,#357EC7,#E0FFFF,#488AC7, #FFFAF0 ); /* #E0FFFF *#F0F8FF, #F2F0DF */
+    display:flex;
+    flex-direction:column;
+    overflow: auto;
+    padding:3px;
+   
+}
+
+
+/* Override the tooltip background, color, and padding */
+.MuiTooltip-tooltip {
+  background-color:#A70D2A !important;
+  color: white !important;
+    min-height: 30px;
+  display: flex !important;        /* flexbox layout */
+  align-items: center !important;  /* vertical centering */
+   font-size: 12px !important;
+   font-weight:bold !important;
+   width:150px
+}
+
+/* Override the arrow color to match tooltip background */
+.MuiTooltip-arrow {
+  color: #A70D2A !important;
+}
+
+.MuiDataGrid-root {
+  min-height: 400px; /* stable height until data loads */
+}
+
+.outlet-style
+{
+   height: auto;
+    overflow: auto;
+    background-color:#F8F6F0; /* #FFFAF0 /* floral white */ ;
+    margin:0 auto;
+    min-width:80%;
+    padding-bottom:0;
+    align-content: center;
+     border-radius: 10px;
+  /* border: 3px solid red; */
+}
+
+@media (min-width:1200px)
+{
+   .outlet-style
+   {
+     min-height:854px;
+   }
+  
+}
+
+/*
+@media (min-width: 768px) {
+  .outlet-style
+  {
+    width:80%;
+    
+  }
+}*/
+
+@media (max-width: 360px) {
+  .outlet-style
+  {
+    margin:0;
+  }
+}
+
+
+@media (max-height: 850px) {
+   .outlet-style
+   {
+        margin-bottom:20px;
+   }
+}
