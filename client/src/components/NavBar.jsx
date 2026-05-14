@@ -8,7 +8,7 @@ import "./NavBar.css";
 function NavBar({ links }) {
    return (
     <Box className="navbar-container">
-      <Stack className="navbar-stack" direction="row"  gap={2}>
+      <Stack className="navbar-stack" direction="row"   sx={{ flexWrap: 'wrap' ,columnGap: 1, rowGap: { xs: 1, sm: 2 } }} gap={2}>
         { links.map( link =>{ 
              
              if ( link.link)
