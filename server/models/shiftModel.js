@@ -9,6 +9,22 @@ const shiftSchema = new mongoose.Schema({
      timestamps:true
 });
 
+shiftSchema.set('toJSON', {
+  transform: function (doc, ret) {
+    ret.id = ret._id;     
+    delete ret._id;
+    return ret;
+  }
+});
+
+shiftSchema.set('toObject', {
+  transform: function (doc, ret) {
+    ret.id = ret._id;
+     delete ret._id;   
+    return ret;
+  }
+});
+
 
 const shiftModel = mongoose.model('shift',shiftSchema);
 

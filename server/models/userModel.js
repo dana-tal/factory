@@ -12,6 +12,21 @@ const userSchema = new mongoose.Schema({
      timestamps:true
 });
 
+userSchema.set('toJSON', {
+  transform: function (doc, ret) {
+    ret.id = ret._id;     
+    delete ret._id;
+    return ret;
+  }
+});
+
+userSchema.set('toObject', {
+  transform: function (doc, ret) {
+    ret.id = ret._id;
+     delete ret._id;   
+    return ret;
+  }
+});
 
 
 const userModel = mongoose.model('user',userSchema);

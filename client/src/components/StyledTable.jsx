@@ -24,19 +24,23 @@ const StyledTable= forwardRef( ({rows, columns, paginationModel , pageSizes, tit
       <DataGrid
            loading={ loading }
             density="standard"
+            isRowSelectable={(params) => !params.row.isDetailRow}
             localeText={{ noRowsLabel: "No records found" }}
         rows={rows || []}
         columns={columns}
-        getRowClassName={(params) =>{
+        getRowClassName={(params) =>
+          {
+                if (params.row.isDetailRow) 
+                {
+                    return "detail-row";
+                }
                 if (zebraRows)
                 {
-                  return params.indexRelativeToCurrentPage % 2 === 0 ? "even" : "odd"
+                    return params.indexRelativeToCurrentPage % 2 === 0 ? "even": "odd";
                 }
-                else
-                {
-                    return '';
-                }
-              }
+                return '';
+               
+          }
         }
         initialState={{ pagination: { paginationModel } }}
         pageSizeOptions= { pageSizes}
@@ -54,7 +58,10 @@ const StyledTable= forwardRef( ({rows, columns, paginationModel , pageSizes, tit
           minHeight:{xs:"450px", sm:"640px", md:"640px",lg:"640px"},
           width: '100%',
 
-
+          // hide checkboxes for detail rows 
+          "& .detail-row .MuiDataGrid-cellCheckbox": {
+                              visibility: "hidden"
+          },
 
 // Zebra stripes with higher specificity
 "& .even.MuiDataGrid-row": { backgroundColor: "#f5f5f5" },
@@ -71,8 +78,15 @@ const StyledTable= forwardRef( ({rows, columns, paginationModel , pageSizes, tit
 "& .odd.Mui-selected": { backgroundColor: "#c8b69c !important" },
 
         }}
-        getRowHeight={isMobile ? () => 'auto' : undefined} // responsive on mobile
          
+        getRowHeight={(params) => {
+
+              if (params.model.isDetailRow) {
+                  return 'auto';
+              }
+
+              return isMobile ? 'auto' : null;
+          }}
       />
    
     </Paper>

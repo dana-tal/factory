@@ -6,6 +6,7 @@ const employeeShiftSchema =  new mongoose.Schema ({
     shiftId: {type: mongoose.Schema.Types.ObjectId, ref: 'shift'}
 });
 
+
 // prevent duplicates  (same employee & shift)
 employeeShiftSchema.index({ employeeId: 1, shiftId: 1 }, { unique: true });
 
