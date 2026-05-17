@@ -22,6 +22,7 @@ const router = express.Router();
 router.get('/', departmentsController.getAllDepartments);
 
 
+router.get ('/managers', departmentsController.getAllManagers);
 
  /**
   * @swagger

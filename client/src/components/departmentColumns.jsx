@@ -54,7 +54,8 @@ return  [
                    jsx  =  <Box sx={{ width: '100%' }}>
                                     <RowField label="Department :" value={row.name } />
                                     <RowField label="Manager Name: " value={`${row.manager.firstName} ${row.manager.lastName}`} />
-                                    <RowField label="Employees: "  value={<ToggleBox  isOpen={isOpen} rowId={row.id} handleToggleEmployees={handleToggleEmployees}/>} />
+                                    { row.employees.length >0 && <RowField label="Employees: "  value={<ToggleBox  isOpen={isOpen} rowId={row.id} handleToggleEmployees={handleToggleEmployees}/>} /> }
+                                    { row.employees.length==0 && <RowField label="Employees: " value="No Employees yet" />}
                             </Box> 
 
                } 
@@ -123,7 +124,8 @@ const getDesktopColumns = ({
                   );
                 }
                 const isOpen = expandedRows.includes(params.row.id);
-                return (<ToggleBox  isOpen={isOpen} rowId={params.row.id} handleToggleEmployees={handleToggleEmployees}/>);
+                const jsx = params.row.employees.length ===0 ? "No Employees yet": (<ToggleBox  isOpen={isOpen} rowId={params.row.id} handleToggleEmployees={handleToggleEmployees}/>);
+                return jsx;
             }
         
         }

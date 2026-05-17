@@ -24,6 +24,24 @@ const getAllDepartments =  async (req,res)=>{
     }
 }
 
+const getAllManagers = async (req,res) =>{
+    try
+    {
+        const managers = await departmentsService.getAllManagers();
+        if (!managers)
+        {
+            return res.status(204).json({ message: 'The request was successful, but there are no managers yet'});
+        }
+         await usersService.logUserAction(req.user.userId,"getAllManagers");
+        return res.status(200).json(managers);   
+    }
+    catch(err)
+    {
+         errlogger.error(`getAllManagers failed: ${err.message}`, { stack: err.stack });
+        return res.status(500).json(err);  
+    }
+}
+
 const getDepartmentsNames = async (req,res) =>
 {
     try
@@ -206,6 +224,7 @@ const deleteDepartment = async (req,res) =>
 
 module.exports = {
     getAllDepartments,
+    getAllManagers,
     getDepartmentsNames,
     getDepartmentById,
     getDepartmentEditInfo,

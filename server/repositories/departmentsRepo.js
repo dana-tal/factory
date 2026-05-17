@@ -19,6 +19,44 @@ const getAllDepartments = (filters)=>{
     });
 }
 
+const getAllManagers = ()=>{
+
+     return Department.aggregate([
+
+        {
+            $group: {
+                _id: '$managerId'
+            }
+        },
+
+        {
+            $lookup: {
+                from: 'employees',
+                localField: '_id',
+                foreignField: '_id',
+                as: 'manager'
+            }
+        },
+
+         { $unwind: "$manager" },
+        {
+            $replaceRoot: { newRoot: "$manager" }
+        },
+        {
+            $project: {
+            _id: 0,
+            id: "$_id",
+            firstName: 1,
+            lastName: 1,
+            departmentId: 1
+        }
+  }
+    ]);
+
+   
+
+}
+
 const getDepartmentById = (id) =>{
     return Department.findById(id)
      .populate({ 
@@ -44,6 +82,8 @@ const updateDepartment = async (id,deptObj)=>{
     const dept = await Department.findByIdAndUpdate(id,deptObj,{new:true}); // setting flag new to true so it will return the updated object 
     return dept.populate('manager');
 }
+
+
 
 const deleteDepartment = async (id) =>{
     const session = await mongoose.startSession();
@@ -84,6 +124,7 @@ const departmentExists = (id) =>{
 
 module.exports = {
     getAllDepartments,
+    getAllManagers,
     getDepartmentById,
     addDepartment,
     getDepartmentByName,
