@@ -1,5 +1,5 @@
 import { useState,useRef} from "react";
-import { requestAllDepartments,requestDepartmentAdd , requestRemoveDepartments} from "../utils/departmentRequest";
+import { requestAllDepartments,requestDepartmentAdd ,requestDepartmentUpdate, requestRemoveDepartments} from "../utils/departmentRequest";
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useNavigate } from "react-router-dom";
@@ -10,7 +10,6 @@ export const useEditableDepartment = () => {
     const [loadingDepartments, setLoadingDepartments] = useState(false); 
     const [rows, setRows] = useState([]);      // will hold a row for each department 
     const [expandedRows, setExpandedRows] = useState([]); // will hold department ids of rows that show the department employees 
-    const [isLightboxOpen, setIsLightboxOpen] = useState(false);
     const [departmentId, setDepartmentId] = useState("");
     const [feedbackMsg, setFeedbackMsg] = useState("");
     const [errorMsg, setErrorMsg] = useState("");
@@ -56,19 +55,14 @@ export const useEditableDepartment = () => {
     };
 
     const handleNewDepartment = ()=>{
-       // setIsLightboxOpen(true);  
         setDepartmentId(""); 
         navigate("/departments/add");
     }
 
-    const closeLightbox = ()=>{
-         setIsLightboxOpen(false);
-    }
-
     
-     const showFeedback = (msg)=>{
+     const showFeedback =  (msg)=>{
              setFeedbackMsg(msg);
-              setTimeout(() => {
+               setTimeout(() => {
                     setFeedbackMsg("");
                     }, 4000);
      }
@@ -123,9 +117,7 @@ export const useEditableDepartment = () => {
         {
             const department = await requestDepartmentAdd(dept_Obj);
             console.log("department", department);
-            setRows( (prevRows)=>{  return [ ...prevRows, department] } );
-            setIsLightboxOpen(false);
-            showFeedback("Department added successfully");   
+            setRows( (prevRows)=>{  return [ ...prevRows, department] } );               
             return true;          
         }
         catch(err)
@@ -143,14 +135,37 @@ export const useEditableDepartment = () => {
         
     }
 
-  const handleDepartmentUpdate = (dept_Obj, setError) =>{
+  const handleDepartmentUpdate = async (dept_Obj, setError) =>{
+    try
+    {
+          const updatedDepartment = await requestDepartmentUpdate(dept_Obj);
+           console.log("updated department", updatedDepartment);
+             setRows( (prevRows)=>{  
+                let temp = [...prevRows]; 
+                let updated = temp.map( (dept)=>{ if (dept.id=== updatedDepartment.id){ return updatedDepartment } else { return dept }  } );
+                return updated;
+            });
 
-   
+            return true;           
+    }
+    catch(err)
+    {
+        console.log("Status:", err.response?.status);
+            console.log("Data:", err.response?.data);
+            console.log("Message:", err.response?.data?.message || err.message);
+
+             setError("root", {
+                    type: "manual",
+                    message: err.response?.data?.message || err.message || "Adding department failed"
+                });
+            return false;
+
+    }
 
   }
 
     return { loadingDepartments,rows,fetchDepartments,expandedRows,
             handleToggleEmployees, tableRef, paginationModel,isMobile,
-            rowsWithDetails,isLightboxOpen,closeLightbox, departmentId,handleNewDepartment,handleRemoveClick,
+            rowsWithDetails, departmentId,handleNewDepartment,handleRemoveClick,
             feedbackMsg,errorMsg ,handleDepartmentAdd, handleDepartmentUpdate};
 }

@@ -254,6 +254,10 @@ const updateEmployee = (id, employeeObj)=>{
     return employeeRepo.updateEmployee(id,employeeObj);
 }
 
+const updateEmployeesDepartment = (employeeIds, newDeptId)=>{
+    return employeeRepo.updateEmployeesDepartment(employeeIds, newDeptId);
+}
+
 const deleteEmployee = async (id)=>{
 
     let result;
@@ -289,6 +293,7 @@ module.exports ={
     getOutsideDepartmentEmployees,
     addNewEmployee,
     updateEmployee,
+    updateEmployeesDepartment,
     deleteEmployee,
     employeeExists,
     registerEmployeeToShifts,

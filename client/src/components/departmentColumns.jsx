@@ -1,5 +1,6 @@
 import { Box } from "@mui/material";
 import RowField from "./RowField";
+import { Link } from "react-router-dom";
 
 const renderEmployeesList = (employees) => (
   <Box sx={{ p: 2 }}>
@@ -52,7 +53,7 @@ return  [
                {
                   const isOpen = expandedRows.includes(row.id);
                    jsx  =  <Box sx={{ width: '100%' }}>
-                                    <RowField label="Department :" value={row.name } />
+                                    <RowField label="Department :" value={<Link to={`/departments/${row.id}`}>{row.name}</Link> } />
                                     <RowField label="Manager Name: " value={`${row.manager.firstName} ${row.manager.lastName}`} />
                                     { row.employees.length >0 && <RowField label="Employees: "  value={<ToggleBox  isOpen={isOpen} rowId={row.id} handleToggleEmployees={handleToggleEmployees}/>} /> }
                                     { row.employees.length==0 && <RowField label="Employees: " value="No Employees yet" />}
@@ -87,7 +88,7 @@ const getDesktopColumns = ({
               {
                 return null;
               }
-              return params.row.name;  // for regular row return the department name
+              return <Link to={`/departments/${params.row.id}`}>{params.row.name}</Link>;  // for regular row return the department name
             }
         
         },       

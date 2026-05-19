@@ -8,7 +8,7 @@ const requestAllDepartments = async ()=>
 
 const requestDepartmentById = async (deptId) =>
 {
-     const response = await api.get('/departments/'+deptId);
+     const response = await api.get('/departments/editInfo/'+deptId);
      return response.data;
 }
 
@@ -25,6 +25,11 @@ const requestDepartmentAdd = async (dept_obj) =>{
        return response.data;
 }
 
+const requestDepartmentUpdate = async (dept_obj)=>{
+     const response = await api.put('/departments/'+dept_obj.id, { ...dept_obj });
+     return response.data;
+}
+
 const requestRemoveDepartments = async (ids) => 
 {
     const promises = ids.map(id => api.delete('/departments/' + id));
@@ -39,5 +44,6 @@ export
     requestAllManagers,
     requestDepartmentById,
     requestDepartmentAdd,
+    requestDepartmentUpdate,
     requestRemoveDepartments
 }

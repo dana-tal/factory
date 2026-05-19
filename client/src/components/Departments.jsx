@@ -13,8 +13,8 @@ const Departments=() =>
   const { loadingDepartments, rows,fetchDepartments
           ,expandedRows,handleToggleEmployees,
           tableRef, paginationModel,isMobile,rowsWithDetails,
-          isLightboxOpen,closeLightbox,departmentId,handleNewDepartment,handleRemoveClick,
-          feedbackMsg, errorMsg,handleDepartmentAdd, handleDepartmentUpdate } = useEditableDepartment();
+          departmentId,handleNewDepartment,handleRemoveClick,
+          feedbackMsg, errorMsg} = useEditableDepartment();
 
   const columns = getDepartmentColumns({isMobile, expandedRows,handleToggleEmployees});
 
@@ -44,9 +44,7 @@ const Departments=() =>
             <CustomButton clickHandler={handleRemoveClick} bgColor="#CB6D51" textColor="white" label="Remove Departments"/>
       </div>
 
-        <LightBox  key={departmentId || "new"}  isOpen={isLightboxOpen} onCloseCallback={() => closeLightbox() } backdropColor="rgba(14, 135, 204, 0.3)">
-                <DepartmentForm onAddDepartment={handleDepartmentAdd} onUpdateDepartment={handleDepartmentUpdate} departmentId={departmentId}/>
-        </LightBox>
+       
     </Box>
   )
 }

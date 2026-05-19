@@ -178,12 +178,18 @@ const updateDepartment = async (req,res) =>
           const managerId = managerIdProvided ? deptObj.managerId: department.managerId.toString();
 
           
+          
           const result2 = await validator.validateDepartmentInfo(name,managerId);
           if ( result2)
           {
               return res.status(result2.status).json(result2.message);
           }
           const updatedDept = await departmentsService.updateDepartment(id,{name,managerId});
+          const newEmployees = deptObj.newEmployees;
+          if (newEmployees.length>0)
+          {
+               await employeesService.updateEmployeesDepartment(newEmployees, id);
+          }
           await usersService.logUserAction(req.user.userId,"updateDepartment");
           return res.status(200).json(updatedDept);
     }

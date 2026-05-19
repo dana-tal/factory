@@ -13,7 +13,7 @@ function NavBar({ links }) {
              
              if ( link.link)
              {
-                return <Button key={link.name} variant="contained" className="navbar-button" component={NavLink} to={link.link} end >{link.name}</Button> 
+                return <Button key={link.name} variant="contained" className="navbar-button" component={NavLink} to={link.link}  >{link.name}</Button> 
              }
              else if (link.callback)
              {

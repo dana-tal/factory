@@ -4,19 +4,27 @@ import { useForm, Controller } from "react-hook-form";
 import {useState,useEffect } from "react";
 import {Button,TextField,Alert,Stack, Typography,Paper,Select,
     MenuItem,FormControl,FormHelperText} from "@mui/material";
-import { useNavigate } from "react-router-dom";
+import { useNavigate,useParams } from "react-router-dom";
+import { Chip } from "@mui/material";
+import Autocomplete from "@mui/material/Autocomplete";
+import Checkbox from "@mui/material/Checkbox";
+import { Box } from "@mui/material";
 
-const DepartmentForm = ({ onAddDepartment , onUpdateDepartment, departmentId="" })=>{
+const DepartmentForm = ({ onAddDepartment , onUpdateDepartment })=>{
 
-    const departmentForm = useForm({ defaultValues: { id:"",name: "", managerId:"" }, });
+    const departmentForm = useForm({ defaultValues: { id:"",name: "", managerId:"",employees:[],externalEmployees:[] }, });
     const { handleSubmit,control,formState: { errors },reset, setError}  = departmentForm;  
     
     const [managers, setManagers] = useState([]);
     const [selectedDepartment, setSelectedDepartment] = useState(null);
-
+    const [feedbackMsg, setFeedbackMsg] =useState("");
+   
     const titleRegex = /^[\p{L}\d\s.,!?'"-]+$/u; 
     const forbiddenChars = /[<>{}\[\]]/; // Forbidden characters: < > { } [ ]
     const scriptPattern = /(script|onerror|onload|javascript:)/i; // Script-like patterns
+
+    const { departmentId } = useParams();
+   
    
     const navigate = useNavigate();
     
@@ -35,10 +43,8 @@ const DepartmentForm = ({ onAddDepartment , onUpdateDepartment, departmentId="" 
             try
             {
                 const response = await requestDepartmentById(id);
-                if (response.ok)
-                {
-                     setSelectedDepartment(response.departmentData);
-                }
+                console.log(response);               
+                setSelectedDepartment(response);                
             }
             catch(err)
             {
@@ -68,12 +74,16 @@ const DepartmentForm = ({ onAddDepartment , onUpdateDepartment, departmentId="" 
          }
          else
          {
-                ok = await onAddDepartment(data, setError);                
+                ok = await onAddDepartment(data, setError);      
+                setFeedbackMsg("Department added successfully");          
          }
         if (ok) 
         {
+           setFeedbackMsg( departmentId ? "Department updated successfully": "Department added successfully");
             reset();
-            navigate("/departments");
+            setTimeout(() => {
+                navigate("/departments");
+            }, 1500);
         }
     };
 
@@ -85,8 +95,6 @@ const DepartmentForm = ({ onAddDepartment , onUpdateDepartment, departmentId="" 
                 try
                 {
                     const allManagers = await requestAllManagers();
-                   // console.log("all Managers");
-                   // console.log(allManagers);
                     setManagers(allManagers);
                 }
                 catch(err)
@@ -96,33 +104,24 @@ const DepartmentForm = ({ onAddDepartment , onUpdateDepartment, departmentId="" 
             }
     
             fetchAllManagers();
-    
         }, []);
 
 
-    return   <>
-           <Paper
+    return    <div style={{ width: "100%" }}><Paper
             elevation={0}
              sx={{
-                  /*  p: 0,
-                    mx: "auto",
-                    width: "90%",             // take full width of parent
-                    maxWidth: 1200,            // limit max width
+                    p: 0,
+                    width: "90%",
+                    maxWidth: 1200,
                     boxSizing: "border-box",
                     backgroundColor: "transparent",
-                   marginTop: 0,*/
-
-                    p: 0,
-  width: "90%",
-  maxWidth: 1200,
-  boxSizing: "border-box",
-  backgroundColor: "transparent",
-  marginTop: 0,
-  mx: "auto",   
-
-                    
-                }}
+                    mx: "auto",
+                    mt: 2,
+                    mb: 2
+                }} 
+           
             >
+                    {feedbackMsg && <Alert severity="success">{feedbackMsg}</Alert>}  
                      {errors.root && <Alert severity="error">{errors.root.message}</Alert>}
                       <form onSubmit={handleSubmit(onSubmit)} style={{backgroundColor:"transparent",border:"2px solid #C19A6B",borderRadius:"10PX", padding:"10px",width:"100%"}}>
                                 <Typography variant="h5" align="center" sx={{ mb: 2 }}>
@@ -192,6 +191,88 @@ const DepartmentForm = ({ onAddDepartment , onUpdateDepartment, departmentId="" 
                                                                 )}
                                                                 />
                                                         </Stack>
+
+                                                        { selectedDepartment && <Stack spacing={1} sx={{ width: "100%" }}>
+                                                            <Typography>
+                                                                Current Employees:
+                                                            </Typography>
+                                                            <Stack
+                                                                direction="row"
+                                                                spacing={1}
+                                                                useFlexGap
+                                                                flexWrap="wrap"
+                                                            >
+                                                                {selectedDepartment?.employees?.map((employee) => (
+                                                                    <Chip
+                                                                        key={employee.id}
+                                                                        label={`${employee.firstName} ${employee.lastName}`}
+                                                                    />
+                                                                ))}
+                                                            </Stack>
+                                                        </Stack>}
+
+                                                        {selectedDepartment && (
+
+                                                        <Stack spacing={1} sx={{ width: "100%" }}>
+
+                                                            <Typography>
+                                                                Add Employees:
+                                                            </Typography>
+
+                                                            <Controller
+                                                                name="newEmployees"
+                                                                control={control}
+                                                                defaultValue={[]}
+
+                                                                render={({ field }) => {
+
+                                                                    // the employees that will be displayed are filtered by the field vale
+                                                                    // selectedEmployees is a list of objects so Autocomplete will be able to work with them 
+                                                                    const selectedEmployees =
+                                                                        selectedDepartment.externalEmployees.filter(
+                                                                            employee => field.value.includes(employee.id)
+                                                                        );
+
+                                                                    return (                                                                       
+                                                                        <Autocomplete
+                                                                                    multiple
+                                                                                    
+                                                                                    options={selectedDepartment.externalEmployees}
+                                                                                    value={selectedEmployees}
+
+                                                                                    getOptionLabel={(option) =>
+                                                                                        `${option.firstName} ${option.lastName}`
+                                                                                    }
+
+                                                                                    onChange={(_, newValue) => {
+                                                                                        field.onChange(
+                                                                                            newValue.map(emp => emp.id)
+                                                                                        );
+                                                                                    }}
+
+                                                                                    renderOption={(props, option, { selected }) => (
+                                                                                        <li {...props}>
+                                                                                            <Checkbox checked={selected} sx={{ mr: 1 }} />
+
+                                                                                            {option.firstName} {option.lastName}
+                                                                                        </li>
+                                                                                    )}
+
+                                                                                    renderInput={(params) => (
+                                                                                        <TextField
+                                                                                            {...params}
+                                                                                            label="Select Employees"
+                                                                                        />
+                                                                                    )}
+                                                                                />
+                                                                        
+                                                                    );
+                                                                }}
+                                                                
+                                                            />
+
+                                                        </Stack>
+                                                        )}
                                         
                                                          <Stack direction="row" spacing={1}  sx={{ alignItems:"flex-start"}}>
                                                                 <Controller
@@ -207,12 +288,12 @@ const DepartmentForm = ({ onAddDepartment , onUpdateDepartment, departmentId="" 
                                           <Button type="submit" variant="contained" sx={{ alignSelf: "flex-start", mt: 1 , textTransform:"capitalize"}}>
                                                            {selectedDepartment ? 'Update Department':'Add Department'}
                                           </Button>
-                                          <div style={{ height:"500px", width:"100%" ,backgroundColor:"transparent" }}></div>
+                                         
                                   </Stack>
                             </form>
                     
-            </Paper>
-            </>
+            </Paper></div>
+           
 }
 
 export default DepartmentForm

@@ -20,6 +20,7 @@ function App() {
               <Route path="auth/login" element={<LoginForm />} />
               <Route path="departments" element={<Departments />} />
               <Route path="departments/add" element={<DepartmentForm onAddDepartment={handleDepartmentAdd} onUpdateDepartment={handleDepartmentUpdate} />} />              
+              <Route path="departments/:departmentId" element ={<DepartmentForm onAddDepartment={handleDepartmentAdd} onUpdateDepartment={handleDepartmentUpdate} />} /> 
               <Route path="employees" element={<Employees />} />
               <Route path="shifts" element={<Shifts />} />
               <Route path="users" element={<Users />} />
