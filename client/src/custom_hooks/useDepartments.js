@@ -116,7 +116,6 @@ export const useEditableDepartment = () => {
         try
         {
             const department = await requestDepartmentAdd(dept_Obj);
-            console.log("department", department);
             setRows( (prevRows)=>{  return [ ...prevRows, department] } );               
             return true;          
         }
@@ -139,7 +138,6 @@ export const useEditableDepartment = () => {
     try
     {
           const updatedDepartment = await requestDepartmentUpdate(dept_Obj);
-           console.log("updated department", updatedDepartment);
              setRows( (prevRows)=>{  
                 let temp = [...prevRows]; 
                 let updated = temp.map( (dept)=>{ if (dept.id=== updatedDepartment.id){ return updatedDepartment } else { return dept }  } );

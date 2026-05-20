@@ -19,8 +19,8 @@ function App() {
           <Route path="/" element={<SiteTemplate />}>
               <Route path="auth/login" element={<LoginForm />} />
               <Route path="departments" element={<Departments />} />
-              <Route path="departments/add" element={<DepartmentForm onAddDepartment={handleDepartmentAdd} onUpdateDepartment={handleDepartmentUpdate} />} />              
-              <Route path="departments/:departmentId" element ={<DepartmentForm onAddDepartment={handleDepartmentAdd} onUpdateDepartment={handleDepartmentUpdate} />} /> 
+              <Route path="departments/add" element={<DepartmentForm onSubmitHandler={handleDepartmentAdd} />} />              
+              <Route path="departments/:departmentId" element ={<DepartmentForm  onSubmitHandler={handleDepartmentUpdate} />} /> 
               <Route path="employees" element={<Employees />} />
               <Route path="shifts" element={<Shifts />} />
               <Route path="users" element={<Users />} />

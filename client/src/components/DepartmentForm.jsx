@@ -1,5 +1,4 @@
 
-import { requestDepartmentById, requestAllManagers } from "../utils/departmentRequest";
 import { useForm, Controller } from "react-hook-form";
 import {useState,useEffect } from "react";
 import {Button,TextField,Alert,Stack, Typography,Paper,Select,
@@ -9,14 +8,15 @@ import { Chip } from "@mui/material";
 import Autocomplete from "@mui/material/Autocomplete";
 import Checkbox from "@mui/material/Checkbox";
 import { Box } from "@mui/material";
+import { useDepartmentForm } from "../custom_hooks/useDepartmentForm";
 
-const DepartmentForm = ({ onAddDepartment , onUpdateDepartment })=>{
+const DepartmentForm = ({ onSubmitHandler })=>{
 
     const departmentForm = useForm({ defaultValues: { id:"",name: "", managerId:"",employees:[],externalEmployees:[] }, });
     const { handleSubmit,control,formState: { errors },reset, setError}  = departmentForm;  
     
-    const [managers, setManagers] = useState([]);
-    const [selectedDepartment, setSelectedDepartment] = useState(null);
+    const { managers, fetchAllEmployees,selectedDepartment, fetchDepartment } = useDepartmentForm();
+
     const [feedbackMsg, setFeedbackMsg] =useState("");
    
     const titleRegex = /^[\p{L}\d\s.,!?'"-]+$/u; 
@@ -24,8 +24,6 @@ const DepartmentForm = ({ onAddDepartment , onUpdateDepartment })=>{
     const scriptPattern = /(script|onerror|onload|javascript:)/i; // Script-like patterns
 
     const { departmentId } = useParams();
-   
-   
     const navigate = useNavigate();
     
     useEffect(() => {
@@ -34,49 +32,22 @@ const DepartmentForm = ({ onAddDepartment , onUpdateDepartment })=>{
                 id: selectedDepartment.id,
                 name: selectedDepartment.name,
                 managerId: selectedDepartment.manager.id,
+                newEmployees:[],
             });
         }
     }, [selectedDepartment, reset]);
 
     useEffect( ()=>{
-          const fetchDepartment = async (id)=>{
-            try
-            {
-                const response = await requestDepartmentById(id);
-                console.log(response);               
-                setSelectedDepartment(response);                
-            }
-            catch(err)
-            {
-                console.log(err);
-            }
-          } 
-          
           if (departmentId)
           {
             fetchDepartment(departmentId);
           }
-          else
-          {
-             setSelectedDepartment(null);
-          }
-    
     },[departmentId]);
 
 
     const onSubmit = async (data) => 
     {
-        let ok;
-
-         if (departmentId)
-         {
-               ok = await onUpdateDepartment(data, setError);
-         }
-         else
-         {
-                ok = await onAddDepartment(data, setError);      
-                setFeedbackMsg("Department added successfully");          
-         }
+        const ok = await onSubmitHandler(data,setError);
         if (ok) 
         {
            setFeedbackMsg( departmentId ? "Department updated successfully": "Department added successfully");
@@ -89,25 +60,11 @@ const DepartmentForm = ({ onAddDepartment , onUpdateDepartment })=>{
 
     
         useEffect( ()=>{
-                
-            const fetchAllManagers = async ()=>{
-    
-                try
-                {
-                    const allManagers = await requestAllManagers();
-                    setManagers(allManagers);
-                }
-                catch(err)
-                {
-                    console.log(err);
-                }
-            }
-    
-            fetchAllManagers();
+            fetchAllEmployees();
         }, []);
 
 
-    return    <div style={{ width: "100%" }}><Paper
+    return    <Paper
             elevation={0}
              sx={{
                     p: 0,
@@ -292,7 +249,7 @@ const DepartmentForm = ({ onAddDepartment , onUpdateDepartment })=>{
                                   </Stack>
                             </form>
                     
-            </Paper></div>
+            </Paper>
            
 }
 

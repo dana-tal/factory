@@ -53,17 +53,31 @@ const getAllEmployees = (filters = {}) => {
 
     // 4️⃣ keep only wanted fields
     {
-      $project: {
-        _id: 1,
-        firstName: 1,
-        lastName: 1,
-        'department._id': 1,
-        'department.name': 1,
-        'shifts._id': 1,
-        'shifts.startDate': 1,
-        'shifts.endDate': 1
+        $project: {
+          _id: 0,
+          id: '$_id',
+
+          firstName: 1,
+          lastName: 1,
+
+          department: {
+            id: '$department._id',
+            name: '$department.name'
+          },
+
+          shifts: {
+            $map: {
+              input: '$shifts',
+              as: 'shift',
+              in: {
+                id: '$$shift._id',
+                startDate: '$$shift.startDate',
+                endDate: '$$shift.endDate'
+              }
+            }
+          }
+        }
       }
-    }
   ]);
 };
 
