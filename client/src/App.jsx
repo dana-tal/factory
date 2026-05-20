@@ -7,7 +7,7 @@ import Shifts from './components/Shifts';
 import Users from './components/Users';
 import NotFound from './components/NotFound';
 import DepartmentForm from './components/DepartmentForm';
-import  { useEditableDepartment}  from './custom_hooks/useEditableDepartment';
+import  { useEditableDepartment}  from './custom_hooks/useDepartments';
 
 function App() {
  

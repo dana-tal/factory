@@ -2,7 +2,7 @@ import { useEffect, useRef, useState} from "react";
 import StyledTable from "./StyledTable";
 import RowField from "./RowField";
 import {Box, Alert} from "@mui/material";
-import  { useEditableDepartment}  from '../custom_hooks/useEditableDepartment';
+import  { useEditableDepartment}  from '../custom_hooks/useDepartments';
 import { getDepartmentColumns } from "./departmentColumns";
 import CustomButton from "./CustomButton";
 import LightBox from "./LightBox";
