@@ -5,7 +5,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { useNavigate } from "react-router-dom";
 
 
-export const useEditableDepartment = () => {
+export const useDepartments = () => {
 
     const [loadingDepartments, setLoadingDepartments] = useState(false); 
     const [rows, setRows] = useState([]);      // will hold a row for each department 

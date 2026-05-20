@@ -7,11 +7,11 @@ import Shifts from './components/Shifts';
 import Users from './components/Users';
 import NotFound from './components/NotFound';
 import DepartmentForm from './components/DepartmentForm';
-import  { useEditableDepartment}  from './custom_hooks/useDepartments';
+import  { useDepartments}  from './custom_hooks/useDepartments';
 
 function App() {
  
-    const { handleDepartmentAdd, handleDepartmentUpdate } = useEditableDepartment();
+    const { handleDepartmentAdd, handleDepartmentUpdate } = useDepartments();
     
   return (
      <Routes>

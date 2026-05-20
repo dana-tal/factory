@@ -29,11 +29,8 @@ const ToggleBox = ({isOpen,rowId, handleToggleEmployees})=>{
         </Box>
 }
  
-const getMobileColumns = ({
-  expandedRows,
-  handleToggleEmployees,
-}) => {
-
+const getMobileColumns = ({ expandedRows, handleToggleEmployees,}) => 
+{
 return  [
           {
               field: 'mobileView',
@@ -111,7 +108,6 @@ const getDesktopColumns = ({
             headerName:'Employees',
             flex:1,
             sortable:false,
-          /*  valueGetter: (value,row)=> 'Employees', */
             align:'left',
             renderCell: (params) => /*  for employees row show nothing, for regular department row , show  hide/show link */
             {

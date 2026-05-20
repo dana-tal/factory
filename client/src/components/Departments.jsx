@@ -2,11 +2,10 @@ import { useEffect, useRef, useState} from "react";
 import StyledTable from "./StyledTable";
 import RowField from "./RowField";
 import {Box, Alert} from "@mui/material";
-import  { useEditableDepartment}  from '../custom_hooks/useDepartments';
+import  { useDepartments }  from '../custom_hooks/useDepartments';
 import { getDepartmentColumns } from "./departmentColumns";
 import CustomButton from "./CustomButton";
-import LightBox from "./LightBox";
-import DepartmentForm from "./DepartmentForm";
+
 
 const Departments=() =>
 {
@@ -14,7 +13,7 @@ const Departments=() =>
           ,expandedRows,handleToggleEmployees,
           tableRef, paginationModel,isMobile,rowsWithDetails,
           departmentId,handleNewDepartment,handleRemoveClick,
-          feedbackMsg, errorMsg} = useEditableDepartment();
+          feedbackMsg, errorMsg} = useDepartments();
 
   const columns = getDepartmentColumns({isMobile, expandedRows,handleToggleEmployees});
 
