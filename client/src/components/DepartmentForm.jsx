@@ -207,13 +207,16 @@ const DepartmentForm = ({ onSubmitHandler })=>{
                                                                                         );
                                                                                     }}
 
-                                                                                    renderOption={(props, option, { selected }) => (
-                                                                                        <li {...props}>
-                                                                                            <Checkbox checked={selected} sx={{ mr: 1 }} />
+                                                                                    renderOption={(props, option, { selected }) => {
+                                                                                        const { key, ...rest } = props;
 
-                                                                                            {option.firstName} {option.lastName}
-                                                                                        </li>
-                                                                                    )}
+                                                                                        return (
+                                                                                            <li key={key} {...rest}>
+                                                                                                <Checkbox checked={selected} sx={{ mr: 1 }} />
+                                                                                                {option.firstName} {option.lastName}
+                                                                                            </li>
+                                                                                        );
+                                                                                    }}
 
                                                                                     renderInput={(params) => (
                                                                                         <TextField

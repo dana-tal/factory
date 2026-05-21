@@ -3,7 +3,7 @@ import { requestAllEmployees,requestEmployeeAdd ,requestEmployeeUpdate, requestR
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useNavigate } from "react-router-dom";
-
+import { useEntities } from "./useEntities";
 
 
 export const useEmployees = ()=>
@@ -22,6 +22,11 @@ export const useEmployees = ()=>
     const rowsWithDetails = []; // will hold all the rows: regular employee rows and shifts content rows 
 
     const navigate = useNavigate();
+
+    
+     const { handleEntityAdd,handleEntityUpdate, handleRemoveMany } = useEntities({setRows,setFeedbackMsg,requestAddCallback:requestEmployeeAdd,
+                                              requestRemoveCallback:requestRemoveEmployees ,requestUpdateCallback:requestEmployeeUpdate,
+                                              entity_name:"employee" });
 
     // build the data structure rowsWithDetails 
     rows.forEach((row) => 
@@ -62,12 +67,6 @@ export const useEmployees = ()=>
         navigate("/employees/add");
     }
 
-    const showFeedback =  (msg)=>{
-             setFeedbackMsg(msg);
-               setTimeout(() => {
-                    setFeedbackMsg("");
-                    }, 4000);
-    }
 
     const showErrorMsg =  (msg)=>{
         setErrorMsg(msg);
@@ -77,7 +76,6 @@ export const useEmployees = ()=>
      }
 
     const handleRemoveClick = async () => {
-
 
         if (!tableRef.current) 
         {
@@ -91,72 +89,18 @@ export const useEmployees = ()=>
             showErrorMsg("No employees were selected for removal, please select some.");
             return;
         }
-        try
-        {
-            const ids = Array.from(selectedIDs.ids);
-            const res = await requestRemoveEmployees(ids);
-             setRows( (prevRows)=> {  
-                       let temp = [ ...prevRows];
-                       const updatedRows  =  temp.filter( emp => { return !ids.includes(emp.id) } )
-                       return updatedRows;
-             })
-             showFeedback("Employee(s) removed successfully");    
-        }
-        catch(err)
-        {
-            console.log("Status:", err.response?.status);
-            console.log("Data:", err.response?.data);
-            console.log("Message:", err.response?.data?.message || err.message);
-        }
+         const ids = Array.from(selectedIDs.ids);
+        return handleRemoveMany(ids);           
     };
 
-     const handleEmployeeAdd = async (emp_Obj, setError)=>{
-   
-        try
-        {
-            const employee = await requestEmployeeAdd(emp_Obj);
-            setRows( (prevRows)=>{  return [ ...prevRows, employee] } );               
-            return true;          
-        }
-        catch(err)
-        {
-            console.log("Status:", err.response?.status);
-            console.log("Data:", err.response?.data);
-            console.log("Message:", err.response?.data?.message || err.message);
-
-             setError("root", {
-                    type: "manual",
-                    message: err.response?.data?.message || err.message || "Adding employee failed"
-                });
-            return false;
-        }
-        
+     const handleEmployeeAdd = async (emp_obj, setError)=>
+    {
+         return handleEntityAdd(emp_obj,setError);   
     }
 
-    const handleEmployeeUpdate = async (emp_Obj, setError) =>
+    const handleEmployeeUpdate = async (emp_obj, setError) =>
     {
-        try
-        {
-            const updatedEmployee = await requestEmployeeUpdate(emp_Obj);
-                setRows( (prevRows)=>{  
-                    let temp = [...prevRows]; 
-                    let updated = temp.map( (emp)=>{ if (emp.id=== updatedEmployee.id){ return updatedEmployee } else { return emp }  } );
-                    return updated;
-                });
-                return true;           
-        }
-        catch(err)
-        {
-            console.log("Status:", err.response?.status);
-                console.log("Data:", err.response?.data);
-                console.log("Message:", err.response?.data?.message || err.message);
-
-                setError("root", {
-                        type: "manual",
-                        message: err.response?.data?.message || err.message || "Adding department failed"
-                    });
-                return false;
-        }
+        return handleEntityUpdate(emp_obj,setError );       
     }
 
       return { loadingEmployees,rows,fetchEmployees,expandedRows,

@@ -3,7 +3,7 @@ import { requestAllDepartments,requestDepartmentAdd ,requestDepartmentUpdate, re
 import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useNavigate } from "react-router-dom";
-
+import { useEntities } from "./useEntities";
 
 export const useDepartments = () => {
 
@@ -21,6 +21,11 @@ export const useDepartments = () => {
     const rowsWithDetails = []; // will hold all the rows: regular department rows and employees content rows 
 
      const navigate = useNavigate();
+
+     const { handleEntityAdd,handleEntityUpdate, handleRemoveMany } = useEntities({setRows,setFeedbackMsg,requestAddCallback:requestDepartmentAdd,
+                                              requestRemoveCallback:requestRemoveDepartments ,requestUpdateCallback:requestDepartmentUpdate,
+                                              entity_name:"department" });
+
 
     rows.forEach((row) => 
     {
@@ -59,16 +64,7 @@ export const useDepartments = () => {
         navigate("/departments/add");
     }
 
-    
-     const showFeedback =  (msg)=>{
-             setFeedbackMsg(msg);
-               setTimeout(() => {
-                    setFeedbackMsg("");
-                    }, 4000);
-     }
-    
-
-    
+   
     const showErrorMsg =  (msg)=>{
         setErrorMsg(msg);
          setTimeout(() => {
@@ -91,75 +87,19 @@ export const useDepartments = () => {
             showErrorMsg("No departments were selected for removal, please select some.");
             return;
         }
-        try
-        {
-            const ids = Array.from(selectedIDs.ids);
-            const res = await requestRemoveDepartments(ids);
-             setRows( (prevRows)=> {  
-                       let temp = [ ...prevRows];
-                       const updatedRows  =  temp.filter( dept => { return !ids.includes(dept.id) } )
-                       return updatedRows;
-             })
-             showFeedback("Department(s) removed successfully");    
-        }
-        catch(err)
-        {
-            console.log("Status:", err.response?.status);
-            console.log("Data:", err.response?.data);
-            console.log("Message:", err.response?.data?.message || err.message);
-        }
+        const ids = Array.from(selectedIDs.ids);
+        return handleRemoveMany(ids);       
+    };
+
+  
+   const handleDepartmentAdd = (dept_obj,setError) => 
+   {
+        return handleEntityAdd(dept_obj,setError);
     };
 
 
-  const handleDepartmentAdd = async (dept_Obj, setError)=>{
-   
-        try
-        {
-            const department = await requestDepartmentAdd(dept_Obj);
-            setRows( (prevRows)=>{  return [ ...prevRows, department] } );               
-            return true;          
-        }
-        catch(err)
-        {
-            console.log("Status:", err.response?.status);
-            console.log("Data:", err.response?.data);
-            console.log("Message:", err.response?.data?.message || err.message);
-
-             setError("root", {
-                    type: "manual",
-                    message: err.response?.data?.message || err.message || "Adding department failed"
-                });
-            return false;
-        }
-        
-    }
-
   const handleDepartmentUpdate = async (dept_Obj, setError) =>{
-    try
-    {
-          const updatedDepartment = await requestDepartmentUpdate(dept_Obj);
-             setRows( (prevRows)=>{  
-                let temp = [...prevRows]; 
-                let updated = temp.map( (dept)=>{ if (dept.id=== updatedDepartment.id){ return updatedDepartment } else { return dept }  } );
-                return updated;
-            });
-
-            return true;           
-    }
-    catch(err)
-    {
-        console.log("Status:", err.response?.status);
-            console.log("Data:", err.response?.data);
-            console.log("Message:", err.response?.data?.message || err.message);
-
-             setError("root", {
-                    type: "manual",
-                    message: err.response?.data?.message || err.message || "Adding department failed"
-                });
-            return false;
-
-    }
-
+    return handleEntityUpdate(dept_Obj,setError );
   }
 
     return { loadingDepartments,rows,fetchDepartments,expandedRows,

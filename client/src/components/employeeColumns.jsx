@@ -8,7 +8,10 @@ const renderShiftsList = (shifts) => (
   <Box sx={{ p: 1 ,paddingLeft:0, textAlign:'left'}}>
     {shifts.map((shift) => (
       <Box key={shift.id}>
-         {`start:${formatDate(shift.startDate)}   end: ${formatDate(shift.endDate)}`}
+            <div style={{ display: "flex", gap: "15px" }}>
+              <span>start: {formatDate(shift.startDate)}</span>
+              <span>end: {formatDate(shift.endDate)}</span>
+            </div>
       </Box>
     ))}
   </Box>
