@@ -26,8 +26,15 @@ const DepartmentForm = ({ onSubmitHandler })=>{
     const { departmentId } = useParams();
     const navigate = useNavigate();
     
+     useEffect( ()=>{
+          if (departmentId)
+          {
+            fetchDepartment(departmentId);
+          }
+    },[departmentId]);
+
     useEffect(() => {
-        if (selectedDepartment) {
+        if (selectedDepartment && managers.length >0) {
             reset({
                 id: selectedDepartment.id,
                 name: selectedDepartment.name,
@@ -35,16 +42,9 @@ const DepartmentForm = ({ onSubmitHandler })=>{
                 newEmployees:[],
             });
         }
-    }, [selectedDepartment, reset]);
+    }, [selectedDepartment,managers,reset]);
 
-    useEffect( ()=>{
-          if (departmentId)
-          {
-            fetchDepartment(departmentId);
-          }
-    },[departmentId]);
-
-
+   
     const onSubmit = async (data) => 
     {
         const ok = await onSubmitHandler(data,setError);
@@ -157,7 +157,7 @@ const DepartmentForm = ({ onSubmitHandler })=>{
                                                                 direction="row"
                                                                 spacing={1}
                                                                 useFlexGap
-                                                                flexWrap="wrap"
+                                                                sx={{ flexWrap:"wrap"}}
                                                             >
                                                                 {selectedDepartment?.employees?.map((employee) => (
                                                                     <Chip
@@ -196,6 +196,25 @@ const DepartmentForm = ({ onSubmitHandler })=>{
                                                                                     
                                                                                     options={selectedDepartment.externalEmployees}
                                                                                     value={selectedEmployees}
+                                                                                     
+                                                                                    disablePortal
+
+                                                                                    slotProps={{
+                                                                                        paper: {
+                                                                                            sx: {
+                                                                                                maxHeight: 220,
+                                                                                            },
+                                                                                        },
+                                                                                        popper: {
+                                                                                            placement: "bottom-start",
+                                                                                        },
+                                                                                        listbox: {
+                                                                                            sx: {
+                                                                                                maxHeight: 220,
+                                                                                                overflowY: "auto",
+                                                                                            },
+                                                                                        },
+                                                                                    }}
 
                                                                                     getOptionLabel={(option) =>
                                                                                         `${option.firstName} ${option.lastName}`

@@ -47,7 +47,6 @@ export const useEmployees = ()=>
     {
           setLoadingEmployees(true);
           const allEmployees =  await requestAllEmployees();
-          console.log(allEmployees);
           setRows(allEmployees);
           setLoadingEmployees(false);         
     }

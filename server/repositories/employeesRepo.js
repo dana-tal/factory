@@ -113,7 +113,7 @@ const getEmployeeShifts =  (employeeId) =>{
     },
     { $unwind: '$shift' }, // 3. Since each shift is returned as an array, unwind converts the shift array into a single object so we can work with it directly.   
     { $replaceRoot: { newRoot: '$shift' } },  // 4. Replace the root document with the joined shift document
-    { $project: { _id: 1, startDate: 1, endDate: 1 } },  // 5.  select only the fields we want  from shifts  
+    { $project: { _id: 0,id:"$_id",startDate: 1, endDate: 1 } },  // 5.  select only the fields we want  from shifts  
     { $sort: { startDate: 1 } }  // 6. sort shifts by date
 
   ]);
@@ -146,7 +146,7 @@ const getEmployeeUnregisteredShifts  =  async (employeeId) =>{
           }
         },
         { $match: { empReg: { $size: 0 } } },           // filter the resultset, pick only docs where empReg is empty
-        { $project: { _id: 1, startDate: 1, endDate: 1 } },
+        { $project: { _id: 0, id:"$_id", startDate: 1, endDate: 1 } },
         { $sort: { startDate: 1 } }
       ]);
   };

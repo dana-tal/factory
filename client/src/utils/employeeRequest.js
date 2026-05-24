@@ -21,7 +21,7 @@ const requestEmployeeAdd = async ( emp_obj) =>
 
 const requestEmployeeUpdate = async ( emp_obj) =>
 {
-    const response = await api.put('/employees/'+emp_obj.id, { ...emp_obj });
+    const response = await api.put('/employees/'+emp_obj.id, { ...emp_obj, startYear:+emp_obj.startYear });
     return response.data;
 }
 

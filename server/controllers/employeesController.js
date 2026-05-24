@@ -149,12 +149,25 @@ const updateEmployee = async (req,res)=>{
         const lastNameProvided  =  Object.prototype.hasOwnProperty.call(req.body, 'lastName');
         const startYearProvided =   Object.prototype.hasOwnProperty.call(req.body, 'startYear');
         const departmentIdProvided = Object.prototype.hasOwnProperty.call(req.body, 'departmentId');
+        const newShiftsProvided = Object.prototype.hasOwnProperty.call(req.body, 'newShifts');
 
         const firstName = firstNameProvided ? req.body.firstName: currentEmployee.firstName;
         const lastName =  lastNameProvided ? req.body.lastName: currentEmployee.lastName;
         const startYear = startYearProvided ? req.body.startYear: currentEmployee.startYear;
         const departmentId = departmentIdProvided ? req.body.departmentId: currentEmployee.department.id;  
+        const newShifts = newShiftsProvided ? req.body.newShifts: null;
         
+        if (newShiftsProvided)
+        {
+            result =  await validator.validateShifts('newShifts',req.body);       
+            if (result.status !=='O.K')
+            {
+                return  res.status(result.status).json(result.message);
+            }
+        }
+
+        //console.log(req.body);
+
         result = await validator.validateEmployeeInfo(firstName,lastName,startYear,departmentId);
         if (result)
         {
@@ -162,6 +175,13 @@ const updateEmployee = async (req,res)=>{
         }
 
         const updatedEmployee = await employeesService.updateEmployee(id,{ firstName,lastName,startYear,departmentId});
+
+        if (newShifts.length >0 )
+        {
+            const registerResult = await employeesService.registerEmployeeToShifts(id,newShifts);
+            updatedEmployee.registerResult = registerResult ;
+        }
+
         await usersService.logUserAction(req.user.userId,"updateEmployee");
         return res.status(200).json(updatedEmployee);
     }

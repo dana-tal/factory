@@ -79,11 +79,7 @@ const validateEmployees = async (fieldName, reqBody) =>{
           if ( !Array.isArray(reqBody[fieldName]) )
             {
                  return { status:400 ,message:fieldName+' field should be an array'};
-            }
-            else if ( reqBody[fieldName].length ===0)
-            {
-               return { status:400 , message: fieldName+' is an empty array.Please provide some employee ids' };
-            }
+            }         
      }
      const allEmployees = reqBody[fieldName]; 
      let employee, employeeExists;
@@ -120,11 +116,7 @@ const validateShifts = async (fieldName,reqBody)=>{
             if ( !Array.isArray(reqBody[fieldName]) )
             {
                  return { status:400 ,message:fieldName+' field should be an array'};
-            }
-            else if ( reqBody[fieldName].length ===0)
-            {
-               return { status:400 , message: fieldName+' is an empty array.Please provide some shift ids' };
-            }
+            }          
         }
 
      const allShifts = reqBody[fieldName]; 
@@ -190,7 +182,7 @@ const validateShiftInfo = async (startDate,endDate)=>
      return result ;
 }
 
-const validateEmployeeInfo = async (firstName,lastName,startYear,departmentId)=>
+const validateEmployeeInfo = async (firstName,lastName,startYear,departmentId,newShifts=null)=>
 {
      let result = null;
      const names = [ {name:firstName,type:'firstName'}, {name:lastName, type:'lastName'}];

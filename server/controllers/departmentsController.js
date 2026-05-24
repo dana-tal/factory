@@ -156,6 +156,7 @@ const updateDepartment = async (req,res) =>
     {
           const id = req.params.id;
           const deptObj = req.body;
+          let result1;
 
           const result = validator.validateEntityId(id,'Department');
           if (result)
@@ -177,8 +178,18 @@ const updateDepartment = async (req,res) =>
           const name = nameProvided ? deptObj.name:department.name;
           const managerId = managerIdProvided ? deptObj.managerId: department.managerId.toString();
 
+          const newEmployeesProvided = Object.prototype.hasOwnProperty.call(req.body, 'newEmployees');
           
-          
+          if (newEmployeesProvided)
+           {
+                result1 =  await validator.validateEmployees('newEmployees',req.body);       
+                if (result1.status !=='O.K')
+                {
+                    return  res.status(result1.status).json(result1.message);
+                }
+            }
+
+
           const result2 = await validator.validateDepartmentInfo(name,managerId);
           if ( result2)
           {

@@ -7,11 +7,14 @@ import Shifts from './components/Shifts';
 import Users from './components/Users';
 import NotFound from './components/NotFound';
 import DepartmentForm from './components/DepartmentForm';
+import EmployeeForm from './components/EmployeeForm';
 import  { useDepartments}  from './custom_hooks/useDepartments';
+import  { useEmployees } from './custom_hooks/useEmployees';
 
 function App() {
  
     const { handleDepartmentAdd, handleDepartmentUpdate } = useDepartments();
+    const { handleEmployeeAdd, handleEmployeeUpdate} = useEmployees();
     
   return (
      <Routes>
@@ -22,6 +25,8 @@ function App() {
               <Route path="departments/add" element={<DepartmentForm onSubmitHandler={handleDepartmentAdd} />} />              
               <Route path="departments/:departmentId" element ={<DepartmentForm  onSubmitHandler={handleDepartmentUpdate} />} /> 
               <Route path="employees" element={<Employees />} />
+              <Route path="employees/add" element={<EmployeeForm onSubmitHandler={handleEmployeeAdd} />} />
+              <Route path="employees/:employeeId" element={<EmployeeForm onSubmitHandler={handleEmployeeUpdate}  />} /> 
               <Route path="shifts" element={<Shifts />} />
               <Route path="users" element={<Users />} />
               <Route path="*" element={<NotFound />} /> 

@@ -18,6 +18,7 @@ const getEmployeeEditInfo = async (id) =>{
     {    
          employee = {
                         ... temployee._doc,
+                        id:temployee._id,
                         department:
                         {
                             id: temployee.departmentId._id.toString(),
@@ -25,7 +26,7 @@ const getEmployeeEditInfo = async (id) =>{
                         }
                     }
          delete employee.departmentId;   // because we have a department field now, departmentId is redundant  
-         
+         delete employee._id;
          
          const empShifts = await employeeRepo.getEmployeeShifts(id);
 
@@ -126,7 +127,7 @@ const registerEmployeeToShifts = async (empId,newShiftIds) =>{
 
     const empExistingShifts = await employeeRepo.getEmployeeShifts(empId);
 
-    const empExistingShiftIds  = empExistingShifts.map( shift =>{  return shift._id.toString() });
+    const empExistingShiftIds  = empExistingShifts.map( shift =>{  return shift.id.toString() });
 
     const allreadyRegistered = [];
     const shiftsSet = [];
