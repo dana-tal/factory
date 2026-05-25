@@ -53,7 +53,7 @@ return  [
                {
                   const isOpen = expandedRows.includes(row.id);
                    jsx  =  <Box sx={{ width: '100%' }}>
-                                    <RowField label="Employee :" value={<Link to={`/employees/${row.id}`}>{`${row.fistName} ${row.lastName}`}</Link> } />
+                                    <RowField label="Employee :" value={<Link to={`/employees/${row.id}`}>{`${row.firstName} ${row.lastName}`}</Link> } />
                                     <RowField label="Department: " value={ <Link to={`/departments/${row.department.id}`}>{row.department.name}</Link> } />
                                     { row.shifts.length >0 && <RowField label="Shifts: "  value={<ToggleBox  isOpen={isOpen} rowId={row.id} handleToggleEmployees={handleToggleShifts}/>} /> }
                                     { row.shifts.length==0 && <RowField label="Shifts: " value="No Shifts yet" />}
@@ -80,6 +80,8 @@ const getDesktopColumns = ({expandedRows,handleToggleShifts,}) =>
           headerName:'Employee Name',
           flex:1,
           align:'left',
+          sortable:true,
+          valueGetter: (value, row) =>{ return `${row.firstName} ${row.lastName}`} ,
           renderCell:(params)=>
           {
               if(params.row.isDetailRow) 
@@ -94,6 +96,8 @@ const getDesktopColumns = ({expandedRows,handleToggleShifts,}) =>
             headerName:'Department',
             flex:1,
             align:'left',
+            sortable:true,
+             valueGetter: (value, row) =>{ return `${row.department.name}`} ,
             renderCell:(params)=>
             {
               if(params.row.isDetailRow) 

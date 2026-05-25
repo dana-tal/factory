@@ -38,7 +38,10 @@ export const useEmployees = ()=>
                 id: `detail-${row.id}`,
                 isDetailRow: true,
                 parentId: row.id,
-                shifts: row.shifts
+                shifts: row.shifts,
+                firstName: row.firstName,
+                lastName: row.lastName ,
+                department: { id:row.department.id, name: row.department.name }
             });
         }
     });

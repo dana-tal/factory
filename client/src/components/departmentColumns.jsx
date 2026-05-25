@@ -6,7 +6,7 @@ const renderEmployeesList = (employees) => (
   <Box sx={{ p: 2 }}>
     {employees.map((emp) => (
       <Box key={emp.id}>
-        {emp.firstName} {emp.lastName}
+        <Link to={`/employees/${emp.id}`}>{emp.firstName} {emp.lastName}</Link>
       </Box>
     ))}
   </Box>
