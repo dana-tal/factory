@@ -16,6 +16,13 @@ function Employees() {
   
     const columns = getEmployeeColumns({isMobile, expandedRows,handleToggleShifts});
 
+    const columnVisibilityModel = isMobile
+  ? {
+      emp_name: false,
+      department_name: false,
+    }
+  : undefined;
+
   useEffect(()=>{  
     fetchEmployees();
   },[] );
@@ -35,7 +42,7 @@ function Employees() {
     >
       {feedbackMsg && <Alert severity="success">{feedbackMsg}</Alert>}
       {errorMsg && <Alert severity="error">{errorMsg}</Alert>}
-       <StyledTable rows={rowsWithDetails} columns={columns} paginationModel={paginationModel} pageSizes={[5,10,20,30]} title="Employees" loading={loadingEmployees} includeCheckboxes={true} ref={tableRef} />   
+       <StyledTable zebraRows={true} rows={rowsWithDetails} columns={columns} paginationModel={paginationModel} pageSizes={[5,10,20,30]} title="Employees" loading={loadingEmployees}   columnVisibilityModel={columnVisibilityModel} includeCheckboxes={true} ref={tableRef} />   
         <div style={{ display:"flex" ,flexDirection:"row", justifyContent:"center"}}>
             <CustomButton clickHandler={ () => { handleNewEmployee(); }} bgColor="#1974D2"  textColor="white" label="Add New Employee"/>
             <CustomButton clickHandler={handleRemoveClick} bgColor="#CB6D51" textColor="white" label="Remove Employees"/>

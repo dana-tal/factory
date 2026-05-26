@@ -32,9 +32,23 @@ const ToggleBox = ({isOpen,rowId, handleToggleShifts})=>
         </Box>
 }
  
+
 const getMobileColumns = ({ expandedRows, handleToggleShifts,}) => 
 {
 return  [
+          {
+              field: 'emp_name',
+              headerName: 'Employee Name',
+              sortable: true,
+              filterable: true,             
+          },
+
+          {
+              field: 'department_name',
+              headerName: 'Department',
+              sortable: true,
+              filterable: true,
+          },
           {
               field: 'mobileView',
               headerName: '',
@@ -53,10 +67,10 @@ return  [
                {
                   const isOpen = expandedRows.includes(row.id);
                    jsx  =  <Box sx={{ width: '100%' }}>
-                                    <RowField label="Employee :" value={<Link to={`/employees/${row.id}`}>{`${row.firstName} ${row.lastName}`}</Link> } />
-                                    <RowField label="Department: " value={ <Link to={`/departments/${row.department.id}`}>{row.department.name}</Link> } />
-                                    { row.shifts.length >0 && <RowField label="Shifts: "  value={<ToggleBox  isOpen={isOpen} rowId={row.id} handleToggleEmployees={handleToggleShifts}/>} /> }
-                                    { row.shifts.length==0 && <RowField label="Shifts: " value="No Shifts yet" />}
+                                    <RowField label="Employee :" value={<Link to={`/employees/${row.id}`}>{row.emp_name}</Link> } />
+                                    <RowField label="Department: " value={ <Link to={`/departments/${row.department.id}`}>{row.department_name}</Link> } />
+                                    { row.shifts.length >0 && <RowField label="Shifts: "  value={<ToggleBox  isOpen={isOpen} rowId={row.id} handleToggleShifts={handleToggleShifts}/>} /> }
+                                    { row.shifts.length===0 && <RowField label="Shifts: " value="No Shifts yet" />}
                             </Box> 
 
                } 
@@ -81,14 +95,13 @@ const getDesktopColumns = ({expandedRows,handleToggleShifts,}) =>
           flex:1,
           align:'left',
           sortable:true,
-          valueGetter: (value, row) =>{ return `${row.firstName} ${row.lastName}`} ,
           renderCell:(params)=>
           {
               if(params.row.isDetailRow) 
               {
                 return null;
               }
-              return <Link to={`/employees/${params.row.id}`}>{`${params.row.firstName} ${params.row.lastName}`}</Link>;  
+              return <Link to={`/employees/${params.row.id}`}>{params.row.emp_name}</Link>;  
             }
         }, 
         {
@@ -97,14 +110,13 @@ const getDesktopColumns = ({expandedRows,handleToggleShifts,}) =>
             flex:1,
             align:'left',
             sortable:true,
-             valueGetter: (value, row) =>{ return `${row.department.name}`} ,
             renderCell:(params)=>
             {
               if(params.row.isDetailRow) 
               {
                 return null;
               }
-              return <Link to={`/departments/${params.row.department.id}`}>{params.row.department.name}</Link>;  
+              return <Link to={`/departments/${params.row.department.id}`}>{params.row.department_name}</Link>;  
             }
         },
          {

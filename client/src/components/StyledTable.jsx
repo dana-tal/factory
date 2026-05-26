@@ -7,7 +7,7 @@ import { getStyledTableStyles} from "../utils/styledTableStyles";
 import { useMediaQuery } from '@mui/material';
 
 
-const StyledTable= forwardRef( ({rows, columns, paginationModel , pageSizes, title="",includeCheckboxes=false, zebraRows = false, loading=false },ref)=>
+const StyledTable= forwardRef( ({rows, columns, paginationModel , pageSizes, title="",includeCheckboxes=false, zebraRows = false, loading=false , columnVisibilityModel},ref)=>
 {
    const isMobile = useMediaQuery('(max-width:600px)');
    const selectionRef = useRef([]);
@@ -22,6 +22,10 @@ const StyledTable= forwardRef( ({rows, columns, paginationModel , pageSizes, tit
                {title /* '#9F8C76' */} 
         </Typography> }
       <DataGrid
+            columnVisibilityModel={columnVisibilityModel}
+              disableColumnMenu={false}
+              
+
            loading={ loading }
             density="standard"
             isRowSelectable={(params) => !params.row.isDetailRow}

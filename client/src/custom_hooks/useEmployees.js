@@ -5,12 +5,22 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 import { useNavigate } from "react-router-dom";
 import { useEntities } from "./useEntities";
 
+import { useExpandableRows } from "./useExpandableRows";
+import { buildRowsWithDetails } from "../utils/buildRowsWithDetails";
+
+const normalizeEmployee = (emp) => {
+  return {
+    ...emp,
+    emp_name: `${emp.firstName} ${emp.lastName}`,
+    department_name: emp.department.name ,
+  };
+};
 
 export const useEmployees = ()=>
 {
     const [loadingEmployees, setLoadingEmployees] = useState(false); 
     const [rows, setRows] = useState([]);      // will hold a row for each employee 
-    const [expandedRows, setExpandedRows] = useState([]); // will hold employee ids of rows that show the employee's shifts 
+    //const [expandedRows, setExpandedRows] = useState([]); // will hold employee ids of rows that show the employee's shifts 
     const [employeeId, setEmployeeId] = useState("");
     const [feedbackMsg, setFeedbackMsg] = useState("");
     const [errorMsg, setErrorMsg] = useState("");
@@ -19,50 +29,48 @@ export const useEmployees = ()=>
     const paginationModel = { page: 0, pageSize: 10 };
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-    const rowsWithDetails = []; // will hold all the rows: regular employee rows and shifts content rows 
+    //const rowsWithDetails = []; // will hold all the rows: regular employee rows and shifts content rows 
 
     const navigate = useNavigate();
 
+    const { expandedRows,toggleRow: handleToggleShifts,isExpanded} = useExpandableRows();
     
      const { handleEntityAdd,handleEntityUpdate, handleRemoveMany } = useEntities({setRows,setFeedbackMsg,requestAddCallback:requestEmployeeAdd,
                                               requestRemoveCallback:requestRemoveEmployees ,requestUpdateCallback:requestEmployeeUpdate,
                                               entity_name:"employee" });
 
-    // build the data structure rowsWithDetails 
-    rows.forEach((row) => 
-    {
-        rowsWithDetails.push(row);
-        if (expandedRows.includes(row.id)) {
-
-            rowsWithDetails.push({
-                id: `detail-${row.id}`,
-                isDetailRow: true,
-                parentId: row.id,
-                shifts: row.shifts,
-                firstName: row.firstName,
-                lastName: row.lastName ,
-                department: { id:row.department.id, name: row.department.name }
-            });
-        }
-    });
+    const rowsWithDetails = buildRowsWithDetails({
+    rows,
+    expandedRows,
+    buildDetailRow: (row) => ({
+        id: `detail-${row.id}`,
+        isDetailRow: true,
+        parentId: row.id,
+        shifts: row.shifts,
+        emp_name: row.emp_name,
+        department_name: row.department_name,
+        department: row.department
+    })
+});
 
     const fetchEmployees = async ()=>
     {
           setLoadingEmployees(true);
           const allEmployees =  await requestAllEmployees();
-          setRows(allEmployees);
+         // setRows(allEmployees);
+         setRows(allEmployees.map(normalizeEmployee));
           setLoadingEmployees(false);         
     }
 
     // for showing and hiding shifts content 
-    const handleToggleShifts = (rowId) => 
+   /* const handleToggleShifts = (rowId) => 
     {
             setExpandedRows((prev) =>
                 prev.includes(rowId)
                     ? prev.filter((id) => id !== rowId)
                     : [...prev, rowId]
             );
-    };
+    };*/
 
       const handleNewEmployee = ()=>{
         setEmployeeId(""); 
