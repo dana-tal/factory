@@ -1,13 +1,16 @@
 import { DataGrid } from '@mui/x-data-grid';
  
-//import Paper from '@mui/material/Paper';
-import { Paper, Typography } from '@mui/material';
+import { Paper, Typography,Box } from '@mui/material';
 import { forwardRef, useRef, useImperativeHandle } from 'react';
 import { getStyledTableStyles} from "../utils/styledTableStyles";
 import { useMediaQuery } from '@mui/material';
+import MobileTableToolbar from './MobileTableToolbar';
 
 
-const StyledTable= forwardRef( ({rows, columns, paginationModel , pageSizes, title="",includeCheckboxes=false, zebraRows = false, loading=false , columnVisibilityModel},ref)=>
+const StyledTable= forwardRef( ({rows, columns, paginationModel , pageSizes, title=""
+  ,includeCheckboxes=false, zebraRows = false, loading=false , columnVisibilityModel,
+ showToolbar = false,toolbarContent = null,enableToolbarSorting = false, sortModel,
+setSortModel,filterModel,setFilterModel},ref)=>
 {
    const isMobile = useMediaQuery('(max-width:600px)');
    const selectionRef = useRef([]);
@@ -15,19 +18,67 @@ const StyledTable= forwardRef( ({rows, columns, paginationModel , pageSizes, tit
   useImperativeHandle(ref, () => ({
     getSelectedIds: () => selectionRef.current
   }));
+  
 
   return (
-      <Paper sx={{  width: '96%', marginBottom:'30px !important' , backgroundColor:"#FAF0E6" }}> 
-        { title && <Typography variant="h6" sx={{ flex: 1, textAlign: 'center', backgroundColor:'#659EC7' , margin: 0,  padding: '8px 0',color:'white', fontWeight:'bold'}}>
-               {title /* '#9F8C76' */} 
-        </Typography> }
+      <Paper sx={{  width: '96%', marginBottom:'30px !important' , backgroundColor:"#FAF0E6" , display: "flex",
+  flexDirection: "column", gap: 1}}> 
+       
+          
+        { title && (
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                backgroundColor: "#659EC7",
+                padding: "8px 12px",
+              }}
+            >
+              <Typography
+                variant="h6"
+                sx={{
+                  color: "white",
+                  fontWeight: "bold",
+                  margin: 0,
+                }}
+              >
+                {title}
+              </Typography>
+
+              {/* Toolbar slot INSIDE title bar */}
+             {showToolbar && (
+              <Box>
+                <Box sx={{ display: "flex", alignItems: "flex-start" }}>
+                  <MobileTableToolbar
+                    columns={columns}
+                    sortModel={sortModel}
+                    setSortModel={setSortModel}
+                    filterModel={filterModel}
+                    setFilterModel={setFilterModel}
+                    enableSorting={enableToolbarSorting}
+                  />
+
+                  {toolbarContent}
+                </Box>
+              </Box>
+            )}
+            </Box>
+          )}
+        
       <DataGrid
             columnVisibilityModel={columnVisibilityModel}
-              disableColumnMenu={false}
-              
+                columnHeaderHeight={isMobile ? 0 : undefined}
+                disableColumnMenu={isMobile}
 
+                sortModel={sortModel}
+
+                filterMode="client"
+                filterModel={filterModel}
+                onFilterModelChange={setFilterModel}
+           
            loading={ loading }
-            density="standard"
+            density="standard"            
             isRowSelectable={(params) => !params.row.isDetailRow}
             localeText={{ noRowsLabel: "No records found" }}
         rows={rows || []}
@@ -57,7 +108,7 @@ const StyledTable= forwardRef( ({rows, columns, paginationModel , pageSizes, tit
         
 
       sx={{
-          ...getStyledTableStyles(),
+          ...getStyledTableStyles(isMobile),
           /*minHeight: rows.length === 0 ? 400 : 'auto',*/
           minHeight:{xs:"450px", sm:"640px", md:"640px",lg:"640px"},
           width: '100%',

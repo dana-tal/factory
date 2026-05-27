@@ -5,6 +5,8 @@ import {Box, Alert} from "@mui/material";
 import  { useEmployees }  from '../custom_hooks/useEmployees';
 import { getEmployeeColumns } from "./employeeColumns";
 import CustomButton from "./CustomButton";
+import { useMemo } from "react";
+
 
 function Employees() {
 
@@ -14,7 +16,11 @@ function Employees() {
             employeeId,handleNewEmployee,handleRemoveClick,
             feedbackMsg, errorMsg} = useEmployees();
   
-    const columns = getEmployeeColumns({isMobile, expandedRows,handleToggleShifts});
+  //  const columns = getEmployeeColumns({isMobile, expandedRows,handleToggleShifts});
+
+  const columns = useMemo(() => {
+  return getEmployeeColumns({ isMobile, expandedRows, handleToggleShifts });
+}, [isMobile, expandedRows, handleToggleShifts]);
 
     const columnVisibilityModel = isMobile
   ? {
@@ -22,6 +28,9 @@ function Employees() {
       department_name: false,
     }
   : undefined;
+
+  const [sortModel, setSortModel] = useState([]);
+  const [filterModel, setFilterModel] = useState({items: []});
 
   useEffect(()=>{  
     fetchEmployees();
@@ -42,7 +51,14 @@ function Employees() {
     >
       {feedbackMsg && <Alert severity="success">{feedbackMsg}</Alert>}
       {errorMsg && <Alert severity="error">{errorMsg}</Alert>}
-       <StyledTable zebraRows={true} rows={rowsWithDetails} columns={columns} paginationModel={paginationModel} pageSizes={[5,10,20,30]} title="Employees" loading={loadingEmployees}   columnVisibilityModel={columnVisibilityModel} includeCheckboxes={true} ref={tableRef} />   
+       <StyledTable key={isMobile ? "mobile" : "desktop"} zebraRows={true} rows={rowsWithDetails} columns={columns} 
+       paginationModel={paginationModel} pageSizes={[5,10,20,30]} title="Employees" 
+       loading={loadingEmployees}   
+       columnVisibilityModel={columnVisibilityModel} includeCheckboxes={true}
+        showToolbar={isMobile} enableToolbarSorting={isMobile}
+         sortModel={sortModel} setSortModel={setSortModel}
+          filterModel={filterModel} setFilterModel={setFilterModel}
+        ref={tableRef} />   
         <div style={{ display:"flex" ,flexDirection:"row", justifyContent:"center"}}>
             <CustomButton clickHandler={ () => { handleNewEmployee(); }} bgColor="#1974D2"  textColor="white" label="Add New Employee"/>
             <CustomButton clickHandler={handleRemoveClick} bgColor="#CB6D51" textColor="white" label="Remove Employees"/>

@@ -28,7 +28,8 @@ export const useEmployees = ()=>
     const tableRef = useRef();
     const paginationModel = { page: 0, pageSize: 10 };
     const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+    const isMobile = useMediaQuery('(max-width:480px)');
+    //const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
     //const rowsWithDetails = []; // will hold all the rows: regular employee rows and shifts content rows 
 
     const navigate = useNavigate();

@@ -149,6 +149,7 @@ const getDesktopColumns = ({expandedRows,handleToggleShifts,}) =>
 
 export const getEmployeeColumns = ({isMobile,expandedRows, handleToggleShifts,}) =>
 {
+  console.log("getEmployeeColumns, isMobile:",isMobile);
   return isMobile
     ? getMobileColumns({ expandedRows, handleToggleShifts })
     : getDesktopColumns({ expandedRows, handleToggleShifts });
