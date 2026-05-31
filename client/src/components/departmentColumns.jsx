@@ -33,6 +33,18 @@ const getMobileColumns = ({ expandedRows, handleToggleEmployees,}) =>
 {
 return  [
           {
+              field: 'name',
+              headerName: 'Department Name',
+              sortable: true,
+              filterable: true,     
+          },
+          {
+              field:'manager_name',
+              headerName: 'Manager name',
+              sortable:true,
+              filterable:true 
+          },
+          {
               field: 'mobileView',
               headerName: '',
               flex: 1,
@@ -51,7 +63,7 @@ return  [
                   const isOpen = expandedRows.includes(row.id);
                    jsx  =  <Box sx={{ width: '100%' }}>
                                     <RowField label="Department :" value={<Link to={`/departments/${row.id}`}>{row.name}</Link> } />
-                                    <RowField label="Manager Name: " value={`${row.manager.firstName} ${row.manager.lastName}`} />
+                                    <RowField label="Manager Name: " value={row.manager_name} />
                                     { row.employees.length >0 && <RowField label="Employees: "  value={<ToggleBox  isOpen={isOpen} rowId={row.id} handleToggleEmployees={handleToggleEmployees}/>} /> }
                                     { row.employees.length==0 && <RowField label="Employees: " value="No Employees yet" />}
                             </Box> 
@@ -90,7 +102,7 @@ const getDesktopColumns = ({
         
         },       
         {
-          field:'manager',
+          field:'manager_name',
           headerName:'Manager Name',
           flex:1,
           align:'left',

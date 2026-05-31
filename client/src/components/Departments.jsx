@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState} from "react";
+import { useEffect, useRef, useState,useMemo} from "react";
 import StyledTable from "./StyledTable";
 import RowField from "./RowField";
 import {Box, Alert} from "@mui/material";
@@ -15,12 +15,38 @@ const Departments=() =>
           departmentId,handleNewDepartment,handleRemoveClick,
           feedbackMsg, errorMsg} = useDepartments();
 
-  const columns = getDepartmentColumns({isMobile, expandedRows,handleToggleEmployees});
 
+const columns = useMemo( ()=>{
+  return getDepartmentColumns({isMobile, expandedRows,handleToggleEmployees});
+},[isMobile,expandedRows,handleToggleEmployees]);
+
+  const columnVisibilityModel = isMobile
+  ? {
+      name: false,
+      manager_name: false,
+    }
+  : undefined;
+
+  
+  const [sortModel, setSortModel] = useState([]);
+  const [filterModel, setFilterModel] = useState({items: []});
 
   useEffect(()=>{  
     fetchDepartments();
   },[] );
+
+
+ /*
+   <StyledTable key={isMobile ? "mobile" : "desktop"} zebraRows={true} rows={rowsWithDetails} columns={columns} 
+       paginationModel={paginationModel} pageSizes={[5,10,20,30]} title="Employees" 
+       loading={loadingEmployees}   
+       columnVisibilityModel={columnVisibilityModel} includeCheckboxes={true}
+        showToolbar={isMobile} enableToolbarSorting={isMobile}
+         sortModel={sortModel} setSortModel={setSortModel}
+          filterModel={filterModel} setFilterModel={setFilterModel}
+        ref={tableRef} />   
+ */
+
 
 
   return (
@@ -37,7 +63,14 @@ const Departments=() =>
     >
       {feedbackMsg && <Alert severity="success">{feedbackMsg}</Alert>}
       {errorMsg && <Alert severity="error">{errorMsg}</Alert>}
-       <StyledTable rows={rowsWithDetails} columns={columns} paginationModel={paginationModel} pageSizes={[5,10,20,30]} title="Departments" loading={loadingDepartments} includeCheckboxes={true} ref={tableRef} />   
+       <StyledTable  key={isMobile ? "mobile" : "desktop"} zebraRows={true}  rows={rowsWithDetails} columns={columns} 
+       paginationModel={paginationModel} pageSizes={[5,10,20,30]} 
+       title="Departments" loading={loadingDepartments} 
+       columnVisibilityModel={columnVisibilityModel} 
+       showToolbar={isMobile} enableToolbarSorting={isMobile}
+         sortModel={sortModel} setSortModel={setSortModel}
+          filterModel={filterModel} setFilterModel={setFilterModel}
+       includeCheckboxes={true} ref={tableRef} />   
         <div style={{ display:"flex" ,flexDirection:"row", justifyContent:"center"}}>
             <CustomButton clickHandler={ () => { handleNewDepartment(); }} bgColor="#1974D2"  textColor="white" label="Add New Department"/>
             <CustomButton clickHandler={handleRemoveClick} bgColor="#CB6D51" textColor="white" label="Remove Departments"/>

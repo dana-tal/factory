@@ -4,6 +4,15 @@ import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useNavigate } from "react-router-dom";
 import { useEntities } from "./useEntities";
+import { buildRowsWithDetails } from "../utils/buildRowsWithDetails";
+
+
+const normalizeDepartment = (dept) => {
+    return {
+        ...dept,
+        manager_name:  `${dept.manager.firstName} ${dept.manager.lastName}`,        
+    }   
+}   
 
 export const useDepartments = () => {
 
@@ -18,34 +27,34 @@ export const useDepartments = () => {
     const paginationModel = { page: 0, pageSize: 10 };
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-    const rowsWithDetails = []; // will hold all the rows: regular department rows and employees content rows 
-
-     const navigate = useNavigate();
+    const navigate = useNavigate();
 
      const { handleEntityAdd,handleEntityUpdate, handleRemoveMany } = useEntities({setRows,setFeedbackMsg,requestAddCallback:requestDepartmentAdd,
                                               requestRemoveCallback:requestRemoveDepartments ,requestUpdateCallback:requestDepartmentUpdate,
                                               entity_name:"department" });
 
 
-    rows.forEach((row) => 
-    {
-        rowsWithDetails.push(row);
-        if (expandedRows.includes(row.id)) {
 
-            rowsWithDetails.push({
-                id: `detail-${row.id}`,
-                isDetailRow: true,
-                parentId: row.id,
-                employees: row.employees
-            });
-        }
-    });
+ // will hold all the rows: regular department rows and employees content rows 
+const rowsWithDetails = buildRowsWithDetails({
+    rows,
+    expandedRows,
+    buildDetailRow: (row) => ({
+        id: `detail-${row.id}`,
+        isDetailRow: true,
+        parentId: row.id,
+        employees: row.employees,
+        name: row.name,
+        manager_name: row.manager_name
+    })
+});
+
 
     const fetchDepartments = async ()=>
     {
           setLoadingDepartments(true);
           const allDepartments =  await requestAllDepartments();
-          setRows(allDepartments);
+          setRows(allDepartments.map(normalizeDepartment));       
           setLoadingDepartments(false);         
     }
 
