@@ -72,7 +72,9 @@ setSortModel,filterModel,setFilterModel},ref)=>
                 disableColumnMenu={isMobile}
 
                 sortModel={sortModel}
-
+                 onSortModelChange={(model) => {
+                                      setSortModel(model);
+                                }}
                 filterMode="client"
                 filterModel={filterModel}
                 onFilterModelChange={setFilterModel}
