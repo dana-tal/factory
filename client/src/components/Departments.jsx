@@ -36,19 +36,6 @@ const columns = useMemo( ()=>{
   },[] );
 
 
- /*
-   <StyledTable key={isMobile ? "mobile" : "desktop"} zebraRows={true} rows={rowsWithDetails} columns={columns} 
-       paginationModel={paginationModel} pageSizes={[5,10,20,30]} title="Employees" 
-       loading={loadingEmployees}   
-       columnVisibilityModel={columnVisibilityModel} includeCheckboxes={true}
-        showToolbar={isMobile} enableToolbarSorting={isMobile}
-         sortModel={sortModel} setSortModel={setSortModel}
-          filterModel={filterModel} setFilterModel={setFilterModel}
-        ref={tableRef} />   
- */
-
-
-
   return (
    <Box
        width={{ xs: "90%", sm: "70%", md: "70%", lg: "70%" }}

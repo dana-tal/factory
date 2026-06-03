@@ -1,6 +1,6 @@
 import { useState,useRef} from "react";
 import { requestAllDepartments,requestDepartmentAdd ,requestDepartmentUpdate, requestRemoveDepartments} from "../utils/departmentRequest";
-import { useTheme } from "@mui/material/styles";
+// import { useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { useNavigate } from "react-router-dom";
 import { useEntities } from "./useEntities";
@@ -25,8 +25,8 @@ export const useDepartments = () => {
 
     const tableRef = useRef();
     const paginationModel = { page: 0, pageSize: 10 };
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+    const isMobile = useMediaQuery('(max-width:480px)');
+ 
     const navigate = useNavigate();
 
      const { handleEntityAdd,handleEntityUpdate, handleRemoveMany } = useEntities({setRows,setFeedbackMsg,requestAddCallback:requestDepartmentAdd,
