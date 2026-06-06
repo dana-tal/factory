@@ -1,7 +1,7 @@
 import RowField from "./RowField";
 import { Box } from "@mui/material";
 import { formatDate } from "../utils/generalFuncs";
-
+import { Link } from "react-router-dom";
 
 const getMobileColumns = () =>
 {
@@ -33,7 +33,7 @@ const getMobileColumns = () =>
             renderCell: (params) => { 
                 const row = params.row;    
                 const  jsx  =  <Box sx={{ width: '100%' }}>
-                                    <RowField label="Id :" value={row.id} />
+                                    <RowField label="Id :" value={<Link to={`/shifts/${row.id}`}>{row.id}</Link>} />
                                     <RowField label="Start Date :" value={formatDate(row.startDate)} />
                                     <RowField label="End Date :" value={formatDate(row.endDate)} />                                   
                             </Box> 
@@ -54,6 +54,10 @@ const getDesktopColumns = ()=>{
           sortable:true,
           filterable:true,
           valueGetter: (value,row)=>`${row.id}`,
+          renderCell: (params)=>{
+               const row = params.row ;
+              return <Link to={`/shifts/${row.id}`}>{row.id}</Link>
+          }
         }, 
         {
           field:'startDate',

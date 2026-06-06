@@ -31,7 +31,6 @@ export const useShifts = () =>{
     
 
       const handleNewShift = ()=>{
-        setShiftId(""); 
         navigate("/shifts/add");
     }
 

@@ -15,7 +15,7 @@ const usersRouter = require('./routers/usersRouter');
 const {verifyToken} = require('./middleware/verifyToken');
 const { limitDailyActions } = require('./middleware/limitActions');
 
- const PORT = process.env.PORT || 3000;;
+ const PORT = process.env.PORT || 3000;
 
 const app = express();
 

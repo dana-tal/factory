@@ -9,7 +9,7 @@ const getAllShifts = ()=>{
 const getShiftById = async (id)=>{
     const shiftObj = await shiftsRepo.getShiftById(id);
     const shiftEmployees = await shiftsRepo.getShiftEmployees(id);
-    const result = { ...shiftObj._doc, registeredEmployees: shiftEmployees };
+    const result = { ...shiftObj._doc,  registeredEmployees: shiftEmployees };
     return result;
 }
 
@@ -17,7 +17,8 @@ const getShiftEditInfo = async (id) =>{
     const shiftObj = await shiftsRepo.getShiftById(id);
     const shiftEmployees = await shiftsRepo.getShiftEmployees(id);
     const unregisteredEmployees = await shiftsRepo.getUnregisteredEmployees(id);
-    const result = { ...shiftObj._doc, registeredEmployees: shiftEmployees, unregisteredEmployees};
+    const result = { ...shiftObj._doc, id: shiftObj._id.toString(), registeredEmployees: shiftEmployees, unregisteredEmployees};
+    delete result._id;
     return result;
 }
 
