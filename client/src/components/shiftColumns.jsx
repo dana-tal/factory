@@ -14,15 +14,21 @@ const getMobileColumns = () =>
         },
         {
             field: 'startDate',
+            type:'date',
             headerName: 'Start Date',
             sortable: true,
-            filterable: true,             
+            filterable: true,   
+            valueGetter: (value) => value ? new Date(value) : null,
+            valueFormatter: (value) => formatDate(value),          
         },
         {
             field:'endDate',
+            type:'date',
             headerName:'End Date',
             sortable:true,
-            filterable:true
+            filterable:true,
+            valueGetter: (value) => value ? new Date(value) : null,
+            valueFormatter: (value) => formatDate(value),  
         },        
         {
             field: 'mobileView',
@@ -62,20 +68,24 @@ const getDesktopColumns = ()=>{
         {
           field:'startDate',
           headerName:'Start Date',
+          type:'date',
           flex:1,
           align:'left',
           sortable:true,
           filterable:true,      
-        valueGetter: (value,row)=>`${formatDate(row.startDate)}`,
+          valueGetter: (value) => value ? new Date(value) : null,
+         valueFormatter: (value) => formatDate(value),
         }, 
         {
           field:'endDate',
           headerName:'End Date',
+          type:'date',
           flex:1,
           align:'left',
           sortable:true,
           filterable:true,   
-           valueGetter: (value,row)=>`${formatDate(row.endDate)}`,     
+          valueGetter: (value) => value ? new Date(value) : null,
+            valueFormatter: (value) => formatDate(value),  
         }, 
         
     ];

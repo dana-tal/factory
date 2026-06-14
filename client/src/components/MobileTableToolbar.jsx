@@ -139,6 +139,11 @@ export default function MobileTableToolbar({
           {/* FILTER INPUT */}
           <input
             style={{ fontSize: 12 }}
+              type={
+                columns.find((c) => c.field === filterField)?.type === "date"
+                  ? "date"
+                  : "text"
+              }
             placeholder="Search..."
             value={filterValue}
             onChange={(e) => {
@@ -152,15 +157,19 @@ export default function MobileTableToolbar({
                 return;
               }
 
+              const column = columns.find((c) => c.field === filterField);
+
               setFilterModel({
                 items: [
                   {
                     field: filterField,
-                    operator: "contains",
+                    operator: column?.type === "date" ? "is" : "contains",
                     value,
                   },
                 ],
               });
+
+             
             }}
           />
         </Paper>
