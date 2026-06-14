@@ -5,7 +5,7 @@ const MongoStore = require('connect-mongo');
 const swaggerUi = require('swagger-ui-express');
 const swaggerJsDoc = require('swagger-jsdoc');
 
-require('dotenv').config();  // load everything in .env file into process.env 
+require('dotenv').config({quiet:true});  // load everything in .env file into process.env 
 const connectDB = require('./configs/db');
 const departmentsRouter = require('./routers/departmentsRouter');
 const employeesRouter = require('./routers/employeesRouter');

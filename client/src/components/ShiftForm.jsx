@@ -40,6 +40,8 @@ const ShiftForm =({onSubmitHandler}) =>{
 
   useEffect(() => 
   {
+    console.log("selected Shift:");
+    console.log(selectedShift);
       if (selectedShift ) {
               reset({
                   id: selectedShift.id,
@@ -163,7 +165,51 @@ const ShiftForm =({onSubmitHandler}) =>{
                             )}
                           />  
                           </Box>                  
-                </Stack>            
+                </Stack>      
+
+                { selectedShift && <Stack spacing={1} sx={{ width: "100%" }}>
+                      <Typography>
+                        Registered Employees:
+                      </Typography>
+                      <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap:"wrap"}} >
+                          {selectedShift?.registeredEmployees?.map((employee) => (
+                                <Chip key={employee.id} label={`${employee.firstName} ${employee.lastName}`} />
+                          ))}
+                      </Stack>
+                </Stack>}
+                      
+
+                {selectedShift && (<Stack spacing={1} sx={{ width: "100%", mt:2 }}>                
+                  <Typography>Add Employees:</Typography>                
+                  <Controller name="newShiftEmployees" control={control} defaultValue={[]}                                    
+                    render={({ field }) => {
+                       // the employees that will be displayed are filtered by the field vale
+                       // selectedEmployees is a list of objects so Autocomplete will be able to work with them 
+                        const selectedEmployees = 
+                        selectedShift.unregisteredEmployees.filter(employee => field.value.includes(employee.id));                
+                        return (  <Autocomplete multiple  options={selectedShift.unregisteredEmployees} value={selectedEmployees}                                                                                                     
+                                    disablePortal                
+                                    slotProps={{paper: {sx: {maxHeight: 220,},},popper: {placement: "bottom-start",},
+                                    listbox: {sx: {maxHeight: 220,overflowY: "auto",},},}}                
+                                    getOptionLabel={(option) =>`${option.firstName} ${option.lastName}`}
+                                    onChange={(_, newValue) => {field.onChange(newValue.map(emp => emp.id));}}
+                                    renderOption={(props, option, { selected }) => 
+                                      {
+                                        const { key, ...rest } = props;                
+                                        return (
+                                                  <li key={key} {...rest}>
+                                                    <Checkbox checked={selected} sx={{ mr: 1 }} />{option.firstName} {option.lastName}
+                                                  </li>
+                                                );
+                                      }}                
+                                    renderInput={(params) => (
+                                          <TextField {...params} label="Select Employees" />
+                                    )}
+                                  />                                                                                        
+                                );
+                    }}                                                                                
+                  />                
+              </Stack>)}          
 
                 <Stack direction="row" spacing={1}  sx={{ alignItems:"flex-start"}}>
                       <Controller name="id" control={control} defaultValue=""
@@ -171,7 +217,7 @@ const ShiftForm =({onSubmitHandler}) =>{
                       />
                 </Stack>
 
-                <Button type="submit" variant="contained" sx={{ alignSelf: "flex-start", mt: 1 , textTransform:"capitalize"}}>
+                <Button type="submit" variant="contained" sx={{ alignSelf: "flex-start", mt: 2 , textTransform:"capitalize"}}>
                     {selectedShift ? 'Update Shift':'Add Shift'}
                 </Button>
             </LocalizationProvider>

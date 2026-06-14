@@ -222,6 +222,19 @@ const updateShift = async (req,res)=>{
             }
         }
 
+
+        let newShiftEmployees;
+        const newEmployeesProvided = Object.prototype.hasOwnProperty.call(req.body, 'newShiftEmployees');                  
+        if (newEmployeesProvided)
+        {
+            const result1 =  await validator.validateEmployees('newShiftEmployees',req.body);       
+            if (result1.status !=='O.K')
+            {
+                return  res.status(result1.status).json(result1.message);
+            }
+            newShiftEmployees = req.body.newShiftEmployees;
+        }
+        
       
        const startDate =  info['startDate'] !==null ? info['startDate'] : existingShift.startDate;
        const endDate =    info['endDate'] !== null  ? info['endDate'] : existingShift.endDate;  
@@ -234,8 +247,13 @@ const updateShift = async (req,res)=>{
        }
        
        const updatedShift = await shiftsService.updateShift(id,{ startDate,endDate });
+       let regiterResult = {};
+       if (newShiftEmployees.length >0)
+       {
+            registerResult = await shiftsService.registerEmployeesToShift(id,newShiftEmployees);
+       }  
         await usersService.logUserAction(req.user.userId,"updateShift");
-       res.status(200).json(updatedShift);
+       res.status(200).json({ ...updatedShift, ...registerResult });
     }
     catch(err)
     {
