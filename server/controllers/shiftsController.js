@@ -235,6 +235,18 @@ const updateShift = async (req,res)=>{
             newShiftEmployees = req.body.newShiftEmployees;
         }
         
+
+        let removedEmployees;
+       const removedEmployeesProvided = Object.prototype.hasOwnProperty.call(req.body, 'removedEmployeeIds');
+       if (removedEmployeesProvided)
+       {
+            const result2 = await validator.validateEmployees('removedEmployeeIds',req.body);
+            if (result2.status !== 'O.K')
+            {
+                return res.status(result2.status).json(result2.message);
+            }
+            removedEmployees = req.body.removedEmployeeIds;           
+        } 
       
        const startDate =  info['startDate'] !==null ? info['startDate'] : existingShift.startDate;
        const endDate =    info['endDate'] !== null  ? info['endDate'] : existingShift.endDate;  
@@ -247,13 +259,20 @@ const updateShift = async (req,res)=>{
        }
        
        const updatedShift = await shiftsService.updateShift(id,{ startDate,endDate });
-       let regiterResult = {};
+       let registerResult = {};
        if (newShiftEmployees.length >0)
        {
             registerResult = await shiftsService.registerEmployeesToShift(id,newShiftEmployees);
        }  
+
+       let unregisterResult = {};
+       if (removedEmployees.length >0)
+       {
+            unregisterResult =  await shiftsService.unregisterEmployeesFromShift(id,removedEmployees);
+       }
+
         await usersService.logUserAction(req.user.userId,"updateShift");
-       res.status(200).json({ ...updatedShift, ...registerResult });
+       res.status(200).json({ ...updatedShift, ...registerResult , ...unregisterResult });
     }
     catch(err)
     {

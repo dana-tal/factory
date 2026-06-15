@@ -25,9 +25,34 @@ const ShiftForm =({onSubmitHandler}) =>{
   
   const { selectedShift,fetchShift} = useShiftForm();
   const [feedbackMsg, setFeedbackMsg] =useState("");
+  const [assignedEmployees, setAssignedEmployees] = useState([]);
+  const [removedEmployees, setRemovedEmployees] = useState([]);
 
   const { shiftId } = useParams();
   const navigate = useNavigate();
+
+  const handleRemoveEmployee = (employee) => {
+   setAssignedEmployees(prev =>
+        prev.filter(e => e.id !== employee.id)
+    );
+
+    // if the employee already exists in removedEmployees, return prev, if not add it 
+    setRemovedEmployees(prev =>
+        prev.some(e => e.id === employee.id)
+            ? prev
+            : [...prev, employee]
+    );
+};
+
+const handleRestoreEmployee = (employee) => {
+    setRemovedEmployees(prev =>
+        prev.filter(e => e.id !== employee.id)
+    );
+    setAssignedEmployees(prev => [
+        ...prev,
+        employee
+    ]);
+};
 
   useEffect( ()=>
   {
@@ -49,13 +74,20 @@ const ShiftForm =({onSubmitHandler}) =>{
                   endDate: dayjs(selectedShift.endDate).utc().format("YYYY-MM-DDTHH:mm:ss[Z]"),
                   newShiftEmployees:[],
               });
+              setAssignedEmployees(selectedShift.registeredEmployees ?? []);
+              setRemovedEmployees([]);
           }
   }, [selectedShift,reset]);
 
 
   const onSubmit = async (data) => 
   {    
-        const ok = await onSubmitHandler(data,setError);
+      const payload = {
+        ...data,
+        removedEmployeeIds: removedEmployees.map(employee => employee.id),
+      };
+
+        const ok = await onSubmitHandler(payload,setError);
         if (ok) 
         {
            setFeedbackMsg( shiftId ? "Shift updated successfully": "Shift added successfully");
@@ -103,7 +135,7 @@ const ShiftForm =({onSubmitHandler}) =>{
                     </Stack>
                   )}
 
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
+              <LocalizationProvider dateAdapter={AdapterDayjs}   adapterLocale="en-gb">
 
               <Stack direction={{ xs: "column", sm: "row" }} spacing={1}  sx={{ width: "100%" ,mt:2,mb:2,alignItems:{ xs: "flex-start", sm: "center" }}}>
                       <Typography  sx={{ width: 180, flexShrink: 0 }}>Start Date & Time:</Typography>
@@ -117,6 +149,7 @@ const ShiftForm =({onSubmitHandler}) =>{
                             render={({ field }) => (
                               <DateTimePicker
                                 label="Start Date & Time"
+                                format="DD/MM/YYYY HH:mm"
                                 value={field.value ? dayjs(field.value) : null}
                                 onChange={(value) =>
                                   field.onChange(
@@ -148,6 +181,7 @@ const ShiftForm =({onSubmitHandler}) =>{
                             render={({ field }) => (
                               <DateTimePicker
                                 label="End Date & Time"
+                                format="DD/MM/YYYY HH:mm"
                                 value={field.value ? dayjs(field.value) : null}
                                 onChange={(value) =>
                                   field.onChange(
@@ -167,17 +201,38 @@ const ShiftForm =({onSubmitHandler}) =>{
                           </Box>                  
                 </Stack>      
 
+                <Stack spacing={2} sx={{ width: "100%" }}>
                 { selectedShift && <Stack spacing={1} sx={{ width: "100%" }}>
                       <Typography>
-                        Registered Employees:
+                       Assigned Employees:
                       </Typography>
                       <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap:"wrap"}} >
-                          {selectedShift?.registeredEmployees?.map((employee) => (
-                                <Chip key={employee.id} label={`${employee.firstName} ${employee.lastName}`} />
+                         {assignedEmployees.map((employee) => (
+                            <Chip key={employee.id} label={`${employee.firstName} ${employee.lastName}`} onDelete={() => handleRemoveEmployee(employee)}
+                              />
                           ))}
                       </Stack>
                 </Stack>}
-                      
+
+                  {removedEmployees.length > 0 && (
+                      <>
+                          <Typography>
+                              Removed Employees
+                          </Typography>
+
+                          <Stack direction="row" spacing={1} sx={{ flexWrap: "wrap" }}>
+                              {removedEmployees.map((employee) => (
+                                  <Chip
+                                      key={employee.id}
+                                      label={`${employee.firstName} ${employee.lastName}`}
+                                      onClick={() => handleRestoreEmployee(employee)}
+                                      clickable
+                                  />
+                              ))}
+                          </Stack>
+                      </>
+                  )}   
+                </Stack>
 
                 {selectedShift && (<Stack spacing={1} sx={{ width: "100%", mt:2 }}>                
                   <Typography>Add Employees:</Typography>                

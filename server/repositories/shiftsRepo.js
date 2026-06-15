@@ -29,7 +29,7 @@ const getShiftEmployees = (id) =>{
             },     
             { $unwind: '$employee' }, // 3. Since each employee is returned as an array, unwind converts the employee array into a single object so we can work with it directly.   
             { $replaceRoot: { newRoot: '$employee' } },  // 4. Replace the root document with the joined employee document
-            { $project: { _id: 1, firstName: 1, lastName: 1 } },  // 5.  select only the fields we want  from employees   
+            { $project: { _id: 0,id:"$_id",firstName: 1, lastName: 1 } },  // 5.  select only the fields we want  from employees   
     ]);
 }
 
