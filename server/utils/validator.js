@@ -66,6 +66,19 @@ const isValidDateInput = (inputObj,fieldName,isMandatory) =>{
      return result;
 }
 
+const validateDateRange =(startDate, endDate) =>
+{
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+   
+    if (end <= start) {
+          return { status:400,  message:"endDate must be greater than startDate"};
+    }
+
+    return {status:'O.K', message:'O.K'};
+}
+
 const validateEmployees = async (fieldName, reqBody) =>{
      let i,result;
      
@@ -253,6 +266,7 @@ const validateDepartmentInfo = async (name,managerId) =>{
 module.exports = {
     isValidMongoId,
     isValidDateInput,
+    validateDateRange,
     validateDepartmentInfo,
     validateEntityId,
     validatePersonName,

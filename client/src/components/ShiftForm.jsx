@@ -21,8 +21,12 @@ dayjs.extend(utc);
 const ShiftForm =({onSubmitHandler}) =>{
 
   const shiftForm = useForm({ defaultValues: { id:"",startDate: "", endDate:"",newShiftEmployees:[] }, });
-  const { handleSubmit,control,formState: { errors },reset, setError}  = shiftForm;  
+ // const { handleSubmit,control,formState: { errors },reset, setError}  = shiftForm;  
+  const { handleSubmit, control, formState: { errors }, reset, setError, clearErrors, watch } = shiftForm;
   
+  const startDate = watch("startDate");
+  const endDate = watch("endDate");
+
   const { selectedShift,fetchShift} = useShiftForm();
   const [feedbackMsg, setFeedbackMsg] =useState("");
   const [assignedEmployees, setAssignedEmployees] = useState([]);
@@ -79,9 +83,30 @@ const handleRestoreEmployee = (employee) => {
           }
   }, [selectedShift,reset]);
 
+  useEffect(() => {
+  if (!startDate || !endDate) return;
+
+  const start = dayjs(startDate);
+  const end = dayjs(endDate);
+
+  if (end.isAfter(start)) {
+    clearErrors("root");
+  }
+}, [startDate, endDate]);
 
   const onSubmit = async (data) => 
   {    
+      const start = dayjs(data.startDate);
+      const end = dayjs(data.endDate);
+
+     if (!end.isAfter(start)) {
+        setError("root", {
+          type: "manual",
+          message: "End date must be greater than start date",
+        });
+        return;
+      }
+
       const payload = {
         ...data,
         removedEmployeeIds: removedEmployees.map(employee => employee.id),

@@ -166,6 +166,11 @@ const addNewShift = async (req,res)=> {
             }
        }
        
+       const datesValid = validator.validateDateRange(req.body.startDate, req.body.endDate);
+       if (datesValid.status !=='O.K')
+       {
+           return res.status(datesValid.status).json({message: datesValid.message});
+       }
         const result = await validator.validateShiftInfo( info['startDate'],info['endDate']); // logical checks of dates 
         if (result)
         {
@@ -222,6 +227,11 @@ const updateShift = async (req,res)=>{
             }
         }
 
+      const datesValid = validator.validateDateRange(req.body.startDate, req.body.endDate);
+       if (datesValid.status !=='O.K')
+       {
+           return res.status(datesValid.status).json({message: datesValid.message});
+       }
 
         let newShiftEmployees;
         const newEmployeesProvided = Object.prototype.hasOwnProperty.call(req.body, 'newShiftEmployees');                  

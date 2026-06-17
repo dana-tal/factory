@@ -21,10 +21,15 @@ api.interceptors.response.use(
   // Error
   (error) => {
 
+    console.log("interceptors, error.response:",error.response)
     if (error.response) {
 
       // Server returned error status
       switch (error.response.status) {
+
+        case 400:
+          console.log("Bad Request");
+          break;
 
         case 401:
           console.log("Unauthorized");
