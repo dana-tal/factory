@@ -59,7 +59,7 @@ const login = async (req,res) =>{
                                                     return res.status(500).json({ message: 'Session regenerate failed' });
                                                 }   
                                                 req.session.token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: process.env.TOKEN_EXPIRES_IN }); // saving the token inside the session 
-                                                res.status(200).json({ message:'logged in successfully', name: result.name });  
+                                                res.status(200).json({ message:'logged in successfully',user:{ name: result.name }  });  
                                             });      
                      
         }

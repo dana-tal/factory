@@ -6,6 +6,9 @@ import { sendLoginData } from '../utils/authRequest.js';
 
 import { Link, useNavigate } from "react-router-dom";
 import "./AuthForm.css";
+import { useContext } from "react";
+import { UserContext } from "../context/UserContext.jsx";
+
 
 const LoginForm =() =>
 {
@@ -13,6 +16,8 @@ const LoginForm =() =>
   const { handleSubmit, control, formState: { errors, isSubmitSuccessful }, reset, setError,} = loginForm;
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+
+  const { setUser } = useContext(UserContext);
 
   const handleClickShowPassword = () => 
   {
@@ -30,10 +35,11 @@ const LoginForm =() =>
         };
 
         const res = await sendLoginData(trimmedData);
-     //    console.log('res:',res)  ;
+        console.log('res:',res)  ;
         reset();
 
-       navigate("/departments", {
+       setUser(res.user);
+      navigate("/departments", {
             replace: true,
         }); 
 

@@ -70,8 +70,8 @@ app.use((req, res, next) => {
 
 app.use((req, res, next) => {
   const publicRoutes = ['/','/auth/login', '/auth/logout'];
-  // allow public access to public routes 
-  if (publicRoutes.some(route => req.path.startsWith(route)))
+  // allow public access to public routes  
+ if (req.path === '/' || req.path === '/auth/login' || req.path === '/auth/logout') 
   {
      return next();  
   }
