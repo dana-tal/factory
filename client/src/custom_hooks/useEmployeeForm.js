@@ -16,6 +16,10 @@ export const useEmployeeForm = () =>{
         }
         catch(err)
         {
+            if (err.cancelled) // prevent further execution in case the system performed automatic logout (dailyLimit reached)
+            {
+                return;
+            }
             console.log(err);
         }
     }
@@ -29,6 +33,10 @@ export const useEmployeeForm = () =>{
         }
         catch(err)
         {
+            if (err.cancelled) // prevent further execution in case the system performed automatic logout (dailyLimit reached)
+            {
+                return;
+            }
             console.log(err);
         }
     } 

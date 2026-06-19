@@ -12,11 +12,21 @@ export const useUsers = () =>
 
     const fetchUsers = async ()=>
     {
-        setLoadingUsers(true);
-        const allUsers =  await requestAllUsers();
-       // console.log("allUsers:",allUsers);
-        setRows(allUsers);
-        setLoadingUsers(false);         
+        try
+        {
+            setLoadingUsers(true);
+            const allUsers =  await requestAllUsers();
+            setRows(allUsers);
+            setLoadingUsers(false);         
+        }
+        catch(err)
+        {
+            if (err.cancelled) // prevent further execution in case the system performed automatic logout (dailyLimit reached)
+            {
+                return;
+            }
+            console.log("fetchUsers error: ",err);
+        }
     }
      
     return { loadingUsers, fetchUsers, paginationModel,isMobile,rows}

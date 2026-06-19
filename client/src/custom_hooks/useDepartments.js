@@ -52,10 +52,21 @@ const rowsWithDetails = buildRowsWithDetails({
 
     const fetchDepartments = async ()=>
     {
+        try
+        {
           setLoadingDepartments(true);
           const allDepartments =  await requestAllDepartments();
           setRows(allDepartments.map(normalizeDepartment));       
           setLoadingDepartments(false);         
+        }
+        catch(err)
+        {
+            if (err.cancelled) // prevent further execution in case the system performed automatic logout (dailyLimit reached)
+            {
+                return;
+            }
+            console.log("fetchDepartments, error:",err);
+        }
     }
 
     // for showing and hiding employees content 

@@ -6,16 +6,22 @@ import { sendLoginData } from '../utils/authRequest.js';
 
 import { Link, useNavigate } from "react-router-dom";
 import "./AuthForm.css";
-import { useContext } from "react";
+import { useContext,useEffect } from "react";
 import { UserContext } from "../context/UserContext.jsx";
-
+import { useLocation } from "react-router-dom";
 
 const LoginForm =() =>
 {
   const loginForm = useForm({ defaultValues: { username: "Bret", email: "Sincere@april.biz",} });
+ //  const loginForm = useForm({ defaultValues: { username: "Maxime_Nienow", email: "Sherwood@rosamond.me",} });
   const { handleSubmit, control, formState: { errors, isSubmitSuccessful }, reset, setError,} = loginForm;
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+
+  const location = useLocation();
+  const reason = location.state?.reason;
+
+  
 
   const { setUser } = useContext(UserContext);
 
@@ -46,6 +52,7 @@ const LoginForm =() =>
     }
     catch(err) {
 
+       console.log("login err", err);
        const data = err.response?.data;
 
         if (data?.errorField) {
@@ -65,6 +72,17 @@ const LoginForm =() =>
     }
 };
  
+
+useEffect(() => {
+  if (reason === "dailyLimit") {
+    setError("root", {
+      type: "server",
+      message: "Your daily limit has been reached. You may login starting from tomorrow"
+    });
+  }
+}, [reason, setError]);
+
+
   return (
     <Box sx={{   width: { xs: "90%",sm: "70%",md: "70%", lg: "40%",}, mx: "auto", mt: 5,p: 3, boxShadow: 3, borderRadius: 2,
         backgroundColor: "#F8F6F0", minHeight: { xs: "400px", sm: "500px", md: "500px", lg: "500px", }, alignItems: "center", display: "flex" }}

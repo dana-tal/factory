@@ -3,6 +3,7 @@ const DOMAIN = import.meta.env.VITE_APP_DOMAIN;
 
 
 import axios from "axios";
+import { triggerLogout } from "./authService";
 
 const api = axios.create({
   baseURL: DOMAIN,
@@ -21,6 +22,7 @@ api.interceptors.response.use(
   // Error
   (error) => {
 
+  
     console.log("interceptors, error.response:",error.response)
     if (error.response) {
 
@@ -37,7 +39,11 @@ api.interceptors.response.use(
 
         case 403:
           console.log("Forbidden");
-          break;
+          triggerLogout("dailyLimit");
+           error.cancelled = true;
+          return Promise.reject(error);
+         // return Promise.reject({ cancelled: true });
+         
 
         case 500:
           console.log("Server error");

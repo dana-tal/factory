@@ -23,10 +23,21 @@ export const useShifts = () =>{
 
     const fetchShifts = async ()=>
     {
+        try
+        {
           setLoadingShifts(true);
           const allShifts =  await requestAllShifts();
           setRows(allShifts);       
           setLoadingShifts(false);         
+        }
+        catch(err)
+        {
+            if (err.cancelled) // prevent further execution in case the system performed automatic logout (dailyLimit reached)
+            {
+                return;
+            }
+            console.log("fetchShifts error: ",err);
+        }
     }                                                
     
 

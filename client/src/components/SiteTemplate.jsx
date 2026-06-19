@@ -3,20 +3,28 @@ import "./SiteTemplate.css";
 import NavBar from "./NavBar";
 import { requestLogout } from "../utils/authRequest";
 import { useMatch, useNavigate } from "react-router-dom";
-import { useContext } from "react";
+import { useContext ,useEffect } from "react";
 import { UserContext } from "../context/UserContext.jsx";
+import { useLocation } from "react-router-dom";
+
 
 function SiteTemplate() {
 
   const match_auth = useMatch("/auth/*");
   const navigate = useNavigate();
-  const { user } = useContext(UserContext);
+  const { user, logoutReason ,logout} = useContext(UserContext);
+  const location = useLocation();
+  //const { user } = useContext(UserContext);
+  //const { logout } = useContext(UserContext);
 
-  const handleLogout = ()=>{
-        requestLogout();
-        navigate("/auth/login", { replace: true });
+  const handleLogout = async () => {
+  try {
+    console.log("LOGOUT CLICKED");
+    await requestLogout();
+  } finally {
+    logout("standard");
   }
-
+};
    
   let links;
 
@@ -28,6 +36,14 @@ function SiteTemplate() {
      { name:'Logout', callback: handleLogout}
   ];
 
+  useEffect(() => {
+  if (!user && location.pathname !== "/auth/login") {
+    navigate("/auth/login", {
+      replace: true,
+      state: { reason: logoutReason }
+    });
+  }
+}, [user, logoutReason]);
           
   return (  
     <div  className={ match_auth ? "site-container site-container2":"site-container"} >  

@@ -5,7 +5,10 @@ export const useEntities = ({ setRows,setFeedbackMsg,requestAddCallback,requestR
 
     const catchHandler = (err,action_name, setError)=>
     {
-
+        if (err.cancelled) // prevent further execution in case the system performed automatic logout (dailyLimit reached)
+        {
+            return;
+        }
         console.log("Status:", err.response?.status);
         console.log("Data:", err.response?.data);
         console.log("Message:", err.response?.data?.message || err.message);

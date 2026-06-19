@@ -53,11 +53,21 @@ export const useEmployees = ()=>
 
     const fetchEmployees = async ()=>
     {
+        try
+        {
           setLoadingEmployees(true);
           const allEmployees =  await requestAllEmployees();
-         // setRows(allEmployees);
-         setRows(allEmployees.map(normalizeEmployee));
+          setRows(allEmployees.map(normalizeEmployee));
           setLoadingEmployees(false);         
+        }
+        catch(err)
+        {
+            if (err.cancelled) // prevent further execution in case the system performed automatic logout (dailyLimit reached)
+            {
+                return;
+            }
+            console.log("fetchEmployees error:",err);
+        }
     }
 
       const handleNewEmployee = ()=>{
