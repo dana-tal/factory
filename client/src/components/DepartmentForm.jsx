@@ -10,6 +10,7 @@ import Checkbox from "@mui/material/Checkbox";
 import { Box } from "@mui/material";
 import { useDepartmentForm } from "../custom_hooks/useDepartmentForm";
 
+
 const DepartmentForm = ({ onSubmitHandler })=>{
 
     const departmentForm = useForm({ defaultValues: { id:"",name: "", managerId:"",employees:[],externalEmployees:[] }, });
@@ -74,7 +75,8 @@ const DepartmentForm = ({ onSubmitHandler })=>{
                     backgroundColor: "transparent",
                     mx: "auto",
                     mt: 2,
-                    mb: 2
+                    mb: 2,
+                      overflow: "visible"
                 }} 
            
             >
@@ -127,8 +129,22 @@ const DepartmentForm = ({ onSubmitHandler })=>{
                                                                     <FormControl sx={{ width: "100%" }} size="small" variant="outlined"   error={!!errors.managerId} >
                                                                     <Select
                                                                         sx={{ width: { xs:"90%" , sm:"100%"} }}  
-                                                                        {...field}
+                                                                        name={field.name}
+                                                                        value={field.value}
+                                                                        onChange={field.onChange}
+                                                                        onBlur={field.onBlur}
+                                                                        inputRef={field.ref}
                                                                         displayEmpty
+                                                                       
+                                                                        MenuProps={{
+                                                                            slotProps: {
+                                                                            paper: {
+                                                                                sx: {
+                                                                                maxHeight: 250,
+                                                                                },
+                                                                            },
+                                                                            },
+                                                                        }}
                                                                         renderValue={(selected) => {
                                                                         if (!selected) return ""; // placeholder
                                                                         const selectedManager = managers.find(manager => manager.id === selected);
