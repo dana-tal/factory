@@ -12,8 +12,7 @@ import { useLocation } from "react-router-dom";
 
 const LoginForm =() =>
 {
-  const loginForm = useForm({ defaultValues: { username: "Bret", email: "Sincere@april.biz",} });
- //  const loginForm = useForm({ defaultValues: { username: "Maxime_Nienow", email: "Sherwood@rosamond.me",} });
+  const loginForm = useForm({ defaultValues: { username: "", email: "",} });
   const { handleSubmit, control, formState: { errors, isSubmitSuccessful }, reset, setError,} = loginForm;
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
