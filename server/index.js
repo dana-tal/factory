@@ -14,6 +14,8 @@ const authRouter = require('./routers/authRouter');
 const usersRouter = require('./routers/usersRouter');
 const {verifyToken} = require('./middleware/verifyToken');
 const { limitDailyActions } = require('./middleware/limitActions');
+const { attachResponse } = require('./middleware/attachResponse');
+const { errorHandler } = require('./middleware/errorHandler');
 
  const PORT = process.env.PORT || 3000;
 
@@ -78,6 +80,8 @@ app.use((req, res, next) => {
   return limitDailyActions(req,res,next) ; // check the user has not reached his actions counter limit (also updates his counter)
 });  
 
+app.use(attachResponse);
+
 app.get("/", (req, res) => {
   res.send("API is running");
 });
@@ -116,7 +120,8 @@ app.use((req, res, next) => {
     res.status(404).json({ error: 'Route not found' });
 });
 
-
+// Error handler - MUST be last
+app.use(errorHandler);
 
 app.listen(PORT, ()=>{
    console.log(`Listening on port: ${PORT}`) ;

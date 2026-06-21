@@ -5,7 +5,7 @@ const usersService = require('../services/usersService');
 const employeesService = require('../services/employeesService');
 
 
-const getAllDepartments =  async (req,res)=>{
+const getAllDepartments =  async (req,res,next)=>{
     try
     {
         // option : getAllDepartments({ name: "HR" });
@@ -20,11 +20,11 @@ const getAllDepartments =  async (req,res)=>{
     catch(err)
     {
         errlogger.error(`getAllDepartments failed: ${err.message}`, { stack: err.stack });
-        return res.status(500).json(err);  
+        return next(err);          
     }
 }
 
-const getAllManagers = async (req,res) =>{
+const getAllManagers = async (req,res,next) =>{
     try
     {
         const managers = await departmentsService.getAllManagers();
@@ -37,12 +37,12 @@ const getAllManagers = async (req,res) =>{
     }
     catch(err)
     {
-         errlogger.error(`getAllManagers failed: ${err.message}`, { stack: err.stack });
-        return res.status(500).json(err);  
+        errlogger.error(`getAllManagers failed: ${err.message}`, { stack: err.stack });
+        return next(err);          
     }
 }
 
-const getDepartmentsNames = async (req,res) =>
+const getDepartmentsNames = async (req,res,next) =>
 {
     try
     {
@@ -57,11 +57,11 @@ const getDepartmentsNames = async (req,res) =>
     catch(err)
     {
         errlogger.error(`getDepartmentsNames failed: ${err.message}`, { stack: err.stack });
-        return res.status(500).json(err);  
+        return next(err);         
     }
 }
 
-const getDepartmentEditInfo =  async (req,res) =>{
+const getDepartmentEditInfo =  async (req,res,next) =>{
        try
        {
             const id = req.params.id;
@@ -70,29 +70,30 @@ const getDepartmentEditInfo =  async (req,res) =>{
             let result = validator.validateEntityId(id,'Department');
             if (result)
             {
-                return res.status(result.status).json(result.message);
+                return next(result);                
             }
 
             // chekc if the department exists 
             const departmentDoc = await departmentsService.getDepartmentById(id);
             if (!departmentDoc) 
             {
-                return res.status(404).json({ message: `The department ${id} does not exist` });
+                return next({status:404, message:`The department ${id} does not exist`});                
             }
             const outsideEmployees = await employeesService.getOutsideDepartmentEmployees(id);
 
             const department = departmentDoc.toObject(); // turning mongoose document to regular javascript object 
             department.externalEmployees = outsideEmployees;
+            await usersService.logUserAction(req.user.userId,"getDepartmentEditInfo");
             return res.status(200).json(department);    
        }
        catch(err)
         {
             errlogger.error(`getDepartmentEditInfo failed: ${err.message}`, { stack: err.stack });
-            return res.status(500).json(err);  
+            return next(err);              
         }
 }
 
-const getDepartmentById = async (req,res) => {
+const getDepartmentById = async (req,res,next) => {
     try
     {
         const id = req.params.id;
@@ -101,14 +102,14 @@ const getDepartmentById = async (req,res) => {
         let result = validator.validateEntityId(id,'Department');
         if (result)
         {
-            return res.status(result.status).json(result.message);
+            return next(result);            
         }
 
         // chekc if the department exists 
         const department = await departmentsService.getDepartmentById(id);
         if (!department) 
         {
-            return res.status(404).json({ message: `The department ${id} does not exist` });
+            return next({status:404, message:`The department ${id} does not exist` });
         }
         await usersService.logUserAction(req.user.userId,"getDepartmentById");
         return res.status(200).json(department);        
@@ -116,11 +117,11 @@ const getDepartmentById = async (req,res) => {
     catch(err)
     {
         errlogger.error(`getDepartmentById failed: ${err.message}`, { stack: err.stack });
-        return res.status(500).json(err);
+        return next(err);        
     }
 }
 
-const addDepartment = async (req,res)=>
+const addDepartment = async (req,res,next)=>
 {
     try
     {
@@ -130,13 +131,13 @@ const addDepartment = async (req,res)=>
         let result = await validator.validateDepartmentInfo(name, managerId);
         if ( result)
         {
-            return res.status(result.status).json(result.message);
+            return next(result);
         }
 
         const existingDepartment = await departmentsService.getDepartmentByName(name);
         if (existingDepartment)
         {
-            return res.status(409).json({ message:`A department with the name: ${name} already exists`});
+            return next({status:409,message:`A department with the name: ${name} already exists`});            
         }
 
         const newDepartment = await departmentsService.addDepartment({ name, managerId} );
@@ -145,12 +146,12 @@ const addDepartment = async (req,res)=>
     }
     catch(err)
     {
-         errlogger.error(`addDepartment failed: ${err.message}`, { stack: err.stack });
-        return res.status(500).json(err);
+        errlogger.error(`addDepartment failed: ${err.message}`, { stack: err.stack });
+        return next(err);        
     }
 }
 
-const updateDepartment = async (req,res) =>
+const updateDepartment = async (req,res,next) =>
 {
     try
     {
@@ -161,13 +162,13 @@ const updateDepartment = async (req,res) =>
           const result = validator.validateEntityId(id,'Department');
           if (result)
           {
-            return res.status(result.status).json(result.message);
+            return next(result);            
           }
 
           const department = await departmentsService.getDepartmentById(id);
           if (!department)
           {
-             return res.status(404).json(`Department with id ${id} does not exist`);
+             return next({status:404, message:`Department with id ${id} does not exist`});
           }
 
           // flags detecting which fields were provided 
@@ -185,7 +186,7 @@ const updateDepartment = async (req,res) =>
                 result1 =  await validator.validateEmployees('newEmployees',req.body);       
                 if (result1.status !=='O.K')
                 {
-                    return  res.status(result1.status).json(result1.message);
+                    return next(result1);                   
                 }
             }
 
@@ -193,11 +194,11 @@ const updateDepartment = async (req,res) =>
           const result2 = await validator.validateDepartmentInfo(name,managerId);
           if ( result2)
           {
-              return res.status(result2.status).json(result2.message);
+                return next(result2);            
           }
           const updatedDept = await departmentsService.updateDepartment(id,{name,managerId});
           const newEmployees = deptObj.newEmployees;
-          if (newEmployees.length>0)
+          if (Array.isArray(newEmployees) && newEmployees.length>0)
           {
                await employeesService.updateEmployeesDepartment(newEmployees, id);
           }
@@ -207,12 +208,12 @@ const updateDepartment = async (req,res) =>
     catch(err)
     {
         errlogger.error(`updateDepartment failed: ${err.message}`, { stack: err.stack });
-        return res.status(500).json(err);
+        return next(err);        
     }
 }
 
 
-const deleteDepartment = async (req,res) =>
+const deleteDepartment = async (req,res,next) =>
 {
     try
     {
@@ -220,12 +221,12 @@ const deleteDepartment = async (req,res) =>
         const result = validator.validateEntityId(id,'Department');
         if (result)
         {
-            return res.status(result.status).json(result.message);
+            return next(result);            
         }
         const exists = await departmentsService.departmentExists(id);
         if (!exists)
         {
-            return res.status(404).json(`Department with id ${id} does not exist`);
+            return next({status:404,message:`Department with id ${id} does not exist`});
         }
         // todo: delete department employees 
         const deletedDepartment = await departmentsService.deleteDepartment(id);
@@ -235,7 +236,7 @@ const deleteDepartment = async (req,res) =>
     catch(err)
     {
         errlogger.error(`deleteDepartment failed: ${err.message}`, { stack: err.stack });
-        return res.status(500).json(err);
+        return next(err);        
     }
 }
 

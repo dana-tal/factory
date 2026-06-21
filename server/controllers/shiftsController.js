@@ -3,14 +3,14 @@ const validator = require('../utils/validator');
 const shiftsService = require('../services/shiftsService');
 const usersService = require('../services/usersService');
 
-const getAllShifts = async (req,res)=>{
+const getAllShifts = async (req,res,next)=>{
 
     try
     {
         const shifts = await shiftsService.getAllShifts();
         if (!shifts)
         {
-            res.status(204).json('The request was successfull, but there are no shifts yet');
+           return res.status(204).json('The request was successfull, but there are no shifts yet');
         }
         await usersService.logUserAction(req.user.userId,"getAllShifts");
         return res.status(200).json(shifts);
@@ -18,12 +18,12 @@ const getAllShifts = async (req,res)=>{
     catch(err)
     {
         errlogger.error(`getAllShifts failed: ${err.message}`, { stack: err.stack });
-        return res.status(500).json(err);  
+        return next(err);         
     }
 
 }
 
-const getShiftById = async (req,res)=> {
+const getShiftById = async (req,res,next)=> {
 
     try
     {
@@ -32,25 +32,24 @@ const getShiftById = async (req,res)=> {
         const result = validator.validateEntityId(id,'Shift');
         if (result)
         {
-            return res.status(result.status).json(result.message);
+            return next(result);           
         }
         const shift = await shiftsService.getShiftById(id);
         if (!shift)
         {
-            return res.status(404).json(`A shift with id: ${id} does not exist`);
+            return next({status:404, message:`A shift with id: ${id} does not exist` });           
         }
         await usersService.logUserAction(req.user.userId,"getShiftById");
         return res.status(200).json(shift);
     }
     catch(err)
     {
-         errlogger.error(`getShiftById failed: ${err.message}`, { stack: err.stack });
-        return res.status(500).json(err); 
+        errlogger.error(`getShiftById failed: ${err.message}`, { stack: err.stack });
+        return next(err);         
     }
-
 }
 
-const getShiftEditInfo =  async (req,res)=> {
+const getShiftEditInfo =  async (req,res,next)=> {
 
     try
     {
@@ -59,42 +58,42 @@ const getShiftEditInfo =  async (req,res)=> {
         const result = validator.validateEntityId(id,'Shift');
         if (result)
         {
-            return res.status(result.status).json(result.message);
+            return next(result);            
         }
         const shift = await shiftsService.getShiftEditInfo(id);
         if (!shift)
         {
-            return res.status(404).json(`A shift with id: ${id} does not exist`);
+            return next({status:404, message:`A shift with id: ${id} does not exist`});
         }
         await usersService.logUserAction(req.user.userId,"getShiftEditInfo");
         return res.status(200).json(shift);
     }
     catch(err)
     {
-         errlogger.error(`getShiftEditInfo failed: ${err.message}`, { stack: err.stack });
-        return res.status(500).json(err); 
+        errlogger.error(`getShiftEditInfo failed: ${err.message}`, { stack: err.stack });
+        return next(err); 
     }
 }
 
-const registerEmployeesToShift = async (req,res) =>{
+const registerEmployeesToShift = async (req,res,next) =>{
     try
     {
         const id = req.params.id;
         const result = validator.validateEntityId(id,'Shift');
         if (result)
         {
-            return res.status(result.status).json(result.message);
+            return next(result);
         }
         const shift = await shiftsService.shiftExists(id);
         if (!shift)
         {
-            return res.status(404).json(`A shift with id: ${id} does not exist`);
+            return next({status:404, message:`A shift with id: ${id} does not exist`});
         }
 
         const result2  = await validator.validateEmployees('employees',req.body);  
         if (result2.status !=='O.K')
         {
-            return  res.status(result2.status).json(result2.message);
+            return next(result2);            
         }
        
         const employees = req.body.employees ;
@@ -104,44 +103,44 @@ const registerEmployeesToShift = async (req,res) =>{
     }
     catch(err)
     {
-         errlogger.error(`registerEmployeesToShift failed: ${err.message}`, { stack: err.stack });
-        return res.status(500).json(err); 
+        errlogger.error(`registerEmployeesToShift failed: ${err.message}`, { stack: err.stack });
+        return next(err);         
     }
 }
 
-const unregisterEmployeesFromShift = async (req,res)=>{
+const unregisterEmployeesFromShift = async (req,res,next)=>{
     try
     {
         const id = req.params.id;
         const result = validator.validateEntityId(id,'Shift');
         if (result)
         {
-            return res.status(result.status).json(result.message);
+            return next(result);
         }
         const shift = await shiftsService.shiftExists(id);
         if (!shift)
         {
-            return res.status(404).json(`A shift with id: ${id} does not exist`);
+            return next({status:404, message:`A shift with id: ${id} does not exist`});
         }
 
         const result2  = await validator.validateEmployees('employees',req.body);  
         if (result2.status !=='O.K')
         {
-            return  res.status(result2.status).json(result2.message);
+            return next(result2);
         }
         const employees = req.body.employees ;
         const unregisterResult = await shiftsService.unregisterEmployeesFromShift(id,employees);
         await usersService.logUserAction(req.user.userId,"unregisterEmployeesFromShift");
-         return res.status(200).json(unregisterResult);   
+        return res.status(200).json(unregisterResult);   
     }
     catch(err)
     {
-         errlogger.error(`unregisterEmployeesFromShift failed: ${err.message}`, { stack: err.stack });
-        return res.status(500).json(err); 
+        errlogger.error(`unregisterEmployeesFromShift failed: ${err.message}`, { stack: err.stack });
+        return next(err); 
     }
 }
 
-const addNewShift = async (req,res)=> {
+const addNewShift = async (req,res,next)=> {
     try
     {
        let i,key,dateResult, info ={} ; 
@@ -149,7 +148,7 @@ const addNewShift = async (req,res)=> {
 
        if (! req.body)
        {
-            return res.status(400).json({error:'Request body is missing'});
+            return next({status:400, message:'Request body is missing'});
        } 
       
        for (i=0; i< keys.length; i++)
@@ -158,7 +157,7 @@ const addNewShift = async (req,res)=> {
             dateResult = validator.isValidDateInput(req.body,key,true);
             if (dateResult.status !== 'O.K')
             {
-                return res.status( dateResult.status).json(dateResult.message);
+                return next(dateResult);
             }
             else 
             {
@@ -169,12 +168,12 @@ const addNewShift = async (req,res)=> {
        const datesValid = validator.validateDateRange(req.body.startDate, req.body.endDate);
        if (datesValid.status !=='O.K')
        {
-           return res.status(datesValid.status).json({message: datesValid.message});
+           return next(datesValid);
        }
         const result = await validator.validateShiftInfo( info['startDate'],info['endDate']); // logical checks of dates 
         if (result)
         {
-            return res.status(result.status).json(result.message);
+           return next(result);
         }
 
         const newShift = await shiftsService.addNewShift({startDate: info['startDate'], endDate: info['endDate']});
@@ -184,11 +183,11 @@ const addNewShift = async (req,res)=> {
     catch(err)
     {
         errlogger.error(`addNewShift failed: ${err.message}`, { stack: err.stack });
-        return res.status(500).json(err); 
+        return next(err);         
     }
 }
 
-const updateShift = async (req,res)=>{
+const updateShift = async (req,res,next)=>{
     try
     {
          let i,key,dateResult, info ={} ; 
@@ -196,7 +195,7 @@ const updateShift = async (req,res)=>{
 
         if (! req.body)
         {
-            return res.status(400).json({error:'Request body is missing'});
+            return next({status:400, message:'Request body is missing'});
         }
          
        const id = req.params.id;
@@ -204,12 +203,12 @@ const updateShift = async (req,res)=>{
        let result = validator.validateEntityId(id,'Shift');
        if (result)
        {
-            return res.status(result.status).json(result.message);
+            return next(result);            
        }
         const existingShift = await shiftsService.getShiftById(id);
         if (!existingShift)
         {
-            return res.status(404).json(`Shift with id ${id} does not exist`);
+            return next({status:404, message:`Shift with id ${id} does not exist`});
         }
        
 
@@ -219,7 +218,7 @@ const updateShift = async (req,res)=>{
             dateResult = validator.isValidDateInput(req.body,key,false);
             if (dateResult.status !== 'O.K')
             {
-                return res.status( dateResult.status).json(dateResult.message);
+                return next(dateResult);
             }
             else 
             {
@@ -230,7 +229,7 @@ const updateShift = async (req,res)=>{
       const datesValid = validator.validateDateRange(req.body.startDate, req.body.endDate);
        if (datesValid.status !=='O.K')
        {
-           return res.status(datesValid.status).json({message: datesValid.message});
+           return next(datesValid);
        }
 
         let newShiftEmployees;
@@ -240,7 +239,7 @@ const updateShift = async (req,res)=>{
             const result1 =  await validator.validateEmployees('newShiftEmployees',req.body);       
             if (result1.status !=='O.K')
             {
-                return  res.status(result1.status).json(result1.message);
+                return next(result1);
             }
             newShiftEmployees = req.body.newShiftEmployees;
         }
@@ -253,7 +252,7 @@ const updateShift = async (req,res)=>{
             const result2 = await validator.validateEmployees('removedEmployeeIds',req.body);
             if (result2.status !== 'O.K')
             {
-                return res.status(result2.status).json(result2.message);
+                return next(result2);
             }
             removedEmployees = req.body.removedEmployeeIds;           
         } 
@@ -265,29 +264,29 @@ const updateShift = async (req,res)=>{
        result = await validator.validateShiftInfo(startDate,endDate); // validate dates logically 
        if (result)
        {
-            return res.status(result.status).json(result.message);
+            return next(result);            
        }
        
        const updatedShift = await shiftsService.updateShift(id,{ startDate,endDate });
        let registerResult = {};
-       if (newShiftEmployees.length >0)
+       if (Array.isArray(newShiftEmployees) && newShiftEmployees.length >0)
        {
             registerResult = await shiftsService.registerEmployeesToShift(id,newShiftEmployees);
        }  
 
        let unregisterResult = {};
-       if (removedEmployees.length >0)
+       if (Array.isArray(removedEmployees) && removedEmployees.length >0)
        {
             unregisterResult =  await shiftsService.unregisterEmployeesFromShift(id,removedEmployees);
        }
 
         await usersService.logUserAction(req.user.userId,"updateShift");
-       res.status(200).json({ ...updatedShift, ...registerResult , ...unregisterResult });
+        res.status(200).json({ ...updatedShift, ...registerResult , ...unregisterResult });
     }
     catch(err)
     {
-         errlogger.error(`updateShift failed: ${err.message}`, { stack: err.stack });
-        return res.status(500).json(err); 
+        errlogger.error(`updateShift failed: ${err.message}`, { stack: err.stack });
+        return next(err);         
     }
 }
 

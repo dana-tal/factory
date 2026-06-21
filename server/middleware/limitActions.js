@@ -12,13 +12,20 @@ const limitDailyActions = async (req,res,next) =>{
     {
         const userId = req.user.userId; // this is ensured by previous middleware - verifyToken.js 
         const userActions = await usersService.increaseUserActionsCounter(userId);
+        
+       
         if (!userActions) {
             req._logoutReason = 'dailyLimit';
             return authController.doLogout(req, res, 403);
         }
 
+        const user = await usersService.getUserById(userId);
+        res.locals.maxActions = user.maxActions; 
+        res.locals.userId = userId;
+        res.locals.actionsCount = userActions.actionsCount;
+
          // Attach a listener to decrease the counter if the request ends with an error status
-        res.on('finish', async () => {
+       /* res.on('finish', async () => {
             if (res.statusCode >= 400) {
                 try {
                     const decreaseInfo = await usersService.decreaseUserActionsCounter(userId);                    
@@ -26,7 +33,7 @@ const limitDailyActions = async (req,res,next) =>{
                      errlogger.error(`Failed to decrease actions counter for user ${userId}: ${err.message}`, { stack: err.stack });
                 }
             }
-        });
+        });*/
 
         next();
     }

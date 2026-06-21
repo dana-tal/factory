@@ -5,7 +5,7 @@ const departmentsService = require('../services/departmentsService');
 const errlogger = require('../utils/logger');
 const validator = require('../utils/validator');
 
-const getAllEmployees = async (req,res)=>{
+const getAllEmployees = async (req,res,next)=>{
     try
     {
         const employees = await employeesService.getAllEmployees();
@@ -19,12 +19,12 @@ const getAllEmployees = async (req,res)=>{
     catch(err)
     {
         errlogger.error(`getAllEmployees failed: ${err.message}`, { stack: err.stack });
-        return res.status(500).json(err);  
+        return next(err);      
     }
 
 }
 
-const getAllEmployeesAndDepartments = async (req,res) =>{
+const getAllEmployeesAndDepartments = async (req,res,next) =>{
 
     try
     {
@@ -37,18 +37,18 @@ const getAllEmployeesAndDepartments = async (req,res) =>{
        
         const response = { employees, departments };
         await usersService.logUserAction(req.user.userId,"getAllEmployeesAndDepartments");
-        res.status(200).json(response);
+        return res.status(200).json(response);
     }
     catch(err)
     {
         errlogger.error(`getAllEmployeesAndDepartments failed: ${err.message}`, { stack: err.stack });
-        return res.status(500).json(err);  
+        return next(err);            
     }
 
 }
 
 
-const getEmployeeEditInfo = async (req,res) =>{
+const getEmployeeEditInfo = async (req,res,next) =>{
 
     try
     {
@@ -56,52 +56,53 @@ const getEmployeeEditInfo = async (req,res) =>{
         let result = validator.validateEntityId(id,'Employee');
         if (result)
         {
-            return res.status(result.status).json(result.message);
+            return next(result);
         }
         
         const employee = await employeesService.getEmployeeEditInfo(id);
         if (!employee) 
         {
-            return res.status(404).json({ message: `The employee ${id} does not exist` });
+            const err= { status:404, message: `The employee ${id} does not exist` }
+            return next(err);
         }
         employee.department_names = await departmentsService.getDepartmentsNames();
         await usersService.logUserAction(req.user.userId,"getEmployeeEditInfo");
-        res.status(200).json(employee);
+        return res.status(200).json(employee);
     }
     catch(err)
     {
         errlogger.error(`getEmployeeEditInfo failed: ${err.message}`, { stack: err.stack });
-        return res.status(500).json(err);
+        return next(err);     
     }
 
 }
 
-const getEmployeeById = async (req,res) =>{
+const getEmployeeById = async (req,res,next) =>{
     try
     {
         const id = req.params.id;
         let result = validator.validateEntityId(id,'Employee');
         if (result)
         {
-            return res.status(result.status).json(result.message);
+           return next(result);
         }
         
         const employee = await employeesService.getEmployeeById(id);
         if (!employee) 
         {
-            return res.status(404).json({ message: `The employee ${id} does not exist` });
+            return next({status:404, message: `The employee ${id} does not exist` });
         }
         await usersService.logUserAction(req.user.userId,"getEmployeeById");
-        res.status(200).json(employee);
+        return res.status(200).json(employee);
     }
     catch(err)
     {
         errlogger.error(`getEmployeeById failed: ${err.message}`, { stack: err.stack });
-        return res.status(500).json(err);
+        return next(err);      
     }
 }
 
-const addNewEmployee = async (req,res)=>{
+const addNewEmployee = async (req,res,next)=>{
     try
     {
         const firstName = req.body.firstName;
@@ -113,7 +114,7 @@ const addNewEmployee = async (req,res)=>{
         let result = await validator.validateEmployeeInfo(firstName,lastName,startYear,departmentId);
         if (result)
         {
-            return res.status(result.status).json(result.message);
+            return next(result);            
         }
         const newEmployee = await employeesService.addNewEmployee({ firstName,lastName,startYear,departmentId});
         await usersService.logUserAction(req.user.userId,"addNewEmployee");
@@ -122,11 +123,11 @@ const addNewEmployee = async (req,res)=>{
     catch(err)
     {
          errlogger.error(`addEmployee failed: ${err.message}`, { stack: err.stack });
-        return res.status(500).json(err);
+         return next(err);      
     }
 }
 
-const updateEmployee = async (req,res)=>{
+const updateEmployee = async (req,res,next)=>{
 
     try
     {
@@ -135,13 +136,13 @@ const updateEmployee = async (req,res)=>{
         let result = validator.validateEntityId(id,'Employee');
         if (result)
         {
-            return res.status(result.status).json(result.message);
+            return next(result);            
         }
 
         const currentEmployee = await employeesService.getEmployeeById(id);
         if (!currentEmployee)
         {
-             return res.status(404).json(`Employee with id ${id} does not exist`);
+            return next({status:404, message:`Employee with id ${id} does not exist`})
         }
 
         // to enable partial update:
@@ -162,21 +163,19 @@ const updateEmployee = async (req,res)=>{
             result =  await validator.validateShifts('newShifts',req.body);       
             if (result.status !=='O.K')
             {
-                return  res.status(result.status).json(result.message);
+                return next(result);
             }
         }
-
-        //console.log(req.body);
-
+        
         result = await validator.validateEmployeeInfo(firstName,lastName,startYear,departmentId);
         if (result)
         {
-            return res.status(result.status).json(result.message);
+            return next(result);           
         }
 
         const updatedEmployee = await employeesService.updateEmployee(id,{ firstName,lastName,startYear,departmentId});
 
-        if (newShifts.length >0 )
+        if (newShifts && newShifts.length >0 )
         {
             const registerResult = await employeesService.registerEmployeeToShifts(id,newShifts);
             updatedEmployee.registerResult = registerResult ;
@@ -188,12 +187,12 @@ const updateEmployee = async (req,res)=>{
     catch(err)
     {
         errlogger.error(`updateEmployee failed: ${err.message}`, { stack: err.stack });
-        return res.status(500).json(err);
+        return next(err);        
     }
 
 }
 
-const deleteEmployee = async (req,res)=>{
+const deleteEmployee = async (req,res,next)=>{
 
     try
     {
@@ -201,13 +200,13 @@ const deleteEmployee = async (req,res)=>{
         const result = validator.validateEntityId(id,'Employee');
         if (result)
         {
-            return res.status(result.status).json(result.message);
+            return next(result);           
         }
 
         const exists = await employeesService.employeeExists(id);
         if (!exists)
         {
-            return res.status(404).json(`Employee with id ${id} does not exist`);
+           return next({status:404, message:`Employee with id ${id} does not exist`});
         }
 
         const deleteResult = await employeesService.deleteEmployee(id);
@@ -217,12 +216,12 @@ const deleteEmployee = async (req,res)=>{
     catch(err)
     {
         errlogger.error(`deleteEmployee failed: ${err.message}`, { stack: err.stack });
-        return res.status(500).json(err);
+        return next(err);      
     }
 }
 
 
-const registerEmployeeToShifts = async (req,res)=>{
+const registerEmployeeToShifts = async (req,res,next)=>{
 
     try
     {
@@ -231,18 +230,18 @@ const registerEmployeeToShifts = async (req,res)=>{
         let  result = validator.validateEntityId(empId,'Employee'); // verify the empId is syntactically valid 
         if (result)
         {
-            return res.status(result.status).json(result.message);
+            return next(result);
         }
         const exists = await employeesService.employeeExists(empId); // verifiy the employee exists 
         if (!exists)
         {
-            return res.status(404).json(`Employee with id ${empId} does not exist`);
+            return next({status:404, message:`Employee with id ${empId} does not exist`});            
         }
 
         result =  await validator.validateShifts('newShifts',req.body);       
         if (result.status !=='O.K')
         {
-            return  res.status(result.status).json(result.message);
+            return next(result);           
         }
        
         const newShifts = req.body.newShifts;
@@ -253,11 +252,11 @@ const registerEmployeeToShifts = async (req,res)=>{
     catch(err)
     {
        errlogger.error(`registerEmployeeToShifts failed: ${err.message}`, { stack: err.stack });
-        return res.status(500).json(err); 
+       return next(err);        
     }
 }
 
-const unregisterEmployeeFromShifts = async (req,res) =>{
+const unregisterEmployeeFromShifts = async (req,res,next) =>{
 
     try
     {
@@ -266,19 +265,19 @@ const unregisterEmployeeFromShifts = async (req,res) =>{
          let  result = validator.validateEntityId(empId,'Employee'); // verify the empId is syntactically valid 
         if (result)
         {
-            return res.status(result.status).json(result.message);
+            return next(result);           
         }
         const exists = await employeesService.employeeExists(empId); // verifiy the employee exists 
         if (!exists)
         {
-            return res.status(404).json(`Employee with id ${id} does not exist`);
+            return next({status:404, message:`Employee with id ${empId} does not exist`});
         }
 
         result =  await validator.validateShifts('removeShifts',req.body);
       
         if (result.status !=='O.K')
         {
-            return  res.status(result.status).json(result.message);
+            return next(result);           
         }
 
         const removeShifts = req.body.removeShifts;
@@ -290,7 +289,7 @@ const unregisterEmployeeFromShifts = async (req,res) =>{
     catch(err)
     {
        errlogger.error(`unregisterEmployeeFromShifts failed: ${err.message}`, { stack: err.stack });
-        return res.status(500).json(err); 
+       return next(err);        
     }
 }
 

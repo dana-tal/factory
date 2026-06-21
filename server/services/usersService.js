@@ -4,6 +4,11 @@ const userActionsRepo = require('../repositories/userActionsRepo');
 const actionsLogger = require('../utils/actionsLogger');
 const { convertDate } = require('../utils/dateFuncs');
 
+
+const getUserById =  (userId) =>{
+    return usersRepo.getUserById(userId);
+}
+
 const increaseUserActionsCounter = async (userId) =>{
 
    const user = await usersRepo.getUserById(userId);
@@ -58,5 +63,6 @@ module.exports = {
                    decreaseUserActionsCounter,
                    userReachedActionsLimit,
                    logUserAction,
-                   getUsersActions
+                   getUsersActions,
+                   getUserById
                   }
