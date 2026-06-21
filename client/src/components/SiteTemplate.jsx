@@ -12,7 +12,7 @@ function SiteTemplate() {
 
   const match_auth = useMatch("/auth/*");
   const navigate = useNavigate();
-  const { user, logoutReason ,logout} = useContext(UserContext);
+  const { user, logoutReason ,logout , remainingActions } = useContext(UserContext);
   const location = useLocation();
   //const { user } = useContext(UserContext);
   //const { logout } = useContext(UserContext);
@@ -51,7 +51,7 @@ function SiteTemplate() {
       {!match_auth && (
         <>
           <div style={{ marginLeft: "30px", marginTop:"5px", fontFamily:"Arial", fontWeight:"bold",color: "#654321" }}>
-            Hello, {user?.name}
+            Hello, {user?.name},<br/> remaining actions: {remainingActions}
           </div>
 
           <NavBar links={links} />

@@ -1,5 +1,5 @@
 import { createContext, useState ,useCallback ,useEffect} from "react";
-import { setLogout } from "../utils/authService";
+import { setLogout, setRemainingActionsFunc } from "../utils/authService";
 
 
 // Create the context
@@ -10,18 +10,29 @@ const UserProvider = ({ children }) =>
 {
   const [user, setUser] = useState(null);
   const [logoutReason, setLogoutReason] = useState(null);
+  const [remainingActions, setRemainingActions] = useState(null);
 
   const logout = useCallback((reason = "standard") => {
     setLogoutReason(reason);
     setUser(null);
   }, []);
 
+
+  const updateRemainingActions = useCallback( (remaining)=>{
+      setRemainingActions(remaining);
+  },[]);
+
+
   useEffect(() => {
     setLogout(logout);
   }, [logout]);
 
+  useEffect( ()=>{
+      setRemainingActionsFunc(updateRemainingActions);
+  },[updateRemainingActions])
+  
   return (
-    <UserContext.Provider value={{ user, setUser,logout , logoutReason}}>
+    <UserContext.Provider value={{ user, setUser,logout , logoutReason, remainingActions}}>
       {children}
     </UserContext.Provider>
   );

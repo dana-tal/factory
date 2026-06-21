@@ -3,7 +3,7 @@ const DOMAIN = import.meta.env.VITE_APP_DOMAIN;
 
 
 import axios from "axios";
-import { triggerLogout } from "./authService";
+import { triggerLogout , updateRemainingActions} from "./authService";
 
 const api = axios.create({
   baseURL: DOMAIN,
@@ -16,6 +16,13 @@ api.interceptors.response.use(
 
   // Success
   (response) => {
+
+    const remaining = response.headers["x-remaining-actions"];
+    if (remaining !== undefined) 
+    {
+       updateRemainingActions(remaining);
+      console.log("Remaining actions:", remaining);
+    }
     return response;
   },
 

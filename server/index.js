@@ -28,7 +28,8 @@ app.use((req, res, next) => {
 //app.use( cors());
 app.use(cors({
   origin: true,
-  credentials: true
+  credentials: true,
+  exposedHeaders: ["X-Remaining-Actions"]
 }));
 
 app.use(express.json());
