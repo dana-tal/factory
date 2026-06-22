@@ -18,7 +18,8 @@ const LoginForm =() =>
   const { handleSubmit, control, formState: { errors, isSubmitSuccessful }, reset, setError,} = loginForm;
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoginLoading, setIsLoginLoading] = useState(false);
+  const [isGuestLoading , setIsGuestLoading] = useState(false);
 
   const location = useLocation();
   const reason = location.state?.reason;
@@ -43,9 +44,7 @@ const LoginForm =() =>
   const loginHandler = async (data)=>{
       try
       {
-          setIsLoading(true);
           const res = await sendLoginData(data);
-          setIsLoading(false);
           console.log('res:',res)  ;
           reset();
 
@@ -72,7 +71,9 @@ const LoginForm =() =>
       console.log("guest login");
     
       const data = { username: import.meta.env.VITE_GUEST_USERNAME , email: import.meta.env.VITE_GUEST_EMAIL };
+      setIsGuestLoading(true);
       await loginHandler(data);
+      setIsGuestLoading(false);
   }
 
   const onSubmit = async (data) => {
@@ -81,7 +82,9 @@ const LoginForm =() =>
             username: data.username.trim(),
             email: data.email.trim()
         };
+      setIsLoginLoading(true);
       await loginHandler(trimmedData);
+      setIsLoginLoading(false);
 
 };
  
@@ -190,7 +193,7 @@ useEffect(() => {
                 alignSelf: "flex-start",
               }}
             >
-              {isLoading? "Please wait, waking up the server...":"Login"}
+              {isLoginLoading? "Please wait, waking up the server...":"Login"}
             </Button>
 
               <Divider sx={{ my: 2, fontFamily:"Arial",fontSize: "20px",   '&::before, &::after': {
@@ -209,7 +212,7 @@ useEffect(() => {
               }}
               onClick={handleGuestLogin}
             >
-             { isLoading ? "Please wait, waking up the server...":"Continue As Guest"}
+             { isGuestLoading ? "Please wait, waking up the server...":"Continue As Guest"}
             </Button>
 
 
