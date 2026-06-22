@@ -10,6 +10,7 @@ import { useContext,useEffect } from "react";
 import { UserContext } from "../context/UserContext.jsx";
 import { useLocation } from "react-router-dom";
 import Divider from '@mui/material/Divider';
+import axios from "axios";
 
 const LoginForm =() =>
 {
@@ -17,6 +18,7 @@ const LoginForm =() =>
   const { handleSubmit, control, formState: { errors, isSubmitSuccessful }, reset, setError,} = loginForm;
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const location = useLocation();
   const reason = location.state?.reason;
@@ -30,11 +32,20 @@ const LoginForm =() =>
     setShowPassword((prev) => !prev);
   };
 
+  const warmUpServer = () => {
+  axios.get(`${import.meta.env.VITE_APP_DOMAIN}/`, {
+    withCredentials: true,
+  }).catch(() => {
+    // ignore errors - warm-up only
+  });
+};
 
   const loginHandler = async (data)=>{
       try
       {
+          setIsLoading(true);
           const res = await sendLoginData(data);
+          setIsLoading(false);
           console.log('res:',res)  ;
           reset();
 
@@ -74,6 +85,10 @@ const LoginForm =() =>
 
 };
  
+useEffect(() => {
+  warmUpServer();
+}, []);
+
 
 useEffect(() => {
   if (reason === "dailyLimit") {
@@ -175,7 +190,7 @@ useEffect(() => {
                 alignSelf: "flex-start",
               }}
             >
-              Login
+              {isLoading? "Please wait, waking up the server...":"Login"}
             </Button>
 
               <Divider sx={{ my: 2, fontFamily:"Arial",fontSize: "20px",   '&::before, &::after': {
@@ -194,7 +209,7 @@ useEffect(() => {
               }}
               onClick={handleGuestLogin}
             >
-              Continue As Guest
+             { isLoading ? "Please wait, waking up the server...":"Continue As Guest"}
             </Button>
 
 
