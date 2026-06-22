@@ -9,6 +9,7 @@ import "./AuthForm.css";
 import { useContext,useEffect } from "react";
 import { UserContext } from "../context/UserContext.jsx";
 import { useLocation } from "react-router-dom";
+import Divider from '@mui/material/Divider';
 
 const LoginForm =() =>
 {
@@ -30,45 +31,47 @@ const LoginForm =() =>
   };
 
 
+  const loginHandler = async (data)=>{
+      try
+      {
+          const res = await sendLoginData(data);
+          console.log('res:',res)  ;
+          reset();
+
+          setUser(res.user);
+          navigate("/departments", {replace: true,}); 
+      }
+      catch(err)
+      {
+          console.log("login err", err);
+          const data = err.response?.data;
+
+          if (data?.errorField) 
+          {
+            setError(data.errorField, {type: "server",message: data.message});
+          }
+          else
+          {
+            setError("root", {type: "server",message: data?.message || "Login failed"});
+          }
+      }
+  }
+
+  const handleGuestLogin= async ()=>{
+      console.log("guest login");
+    
+      const data = { username: import.meta.env.VITE_GUEST_USERNAME , email: import.meta.env.VITE_GUEST_EMAIL };
+      await loginHandler(data);
+  }
+
   const onSubmit = async (data) => {
 
-    try {
-
-        const trimmedData = {
+      const trimmedData = {
             username: data.username.trim(),
             email: data.email.trim()
         };
+      await loginHandler(trimmedData);
 
-        const res = await sendLoginData(trimmedData);
-        console.log('res:',res)  ;
-        reset();
-
-       setUser(res.user);
-      navigate("/departments", {
-            replace: true,
-        }); 
-
-    }
-    catch(err) {
-
-       console.log("login err", err);
-       const data = err.response?.data;
-
-        if (data?.errorField) {
-
-            setError(data.errorField, {
-                type: "server",
-                message: data.message
-            });
-
-        } else {
-
-            setError("root", {
-                type: "server",
-                message: data?.message || "Login failed"
-            });
-        }
-    }
 };
  
 
@@ -83,7 +86,7 @@ useEffect(() => {
 
 
   return (
-    <Box sx={{   width: { xs: "90%",sm: "70%",md: "70%", lg: "40%",}, mx: "auto", mt: 5,p: 3, boxShadow: 3, borderRadius: 2,
+    <Box sx={{   width: { xs: "90%",sm: "70%",md: "70%", lg: "40%",}, mx: "auto", mt: 5,p: 3, boxShadow: 0, borderRadius: 2,
         backgroundColor: "#F8F6F0", minHeight: { xs: "400px", sm: "500px", md: "500px", lg: "500px", }, alignItems: "center", display: "flex" }}
     >
       <Box sx={{ width: "100%" }}>
@@ -175,7 +178,26 @@ useEffect(() => {
               Login
             </Button>
 
+              <Divider sx={{ my: 2, fontFamily:"Arial",fontSize: "20px",   '&::before, &::after': {
+      borderColor: 'black',
+    }, }} > Or </Divider>
             
+
+              <Button
+              fullWidth
+              type="button"
+              variant="contained"
+              color="info"
+               sx={{
+                mt: 2,
+                alignSelf: "flex-start",
+              }}
+              onClick={handleGuestLogin}
+            >
+              Continue As Guest
+            </Button>
+
+
           </Stack>
         </form>
       </Box>
