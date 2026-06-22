@@ -74,7 +74,7 @@ app.use((req, res, next) => {
 app.use((req, res, next) => {
   const publicRoutes = ['/','/auth/login', '/auth/logout'];
   // allow public access to public routes  
- if (req.path === '/' || req.path === '/auth/login' || req.path === '/auth/logout') 
+ if (req.path === '/' || req.path === '/auth/login' || req.path === '/auth/logout'  ||  req.path.startsWith('/api-docs') ) 
   {
      return next();  
   }
