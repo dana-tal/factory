@@ -1,4 +1,5 @@
 server/node_modules/
+server/backup/
 server/logs/*.log
 server/.env
 docs/sending_token_from_client.txt

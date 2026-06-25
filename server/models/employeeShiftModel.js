@@ -4,6 +4,9 @@ const mongoose = require('mongoose');
 const employeeShiftSchema =  new mongoose.Schema ({
     employeeId: { type: mongoose.Schema.Types.ObjectId, ref: 'employee'},
     shiftId: {type: mongoose.Schema.Types.ObjectId, ref: 'shift'}
+}, {
+     versionKey: false,
+     timestamps:true
 });
 
 
