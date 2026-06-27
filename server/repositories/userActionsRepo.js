@@ -27,7 +27,7 @@ const increaseActionsCounter = async (userId,maxActions) =>
             $inc: { actionsCount: 1 }
         },
         {
-            new: true // return the updated document
+           returnDocument: 'after'// return the updated document
         }
     );
 
@@ -74,7 +74,7 @@ const decreaseActionsCounter = (userId) =>{
             $inc: { actionsCount: -1 } // increment the counter by 1
         },
         {
-            new: true,       // return the updated document
+            returnDocument: 'after',       // return the updated document
             upsert: false     // do not create a new document, if one does not exist yet 
         }
     );
